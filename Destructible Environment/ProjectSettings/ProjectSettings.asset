@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 84b0a44dd78cf6e429caa4e13a153cfd
+  productGUID: 495d137b9d355bd49992cac070c9efd7
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Destructible Environment
+  productName: marchcubes
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -838,14 +838,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Destructible Environment
+  metroPackageName: marchcubes
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Destructible Environment
+  metroApplicationDescription: marchcubes
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -916,11 +916,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 7ebc69dd-941e-4d9d-b647-f02a961c2538
+  cloudProjectId: 8cbb6c85-2026-4d8c-9cde-910343e7522f
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Destructible Environment
-  organizationId: wakefulcord8
+  projectName: marchcubes
+  organizationId: moharu619
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
