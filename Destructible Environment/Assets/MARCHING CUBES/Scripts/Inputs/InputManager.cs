@@ -14,6 +14,11 @@ public class InputManager : MonoBehaviour
     [Header("Input Fields")]
     [SerializeField] private Vector2 movementInput;
     [SerializeField] private Vector2 lookInput;
+    [SerializeField] private float terraInput;
+
+    [Header("Flags")]
+    [SerializeField] private bool buildFlag;
+    [SerializeField] private bool sprintFlag;
 
     #endregion
 
@@ -41,6 +46,11 @@ public class InputManager : MonoBehaviour
 
     public float MouseX => lookInput.x;
     public float MouseY => lookInput.y;
+
+    public float TerraformInput => terraInput;
+
+    public bool BuildFlag => buildFlag;
+    public bool SprintFlag => sprintFlag;
     #endregion
 
     #region Start Up
@@ -65,8 +75,11 @@ public class InputManager : MonoBehaviour
             playerControls.Movement.Move.performed += ctx => OnMovementInput(ctx);
             playerControls.Movement.Look.performed += ctx => OnLookInput(ctx);
 
-            playerControls.Actions.AddTerrain.performed += ctx => OnAddTerrain();
-            playerControls.Actions.SubTerrain.performed += ctx => OnSubTerrain();
+            playerControls.Movement.Sprint.started += ctx => OnToggleSprint();
+            playerControls.Movement.Sprint.canceled += ctx => OnToggleSprint();
+
+            playerControls.Actions.ToggleTerraMode.performed += ctx => OnTerraformToggle();
+            playerControls.Actions.Terraform.performed += ctx => OnTerraformInput(ctx);
 
         }
         playerControls.Enable();
@@ -85,13 +98,22 @@ public class InputManager : MonoBehaviour
         lookInput = ctx.ReadValue<Vector2>();
     }
 
-    private void OnAddTerrain()
+    private void OnTerraformInput(InputAction.CallbackContext ctx)
     {
-
+        terraInput = ctx.ReadValue<float>();
+        playerManager.Input_OnTerraform(terraInput);
     }
-    public void OnSubTerrain()
-    {
 
+    private void OnTerraformToggle()
+    {
+        buildFlag = !buildFlag;
+
+        playerManager.Input_ToggleBuildMode(buildFlag);
+    }
+
+    private void OnToggleSprint()
+    {
+        sprintFlag = !sprintFlag;
     }
     #endregion
 

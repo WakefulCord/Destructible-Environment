@@ -53,6 +53,10 @@ public class CameraHandler : MonoBehaviour
     #endregion
 
     #region Class Methods
+    public void SetTarget(Transform newTarget)
+    {
+        targetTransform = newTarget;
+    }
     private void FollowTarget()
     {
         if (targetTransform != null)

@@ -108,6 +108,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""322c96f1-09c9-4810-917d-aad5c2dbe36d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -176,6 +185,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a2e2487-2a24-4ea5-baa7-0676f1bc59b9"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -184,18 +204,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""98882e8e-cc15-40cf-ade0-c3d7a133e1ca"",
             ""actions"": [
                 {
-                    ""name"": ""AddTerrain"",
-                    ""type"": ""Button"",
-                    ""id"": ""4abc9e89-6fb5-47fe-b1aa-b3423a76d8a3"",
+                    ""name"": ""Terraform"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""21239c2d-b34c-44d9-abc9-e0589ad94223"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SubTerrain"",
+                    ""name"": ""ToggleTerraMode"",
                     ""type"": ""Button"",
-                    ""id"": ""5a55c62a-0993-417d-a182-f0fec468879d"",
+                    ""id"": ""6503e4c1-55f6-4e25-bdc9-9f797daea1eb"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -204,24 +224,46 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""7127ce9f-6412-4f7a-a37e-773ef506bfba"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""8f86752b-9dad-4163-ae28-8ce6006a9bd0"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""AddTerrain"",
-                    ""isComposite"": false,
+                    ""action"": ""Terraform"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""4ebc8d59-cd15-4a57-b84f-51f145380b38"",
+                    ""name"": ""negative"",
+                    ""id"": ""ab9a44d9-070c-48ad-9528-965d670dc74c"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SubTerrain"",
+                    ""action"": ""Terraform"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""63fcd398-a21b-4a50-bba2-a60eb977bb9e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Terraform"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5cfa8060-87aa-4c59-a44c-03ef04cb476c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleTerraMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -234,10 +276,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Look = m_Movement.FindAction("Look", throwIfNotFound: true);
+        m_Movement_Sprint = m_Movement.FindAction("Sprint", throwIfNotFound: true);
         // Actions
         m_Actions = asset.FindActionMap("Actions", throwIfNotFound: true);
-        m_Actions_AddTerrain = m_Actions.FindAction("AddTerrain", throwIfNotFound: true);
-        m_Actions_SubTerrain = m_Actions.FindAction("SubTerrain", throwIfNotFound: true);
+        m_Actions_Terraform = m_Actions.FindAction("Terraform", throwIfNotFound: true);
+        m_Actions_ToggleTerraMode = m_Actions.FindAction("ToggleTerraMode", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -321,6 +364,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IMovementActions> m_MovementActionsCallbackInterfaces = new List<IMovementActions>();
     private readonly InputAction m_Movement_Move;
     private readonly InputAction m_Movement_Look;
+    private readonly InputAction m_Movement_Sprint;
     /// <summary>
     /// Provides access to input actions defined in input action map "Movement".
     /// </summary>
@@ -340,6 +384,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Movement/Look".
         /// </summary>
         public InputAction @Look => m_Wrapper.m_Movement_Look;
+        /// <summary>
+        /// Provides access to the underlying input action "Movement/Sprint".
+        /// </summary>
+        public InputAction @Sprint => m_Wrapper.m_Movement_Sprint;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -372,6 +420,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
         }
 
         /// <summary>
@@ -389,6 +440,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
         }
 
         /// <summary>
@@ -426,8 +480,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // Actions
     private readonly InputActionMap m_Actions;
     private List<IActionsActions> m_ActionsActionsCallbackInterfaces = new List<IActionsActions>();
-    private readonly InputAction m_Actions_AddTerrain;
-    private readonly InputAction m_Actions_SubTerrain;
+    private readonly InputAction m_Actions_Terraform;
+    private readonly InputAction m_Actions_ToggleTerraMode;
     /// <summary>
     /// Provides access to input actions defined in input action map "Actions".
     /// </summary>
@@ -440,13 +494,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// </summary>
         public ActionsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Actions/AddTerrain".
+        /// Provides access to the underlying input action "Actions/Terraform".
         /// </summary>
-        public InputAction @AddTerrain => m_Wrapper.m_Actions_AddTerrain;
+        public InputAction @Terraform => m_Wrapper.m_Actions_Terraform;
         /// <summary>
-        /// Provides access to the underlying input action "Actions/SubTerrain".
+        /// Provides access to the underlying input action "Actions/ToggleTerraMode".
         /// </summary>
-        public InputAction @SubTerrain => m_Wrapper.m_Actions_SubTerrain;
+        public InputAction @ToggleTerraMode => m_Wrapper.m_Actions_ToggleTerraMode;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -473,12 +527,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_ActionsActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_ActionsActionsCallbackInterfaces.Add(instance);
-            @AddTerrain.started += instance.OnAddTerrain;
-            @AddTerrain.performed += instance.OnAddTerrain;
-            @AddTerrain.canceled += instance.OnAddTerrain;
-            @SubTerrain.started += instance.OnSubTerrain;
-            @SubTerrain.performed += instance.OnSubTerrain;
-            @SubTerrain.canceled += instance.OnSubTerrain;
+            @Terraform.started += instance.OnTerraform;
+            @Terraform.performed += instance.OnTerraform;
+            @Terraform.canceled += instance.OnTerraform;
+            @ToggleTerraMode.started += instance.OnToggleTerraMode;
+            @ToggleTerraMode.performed += instance.OnToggleTerraMode;
+            @ToggleTerraMode.canceled += instance.OnToggleTerraMode;
         }
 
         /// <summary>
@@ -490,12 +544,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="ActionsActions" />
         private void UnregisterCallbacks(IActionsActions instance)
         {
-            @AddTerrain.started -= instance.OnAddTerrain;
-            @AddTerrain.performed -= instance.OnAddTerrain;
-            @AddTerrain.canceled -= instance.OnAddTerrain;
-            @SubTerrain.started -= instance.OnSubTerrain;
-            @SubTerrain.performed -= instance.OnSubTerrain;
-            @SubTerrain.canceled -= instance.OnSubTerrain;
+            @Terraform.started -= instance.OnTerraform;
+            @Terraform.performed -= instance.OnTerraform;
+            @Terraform.canceled -= instance.OnTerraform;
+            @ToggleTerraMode.started -= instance.OnToggleTerraMode;
+            @ToggleTerraMode.performed -= instance.OnToggleTerraMode;
+            @ToggleTerraMode.canceled -= instance.OnToggleTerraMode;
         }
 
         /// <summary>
@@ -550,6 +604,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sprint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSprint(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Actions" which allows adding and removing callbacks.
@@ -559,18 +620,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IActionsActions
     {
         /// <summary>
-        /// Method invoked when associated input action "AddTerrain" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Terraform" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnAddTerrain(InputAction.CallbackContext context);
+        void OnTerraform(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "SubTerrain" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ToggleTerraMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSubTerrain(InputAction.CallbackContext context);
+        void OnToggleTerraMode(InputAction.CallbackContext context);
     }
 }

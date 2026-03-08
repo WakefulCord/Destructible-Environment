@@ -7,10 +7,16 @@ public class PlayerManager : MonoBehaviour
 
     PlayerMovement playerMovement;
     PlayerTerraform playerTerraform;
+
+    InputManager inputManager;
     #endregion
 
     #region Private Fields
+    [Header("Fields")]
+    [SerializeField] private Transform playerCamRef;
 
+    [Header("Player Bools")]
+    [SerializeField] private bool inBuildMode;
     #endregion
 
     #region Properties
@@ -31,11 +37,17 @@ public class PlayerManager : MonoBehaviour
             return _instance;
         }
     }
+
+    public Transform GetCamTarget => playerCamRef;
+    public bool InBuildMode => inBuildMode;
+    public bool IsSprinting => inputManager.SprintFlag;
     #endregion
 
     #region Start Up
     public void OnAwake()
     {
+        inputManager = InputManager.Instance;
+
         playerMovement = GetComponent<PlayerMovement>();
         playerTerraform = GetComponent<PlayerTerraform>();
         playerMovement.OnAwake();
@@ -46,6 +58,8 @@ public class PlayerManager : MonoBehaviour
     {
         playerMovement.OnStart();
         playerTerraform.OnStart();
+
+        CameraHandler.Instance.SetTarget(GetCamTarget);
     }
     #endregion
 
@@ -57,23 +71,25 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Update Methods
-    public void OnUpdate(float hor,float vert)
+    public void OnUpdate()
     {
-        playerMovement.OnUpdate(hor,vert);
-
+        playerMovement.OnUpdate(inputManager.Horizontal, inputManager.Vertical, IsSprinting);
+        playerTerraform.OnUpdate();
     }
     #endregion
 
     #region Input Fields
-    public void HandleAddTerrain()
+    public void Input_OnTerraform(float terraVal)
     {
-        
-
+        if (!InBuildMode) return;
+        playerTerraform.HandleTerraform(terraVal);
     }
 
-    public void HandleRemoveTerrain()
+    public void Input_ToggleBuildMode(bool isBuild)
     {
-        
+        inBuildMode = isBuild;
+
+        playerTerraform.ToggleBuildMode();
     }
     #endregion
 }

@@ -11,27 +11,29 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     #endregion
 
     #region Private Fields
+    [Header("Chunk Fields")]
+    [SerializeField] private GameObject terrainChunkPrefab;
+    [SerializeField] private Material chunkMaterial;
+    Dictionary<Vector3Int, TerrainChunk> chunks;
+    [SerializeField] int chunkSize = 16;
+    
     [Header("Terrain Fields")]
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private int depth;
-
-
-    [SerializeField] private float isoLevel = 0f; 
     [SerializeField] private float[,,] densityGrid;
+    private int worldChunksX;
+    private int worldChunksZ;
+    private int worldChunksY;
+    [SerializeField] private float isoLevel = 0f; 
 
+    [Header("Visual/Noise Fields")]
     [SerializeField] private static float seed;
-
-    private List<Vector3> meshVerts;
-    private List<int> meshTris;
-
-    [SerializeField] private MeshFilter meshFilter;
-    [SerializeField] private MeshRenderer meshRenderer;
-
-    // For storing edge interpolation results
-    private Vector3[] edgeVertex = new Vector3[12];
-
     [SerializeField] private float noiseVal = 0.05f;
+    [SerializeField] private Gradient terrainGradient;
+
+
+
     #endregion
 
     #region Properties
@@ -51,9 +53,13 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
         }
     }
+   
+    public float GetIsoLevel => isoLevel;
+    public Gradient TerrainGradient => terrainGradient;
+    public Material ChunkMaterial => chunkMaterial;
+    public int TerrainHeight => height;
 
 
-    
     #endregion
 
     #region Start Up
@@ -61,128 +67,37 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     {
         gridManager = GetComponent<GridManager>();
 
+        //initilise fields
+        chunks = new Dictionary<Vector3Int, TerrainChunk>();
+
         densityGrid = new float[width, height, depth]; // initialise density grid 
 
-        seed = UnityEngine.Random.Range(0f, 9999f); //for noise
-        
-        InitaliseTerrainValues(); // set noise
+        seed = UnityEngine.Random.Range(0f, 9999f);
 
-        GenerateMesh();  // create mesh (march Cubes)
+        worldChunksX = width / chunkSize;
+        worldChunksZ = depth / chunkSize;
+        worldChunksY = height / chunkSize;
+
+
+        //Terrain Noise vals
+        InitaliseTerrainValues();
+
+        
+        GenerateChunks();
 
         //gridManager.VisualiseNoise(densityGrid);
     }
 
-    private void GenerateMesh()
-    {
-        meshVerts = new List<Vector3>();
-        meshTris = new List<int>();
-
-        for (int x = 0; x < width - 1; x++)
-            for (int y = 0; y < height - 1; y++)
-                for (int z = 0; z < depth - 1; z++)
-                {
-                    MarchCube(new Vector3Int(x, y, z));
-                }
-
-        BuildMesh();
-    }
-
    
-    private static readonly Vector3[] cornerOffset =
-    {
-    new Vector3(0,0,0),
-    new Vector3(1,0,0),
-    new Vector3(1,1,0),
-    new Vector3(0,1,0),
-    new Vector3(0,0,1),
-    new Vector3(1,0,1),
-    new Vector3(1,1,1),
-    new Vector3(0,1,1)
-};
 
-
-    private void MarchCube(Vector3Int pos) // from sebastian lague terraforming video 
-    {
-      
-        //Get corner density values for 8 corners of the cube
-        float[] cubeCorners = new float[8];
-        for (int i = 0; i < 8; i++)
-        {
-            Vector3Int corner = pos + new Vector3Int(
-                (int)cornerOffset[i].x,
-                (int)cornerOffset[i].y,
-                (int)cornerOffset[i].z
-            );
-            cubeCorners[i] = densityGrid[corner.x, corner.y, corner.z];
-        }
-
-        //get caseindex for lookup table from density values
-        int caseIndex = 0;
-        for (int i = 0; i < 8; i++)
-        {
-            if (cubeCorners[i] > isoLevel)
-                caseIndex |= (1 << i);
-        }
-
-        if (caseIndex == 0 || caseIndex == 255)
-            return;
-
-    
-        int edgeMask = MCLookUp.edgeTable[caseIndex]; //where the edge is
-
-       
-        for (int e = 0; e < 12; e++) //calc where triangle should be placed based on corner values
-        {
-            if ((edgeMask & (1 << e)) == 0)
-                continue;
-
-            //edge points
-            int cornerA = MCLookUp.cornerIndexAFromEdge[e];
-            int cornerB = MCLookUp.cornerIndexBFromEdge[e];
-
-            //Get world pos of the two corners of this edge 
-            Vector3 posA = pos + cornerOffset[cornerA];
-            Vector3 posB = pos + cornerOffset[cornerB];
-
-            //density grid values 
-            float valueA = cubeCorners[cornerA];
-            float valueB = cubeCorners[cornerB];
-
-            edgeVertex[e] = Interpolate(posA, posB, valueA, valueB); // important for smooth terrain, edge position is influenced by density grid values
-        }
-
-       
-        int[] triangles = MCLookUp.triangulation[caseIndex];
-        for (int i = 0; i < 15; i += 3)
-        {
-            if (triangles[i] == -1)
-                break;
-
-            int triIndex = meshVerts.Count;
-
-            meshVerts.Add(edgeVertex[triangles[i]]);
-            meshVerts.Add(edgeVertex[triangles[i + 1]]);
-            meshVerts.Add(edgeVertex[triangles[i + 2]]);
-
-           
-            meshTris.Add(triIndex);
-            meshTris.Add(triIndex + 2);
-            meshTris.Add(triIndex + 1);
-        }
-    }
-    private Vector3 Interpolate(Vector3 p1, Vector3 p2, float v1, float v2)
-    {
-        float t = (isoLevel - v1) / (v2 - v1);
-        t = Mathf.Clamp01(t); 
-        return p1 + (p2 - p1) * t;
-    }   
     private void InitaliseTerrainValues()
     {
+        //for each densitygrid point
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
                 for (int z = 0; z < depth; z++)
                 {
-                    densityGrid[x, y, z] = TerrainDensity(x, y, z);
+                    densityGrid[x, y, z] = TerrainDensity(x, y, z); // create perlin based noise
                 }
     }
 
@@ -206,40 +121,92 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
     #endregion
 
-    #region Class Methods
-
-
-    private void BuildMesh()
+    #region Chunk Methods
+    private void GenerateChunks() // creates chunks for terrain
     {
-        Mesh mesh = new Mesh();
-        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        mesh.SetVertices(meshVerts);
-        mesh.SetTriangles(meshTris, 0);
-        mesh.RecalculateNormals();
-
        
-        Vector3 center = new Vector3(width * 0.5f, height * 0.5f, depth * 0.5f);
-        Vector3 size = new Vector3(width, height, depth);
-        mesh.bounds = new Bounds(center, size);
-
-        meshFilter.sharedMesh = mesh;
-
-        Debug.Log("Mesh built successfully - Verts: " + meshVerts.Count + ", Tris: " + (meshTris.Count / 3));
-
-        MeshCollider meshCol = GetComponent<MeshCollider>();
-
-        if (meshCol != null)
+        for (int x = 0; x < worldChunksX; x++)
         {
-            meshCol.sharedMesh = mesh;
-            Debug.Log("Mesh Collider Set");
+            for (int y = 0; y < worldChunksY; y++)
+            {
+                for (int z = 0; z < worldChunksZ; z++)
+                {
+                    CreateChunk(new Vector3Int(x, y, z));
+                }
+            }
         }
+
     }
 
+    private void CreateChunk(Vector3Int chunkPos)
+    {
+        if (terrainChunkPrefab == null)
+        {
+            Debug.LogError("Terrain Chunk Prefab is not assigned");
+            return;
+        }
+
+        //create chunk object
+        GameObject chunkObj = Instantiate(terrainChunkPrefab, transform);
+        chunkObj.name = $"Chunk_{chunkPos.x}_{chunkPos.y}_{chunkPos.z}"; // name it its chunk pos
+
+        TerrainChunk chunk = chunkObj.GetComponent<TerrainChunk>();
+       
+
+        
+        chunk.transform.position = new Vector3(
+            chunkPos.x * chunkSize,
+            chunkPos.y * chunkSize,
+            chunkPos.z * chunkSize
+        ); 
+
+        if (chunkMaterial != null)
+        {
+            MeshRenderer renderer = chunkObj.GetComponent<MeshRenderer>();
+           
+            renderer.sharedMaterial = chunkMaterial;
+        }
+
+        chunk.Initialise(this, chunkPos, chunkSize);
+
+        chunks.Add(chunkPos, chunk);
+    }
+    public TerrainChunk GetChunkFromWorldPos(Vector3 worldPos) // convert world pos to  closest chunk for terraform
+    {
+        Vector3Int chunkCoord = new Vector3Int(
+           Mathf.FloorToInt(worldPos.x / chunkSize),
+           Mathf.FloorToInt(worldPos.y / chunkSize),
+           Mathf.FloorToInt(worldPos.z / chunkSize)
+       );
+
+        if (chunks.TryGetValue(chunkCoord, out TerrainChunk chunk))
+            return chunk;
+
+        return null;
+    }
+
+    public void RegenerateChunk(Vector3 worldPos) // rebuulds chunk after deformation 
+    {
+        TerrainChunk chunk = GetChunkFromWorldPos(worldPos);
+        if (chunk != null)
+        {
+            chunk.RegenerateMesh();
+        }
+    }
     #endregion
 
 
     #region Terraform Methods
-    public void AddDensity(int x, int y, int z, float amount)
+    public float GetDensity(int x, int y, int z) // get desnity at x,y,z from density grid 
+    {
+        if (IsInBounds(x, y, z))
+        { 
+            return densityGrid[x, y, z];
+        }
+        return 0;
+    }
+
+    public void UpdateDensity(int x, int y, int z, float amount) // used fro terraform
     {
         if (IsInBounds(x, y, z))
         {
@@ -247,17 +214,47 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         }
     }
 
-    public void SubtractDensity(int x, int y, int z, float amount)
+    public void UpdateDensityAndRegenerate(Vector3 worldPos, float amount, float radius)
     {
-        if (IsInBounds(x, y, z))
-        {
-            densityGrid[x, y, z] -= amount;
-        }
-    }
+        //convert world pos to bounds of terraform0
+        int minX = Mathf.FloorToInt(worldPos.x - radius);
+        int maxX = Mathf.CeilToInt(worldPos.x + radius);
+        int minY = Mathf.FloorToInt(worldPos.y - radius);
+        int maxY = Mathf.CeilToInt(worldPos.y + radius);
+        int minZ = Mathf.FloorToInt(worldPos.z - radius);
+        int maxZ = Mathf.CeilToInt(worldPos.z + radius);
 
-    public void RegenerateMesh()
-    {
-        GenerateMesh();
+        HashSet<TerrainChunk> affectedChunks = new HashSet<TerrainChunk>(); // hash set prevents duplicate chunks in set - 
+
+        //loop through terraform range (in a square)
+        for (int x = minX; x <= maxX; x++) 
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                for (int z = minZ; z <= maxZ; z++)
+                {
+
+                    //to make it ciruclar ignore any points that are not in "radius"
+                    float distance = Vector3.Distance(worldPos, new Vector3(x, y, z));
+                    if (distance <= radius)
+                    {
+                        float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
+                        UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
+
+                        TerrainChunk chunk = GetChunkFromWorldPos(new Vector3(x, y, z)); // get chunk of current density grid point 
+                        if (chunk != null)
+                        {
+                            affectedChunks.Add(chunk); // add chunk to list to be regenerated
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (TerrainChunk chunk in affectedChunks)
+        {
+            chunk.RegenerateMesh();
+        }
     }
     #endregion
 

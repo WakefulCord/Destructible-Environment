@@ -9,15 +9,19 @@ public class PlayerMovement : MonoBehaviour
 
 	#region Private Fields
 	[Header("Movement Fields")]
-	[SerializeField] private float movementSpeed = 10f;
-	#endregion
+	[SerializeField] private float movementSpeed;
+    [SerializeField] private float normalSpeed = 10f;
+	[SerializeField] private float sprintSpeed = 20f;
 
-	#region Properties
 
-	#endregion
+    #endregion
 
-	#region Start Up
-	public void OnAwake()
+    #region Properties
+
+    #endregion
+
+    #region Start Up
+    public void OnAwake()
 	{
 		rb = GetComponent<Rigidbody>();
 		camTransform = Camera.main.transform;
@@ -30,11 +34,12 @@ public class PlayerMovement : MonoBehaviour
 	#endregion
 
 	#region Class Methods
-	private void HandleMovement(float h, float v)
+	private void HandleMovement(float h, float v, bool isSprinting)
 	{
 		Vector3 moveAmount = camTransform.forward * v;
 		moveAmount += camTransform.right * h;
 
+		movementSpeed = isSprinting ? sprintSpeed : normalSpeed;
 		Vector3 movementVector = moveAmount * movementSpeed;
 
 		rb.linearVelocity = new Vector3(movementVector.x, rb.linearVelocity.y, movementVector.z);
@@ -43,9 +48,9 @@ public class PlayerMovement : MonoBehaviour
 	#endregion
 
 	#region Update Methods
-	public void OnUpdate(float h, float v)
+	public void OnUpdate(float h, float v, bool isSprinting)
 	{
-		HandleMovement(h, v);
+		HandleMovement(h, v, isSprinting);
 	}
 	#endregion
 }

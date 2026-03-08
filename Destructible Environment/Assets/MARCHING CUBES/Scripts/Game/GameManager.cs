@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     #region Update Methods
     private void Update()
     {
-        playerManager.OnUpdate(inputManager.Horizontal,inputManager.Vertical);
+        playerManager.OnUpdate();
         cameraHandler.OnUpdate(inputManager.MouseX, inputManager.MouseY);
     }
     #endregion
