@@ -13,12 +13,6 @@ public class Structurestress : MonoBehaviour
         Debug.Log("Initial Structure Integrity: " + stressLimit); // Log the initial structure integrity
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void structLimitCalc(float damage)
     {
         currentStress = currentStress + damage; // Reduce the stress limit by the damage amount
