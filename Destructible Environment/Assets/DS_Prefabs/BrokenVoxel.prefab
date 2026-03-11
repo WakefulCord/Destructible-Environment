@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7483078493645053937}
   - component: {fileID: 2759786301864913923}
   - component: {fileID: 3672314082346006432}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 6804996757723865726}
   - component: {fileID: 2063542300022659459}
   - component: {fileID: 1919273192963841430}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 3190361711191417277}
   - component: {fileID: 6922931522378422059}
   - component: {fileID: 2444338261127122102}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -513,7 +513,7 @@ GameObject:
   - component: {fileID: 1711605067867384714}
   - component: {fileID: 7447081833304808112}
   - component: {fileID: 1780907385505038688}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -662,7 +662,7 @@ GameObject:
   - component: {fileID: 1600581752258089132}
   - component: {fileID: 8882033861451797488}
   - component: {fileID: 4363364848280250221}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -811,7 +811,7 @@ GameObject:
   - component: {fileID: 5540560372243798745}
   - component: {fileID: 3833529112594377409}
   - component: {fileID: 4083845083471499361}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -960,7 +960,7 @@ GameObject:
   - component: {fileID: 7494157626661105113}
   - component: {fileID: 3546751002562352657}
   - component: {fileID: 8052163313066730334}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1109,7 +1109,7 @@ GameObject:
   - component: {fileID: 1818239780122338660}
   - component: {fileID: 2955567779772509611}
   - component: {fileID: 1777538174514477519}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: BrokenVoxel (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

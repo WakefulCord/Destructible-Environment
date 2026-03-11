@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Runtime.Serialization;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Searcher;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,8 +28,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float exForce;
     [SerializeField] float exRadius;
 
+    [SerializeField] float damageRadius;
+    [SerializeField] float spread;
+
+    LayerMask brokenVoxMask;
+
     private void Start()
     {
+        brokenVoxMask = ~(1 << LayerMask.NameToLayer("BrokenVox"));   //creates a layermask to ignore the 'BrokenVox' layer
         rb = GetComponent<Rigidbody>();
         cam = Camera.main;
 
@@ -95,9 +103,9 @@ public class PlayerController : MonoBehaviour
     void CheckWalls()   //checks for walls in front of the player
     {
         RaycastHit hit;
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, hitDistance))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, hitDistance, brokenVoxMask))
         {
-            if (hit.collider.CompareTag("Wall"))
+            if (hit.collider.CompareTag("Wall"))    //if hit wall of switch type
             {
                 hit.collider.GetComponentInParent<WallManager>().breakWall();
 
@@ -114,10 +122,16 @@ public class PlayerController : MonoBehaviour
 
             }
 
-            else if(hit.collider.GetComponent<WallVoxel>() != null)
+            else //hit wall of voxel type
             {
-                hit.collider.GetComponent<WallVoxel>().breakVoxel();
+                float  radiusOverDistance = damageRadius + Vector3.Distance(hit.point, transform.position) * spread; //adds shotgun style spread
+                foreach (Collider collider in Physics.OverlapSphere(hit.point, radiusOverDistance))    //breaks each voxel in a radius
+                {
+                    if (collider.GetComponent<WallVoxel>() != null && Vector3.Distance(hit.point, transform.position) <= hitDistance)
+                        collider.GetComponent<WallVoxel>().breakVoxel();
+                }
             }
+
         }
     }
 }
