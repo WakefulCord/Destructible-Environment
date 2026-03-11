@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
+
 using UnityEngine;
 
 public class PlayerTerraform : MonoBehaviour
@@ -47,17 +46,7 @@ public class PlayerTerraform : MonoBehaviour
     #endregion
 
     #region Class Methods
-    public void ToggleBuildMode()
-    {
-        if (InBuildMode)
-        {
-
-        }
-        else
-        {
-
-        }
-    }
+   
     public void HandleTerraform(float terraVal)
     {
         if (InBuildMode)

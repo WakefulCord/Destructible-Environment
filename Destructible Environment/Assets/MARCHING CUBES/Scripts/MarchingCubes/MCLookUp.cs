@@ -3,7 +3,7 @@ using UnityEngine;
 public class MCLookUp // Marching Cubes Lookup Table from Sebastian Lague Terraforming
 {
   
-    public static readonly int[] edgeTable = new int[256]
+    public static readonly int[] edgeTable = new int[256] 
     {
     0x000, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
     0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,

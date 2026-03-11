@@ -28,7 +28,7 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     [SerializeField] private float isoLevel = 0f; 
 
     [Header("Visual/Noise Fields")]
-    [SerializeField] private static float seed;
+    private static float seed;
     [SerializeField] private float noiseVal = 0.05f;
     [SerializeField] private Gradient terrainGradient;
 
@@ -203,7 +203,7 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         { 
             return densityGrid[x, y, z];
         }
-        return 0;
+        return 0f;
     }
 
     public void UpdateDensity(int x, int y, int z, float amount) // used fro terraform

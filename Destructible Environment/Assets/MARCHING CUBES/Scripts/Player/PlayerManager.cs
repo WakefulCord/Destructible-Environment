@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
     #region Update Methods
     public void OnUpdate()
     {
-        playerMovement.OnUpdate(inputManager.Horizontal, inputManager.Vertical, IsSprinting);
+        playerMovement.OnUpdate(inputManager.Horizontal, inputManager.Vertical, inputManager.FlyInput, IsSprinting);
         playerTerraform.OnUpdate();
     }
     #endregion
@@ -89,7 +89,6 @@ public class PlayerManager : MonoBehaviour
     {
         inBuildMode = isBuild;
 
-        playerTerraform.ToggleBuildMode();
     }
     #endregion
 }

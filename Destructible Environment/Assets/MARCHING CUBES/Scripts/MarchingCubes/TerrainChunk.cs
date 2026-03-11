@@ -18,7 +18,7 @@ public class TerrainChunk : MonoBehaviour
     int chunkSize; 
     Vector3Int chunkPos;
 
-    //8 corners points for marching cube
+    //8 corner points for marching cube
     private static readonly Vector3[] cornerOffset =
    {
     new Vector3(0,0,0),
@@ -94,6 +94,10 @@ public class TerrainChunk : MonoBehaviour
             {
                 float worldY = meshVerts[i].y + transform.position.y;
                 float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, worldY);
+
+                t *= 2f;
+                t = Mathf.Clamp01(t);
+
                 colours[i] = terrainManager.TerrainGradient.Evaluate(t);
             }
 
@@ -130,7 +134,7 @@ public class TerrainChunk : MonoBehaviour
         for (int i = 0; i < 8; i++)
         {
             if (cubeCorners[i] > terrainManager.GetIsoLevel)
-                caseIndex |= (1 << i); // bit shift left - flag for this corner being inside/outside surface
+                caseIndex |= (1 << i); // set bit if corner is inside surface
         }
 
         if (caseIndex == 0 || caseIndex == 255) // both incides mean empty - 0 all outside , 255 all inside(no surface)
@@ -150,13 +154,15 @@ public class TerrainChunk : MonoBehaviour
             int cornerA = MCLookUp.cornerIndexAFromEdge[e];
             int cornerB = MCLookUp.cornerIndexBFromEdge[e];
 
+            //position of corners
             Vector3 posA = localPos + cornerOffset[cornerA];
             Vector3 posB = localPos + cornerOffset[cornerB];
 
+            //denisty at corners
             float valueA = cubeCorners[cornerA];
             float valueB = cubeCorners[cornerB];
 
-            edgeVertex[e] = Interpolate(posA, posB, valueA, valueB);
+            edgeVertex[e] = Interpolate(posA, posB, valueA, valueB); // position of mesh vertex based on density values of points at either side of vertex
         }
 
 
@@ -169,11 +175,12 @@ public class TerrainChunk : MonoBehaviour
 
             int triIndex = meshVerts.Count;
 
+            //add vertrex poistion to mesh verts
             meshVerts.Add(edgeVertex[triangles[i]]);
             meshVerts.Add(edgeVertex[triangles[i + 1]]);
             meshVerts.Add(edgeVertex[triangles[i + 2]]);
 
-
+            //triangles wound in 0,2,1 order to flip face normals out
             meshTris.Add(triIndex);
             meshTris.Add(triIndex + 2);
             meshTris.Add(triIndex + 1);

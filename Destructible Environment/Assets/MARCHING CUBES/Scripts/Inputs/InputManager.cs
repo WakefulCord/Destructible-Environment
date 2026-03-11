@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Vector2 movementInput;
     [SerializeField] private Vector2 lookInput;
     [SerializeField] private float terraInput;
+    [SerializeField] private float flyInput;
 
     [Header("Flags")]
     [SerializeField] private bool buildFlag;
@@ -47,6 +48,7 @@ public class InputManager : MonoBehaviour
     public float MouseX => lookInput.x;
     public float MouseY => lookInput.y;
 
+    public float FlyInput => flyInput;
     public float TerraformInput => terraInput;
 
     public bool BuildFlag => buildFlag;
@@ -78,6 +80,8 @@ public class InputManager : MonoBehaviour
             playerControls.Movement.Sprint.started += ctx => OnToggleSprint();
             playerControls.Movement.Sprint.canceled += ctx => OnToggleSprint();
 
+            playerControls.Movement.Fly.performed += ctx => OnFlyInput(ctx);
+
             playerControls.Actions.ToggleTerraMode.performed += ctx => OnTerraformToggle();
             playerControls.Actions.Terraform.performed += ctx => OnTerraformInput(ctx);
 
@@ -89,15 +93,11 @@ public class InputManager : MonoBehaviour
     {
         playerControls.Disable();
     }
-    private void OnMovementInput(InputAction.CallbackContext ctx)
-    {
-        movementInput = ctx.ReadValue<Vector2>();
-    }
-    private void OnLookInput(InputAction.CallbackContext ctx)
-    {
-        lookInput = ctx.ReadValue<Vector2>();
-    }
+    private void OnMovementInput(InputAction.CallbackContext ctx) { movementInput = ctx.ReadValue<Vector2>(); }
 
+    private void OnLookInput(InputAction.CallbackContext ctx) { lookInput = ctx.ReadValue<Vector2>();  }
+
+    private void OnFlyInput(InputAction.CallbackContext ctx) { flyInput = ctx.ReadValue<float>(); }
     private void OnTerraformInput(InputAction.CallbackContext ctx)
     {
         terraInput = ctx.ReadValue<float>();

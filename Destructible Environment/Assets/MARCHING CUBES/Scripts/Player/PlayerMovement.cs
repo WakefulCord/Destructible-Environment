@@ -45,12 +45,19 @@ public class PlayerMovement : MonoBehaviour
 		rb.linearVelocity = new Vector3(movementVector.x, rb.linearVelocity.y, movementVector.z);
 
 	}
+	private void HandleFly(float flyVal)
+	{
+		Vector3 vel = rb.linearVelocity;
+		vel.y = flyVal * movementSpeed; 
+		rb.linearVelocity = vel;
+	}
 	#endregion
 
 	#region Update Methods
-	public void OnUpdate(float h, float v, bool isSprinting)
+	public void OnUpdate(float h, float v,float fly, bool isSprinting)
 	{
 		HandleMovement(h, v, isSprinting);
+		HandleFly(fly);
 	}
 	#endregion
 }
