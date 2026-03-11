@@ -320,6 +320,7 @@ MonoBehaviour:
   movementInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
   terraInput: 0
+  flyInput: 0
   buildFlag: 0
   sprintFlag: 0
 --- !u!114 &691386680
@@ -386,22 +387,22 @@ MonoBehaviour:
   cellSpacing: 1
   noiseGradient:
     serializedVersion: 2
-    key0: {r: 1, g: 0.9705882, b: 0.9705882, a: 1}
-    key1: {r: 1, g: 0, b: 0, a: 1}
-    key2: {r: 1, g: 1, b: 1, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
+    key0: {r: 0.101960786, g: 0.29803923, b: 0.47843137, a: 1}
+    key1: {r: 0.22745098, g: 0.56078434, b: 0.83137256, a: 1}
+    key2: {r: 0.83137256, g: 0.76862746, b: 0.47843137, a: 0}
+    key3: {r: 0.2901961, g: 0.54901963, b: 0.22745098, a: 0}
+    key4: {r: 0.1764706, g: 0.41960785, b: 0.11764706, a: 0}
+    key5: {r: 0.41960785, g: 0.2901961, b: 0.1764706, a: 0}
+    key6: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0}
+    key7: {r: 1, g: 1, b: 1, a: 0}
     ctime0: 0
-    ctime1: 7325
-    ctime2: 65535
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
+    ctime1: 9830
+    ctime2: 13107
+    ctime3: 22937
+    ctime4: 36044
+    ctime5: 45875
+    ctime6: 55705
+    ctime7: 65535
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -412,7 +413,7 @@ MonoBehaviour:
     atime7: 0
     m_Mode: 0
     m_ColorSpace: -1
-    m_NumColorKeys: 3
+    m_NumColorKeys: 8
     m_NumAlphaKeys: 2
 --- !u!114 &1020183496
 MonoBehaviour:
@@ -429,28 +430,28 @@ MonoBehaviour:
   terrainChunkPrefab: {fileID: 447399527235664376, guid: 7df7498cb56174d449b9a73b543b61fd, type: 3}
   chunkMaterial: {fileID: 2100000, guid: ca4c9f3792c4c014fa82af1a85bf68b0, type: 2}
   chunkSize: 16
-  width: 100
-  height: 100
-  depth: 100
-  isoLevel: -30
+  width: 128
+  height: 64
+  depth: 128
+  isoLevel: 0
   noiseVal: 0.02
   terrainGradient:
     serializedVersion: 2
-    key0: {r: 0.17176929, g: 0.17899746, b: 0.18867922, a: 1}
-    key1: {r: 0.5647059, g: 0.5647059, b: 0.5647059, a: 1}
-    key2: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 0}
-    key3: {r: 0.35401767, g: 0.6792453, b: 0.29156286, a: 0}
-    key4: {r: 0.4755663, g: 0.73665106, b: 0.46726078, a: 0}
-    key5: {r: 0.6214707, g: 0.45429108, b: 0.28280962, a: 0}
-    key6: {r: 0.6603774, g: 0.37899724, b: 0.23362409, a: 0}
+    key0: {r: 0.101960786, g: 0.29803923, b: 0.47843137, a: 1}
+    key1: {r: 0.22745098, g: 0.56078434, b: 0.83137256, a: 1}
+    key2: {r: 0.83137256, g: 0.76862746, b: 0.47843137, a: 0}
+    key3: {r: 0.2901961, g: 0.54901963, b: 0.22745098, a: 0}
+    key4: {r: 0.1764706, g: 0.41960785, b: 0.11764706, a: 0}
+    key5: {r: 0.41960785, g: 0.2901961, b: 0.1764706, a: 0}
+    key6: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 0}
     key7: {r: 1, g: 1, b: 1, a: 0}
-    ctime0: 4241
-    ctime1: 11758
-    ctime2: 22745
-    ctime3: 31418
-    ctime4: 44525
-    ctime5: 46067
-    ctime6: 55512
+    ctime0: 0
+    ctime1: 9830
+    ctime2: 13107
+    ctime3: 22937
+    ctime4: 36044
+    ctime5: 45875
+    ctime6: 55705
     ctime7: 65535
     atime0: 0
     atime1: 65535
@@ -620,7 +621,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -638,8 +639,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 10
-  normalSpeed: 10
-  sprintSpeed: 20
+  normalSpeed: 20
+  sprintSpeed: 40
 --- !u!114 &1418750353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -663,7 +664,7 @@ Transform:
   m_GameObject: {fileID: 1418750349}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: 90, z: 50}
+  m_LocalPosition: {x: 50, y: 40, z: 50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -686,8 +687,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   digStrength: 8
   digRadius: 5
-  terraDist: 25
-  terraformCooldown: 0.1
+  terraDist: 50
+  terraformCooldown: 0.05
   isTeraforming: 0
   terraformIndicator: {fileID: 1777853845}
   terrainLayer:
