@@ -53,6 +53,7 @@ public class Cubes : MonoBehaviour
         mesh.RecalculateNormals();
 
         meshFilter.mesh = mesh;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
     }
 
     private void SetHeights()
