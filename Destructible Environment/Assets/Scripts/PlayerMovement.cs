@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementVoxel : MonoBehaviour
 {
     public float speed = 6f;
     public float jumpHeight = 1.5f;
