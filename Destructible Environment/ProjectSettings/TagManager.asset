@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Wall
+  - BrokenWall
   layers:
   - Default
   - TransparentFX
@@ -14,7 +16,6 @@ TagManager:
   - 
   - 
   - 
-  - Terrain
   - 
   - 
   - 
@@ -26,7 +27,8 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - WallCore
+  - BrokenVox
   - 
   - 
   - 
