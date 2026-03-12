@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BreakableWall : MonoBehaviour
 {
-    public int width = 10;
-    public int height = 10;
+    public int width;
+    public int height;
 
     public WallVoxel[,] voxels;
     [SerializeField] Sprite up, down, left, right, uL, uR, dL, dR;
