@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider.CompareTag("Wall"))    //if hit wall of switch type
             {
-                hit.collider.GetComponentInParent<WallManager>().breakWall();
+                //hit.collider.GetComponentInParent<WallManager>().breakWall();
 
                 Vector3 dirToPlayer = (gameObject.transform.position - hit.point).normalized;
                 Vector3 exPos = (hit.point + 1 * dirToPlayer);
