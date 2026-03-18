@@ -38,7 +38,7 @@ public class BreakableWall : MonoBehaviour
 
     public bool CheckCardinal(WallVoxel voxel)  //returns false if there is 3 or less cardinaly adjacent voxels
     {
-        int missingCount = 0;
+        int missingCount = 0;   //for each missing voxel, count up
 
         // Up
         if (voxel.y + 1 >= height || voxels[voxel.x, voxel.y + 1] == null)

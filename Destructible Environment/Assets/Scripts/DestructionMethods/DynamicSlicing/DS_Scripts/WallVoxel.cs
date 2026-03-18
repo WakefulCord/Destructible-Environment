@@ -61,7 +61,7 @@ public class WallVoxel : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
             if (!breakableWall.CheckCardinal(this))
             {
-                //breakVoxel();
+                breakVoxel();
                 yield break;
             }
         }
