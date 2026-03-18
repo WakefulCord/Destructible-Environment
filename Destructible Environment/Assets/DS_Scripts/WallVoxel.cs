@@ -8,6 +8,8 @@ public class WallVoxel : MonoBehaviour
 
     BreakableWall breakableWall;
 
+    
+
     private void Start()
     {
         breakableWall = transform.GetComponentInParent<BreakableWall>();
@@ -15,9 +17,18 @@ public class WallVoxel : MonoBehaviour
         StartCoroutine(shouldFall());
     }
 
-    public void breakVoxel()
+    /*public void breakVoxel()
     {
         breakableWall.checkAdjacent(this);
+        breakableWall.spawnDebris(this);
+        Destroy(gameObject);
+    }*/
+
+    public void breakVoxel()
+    {
+        breakableWall.voxels[x, y] = null;
+
+        breakableWall.updateWall();
         breakableWall.spawnDebris(this);
         Destroy(gameObject);
     }
@@ -30,6 +41,16 @@ public class WallVoxel : MonoBehaviour
             {
                 child.GetComponent<SpriteRenderer>().sprite = sprite;
             }
+        }
+    }
+
+    public void updateTile(Sprite[] sprites)    //function used for 47 texture system
+    {
+        int mask = breakableWall.GetBitmask(this);
+
+        if(breakableWall.bitMaskSprite.TryGetValue(mask, out int spriteIndex))
+        {
+            updateTexture(sprites[spriteIndex]);
         }
     }
 
