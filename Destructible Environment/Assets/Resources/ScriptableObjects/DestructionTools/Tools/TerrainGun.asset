@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03dd0ac956521c440ae76ad6b4f72777, type: 3}
+  m_Name: TerrainGun
+  m_EditorClassIdentifier: 
+  toolName: Terraformer
+  toolPrefab: {fileID: 6879697570751847380, guid: d3dd0404bee96bd42b6a4c6841953e37, type: 3}
+  toolIcon: {fileID: 0}
+  data: {fileID: 11400000, guid: 4a220e69aabce204d9b6f5961daa9d26, type: 2}
+  compatibleLayers: 1
+  indicatorPrefab: {fileID: 8364214188647995764, guid: bf188967bd23169419eadbc51a1c75b7, type: 3}

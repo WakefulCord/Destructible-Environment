@@ -20,5 +20,17 @@ public class ToolBehaviour : MonoBehaviour
     {
         Debug.Log("Used " + GetToolData.GetName);
     }
+
+    public virtual void OnToolAltUse()
+    {
+        //right click
+            //aim
+            //subtract
+    }
+
+    public virtual void OnToolCancelled() // what to do when use button has stopped being pressed - e.g reset terraform val
+    {
+
+    }
 }
 

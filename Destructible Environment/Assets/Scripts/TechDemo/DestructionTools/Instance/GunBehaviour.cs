@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GunBehaviour : ToolBehaviour
@@ -7,6 +8,8 @@ public class GunBehaviour : ToolBehaviour
 
     [Header("Data Fields")]
     [SerializeField] private float fireRate;
+
+    private LineRenderer lineRenderer;
 
     public GunTool GetGunTool => (GunTool)GetToolData;
 
@@ -18,7 +21,22 @@ public class GunBehaviour : ToolBehaviour
         fireTimer = 0;
         //data
         fireRate = GetGunTool.FireRate;
+
+        SetupLineRenderer();
     }
+
+    private void SetupLineRenderer() // basic visuals
+    {
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.startWidth = 0.02f;
+        lineRenderer.endWidth = 0.02f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.yellow;
+        lineRenderer.endColor = Color.red;
+        lineRenderer.positionCount = 2;
+        lineRenderer.enabled = false;
+    }
+
     public override void OnToolUpdate()
     {
         base.OnToolUpdate();
@@ -47,30 +65,51 @@ public class GunBehaviour : ToolBehaviour
 
     private void Shoot()
     {
-        //shoot behaviour
-        
         Debug.Log("BANG SHOOT");
 
+        canFire = false;
+
+        Camera cam = Camera.main;
+        Vector3 origin = cam.transform.position;
+        Vector3 direction = cam.transform.forward;
+
         RaycastHit hit;
-        //shoot from camera - for now?
-        if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, Mathf.Infinity))
+        if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity))
         {
-            return;
-        }
-        IDestructable target = hit.collider.GetComponentInParent<IDestructable>(); // root object has the destruction manager script (hopefully)
-            
+            ShowTracer(origin, hit.point);
 
-        if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
-        {
-            DestructionHitData data = new DestructionHitData()
+            IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
+
+            if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
             {
-                damage = GetGunTool.GetData.GetDamage,
-                radius = GetGunTool.GetData.GetRadius,
-                hitNormal = hit.normal,
-                hitPoint = hit.point,
-            };
+                DestructionHitData data = new DestructionHitData()
+                {
+                    damage = GetGunTool.GetData.GetDamage,
+                    radius = GetGunTool.GetData.GetRadius,
+                    hitNormal = hit.normal,
+                    hitPoint = hit.point,
+                };
 
-            target.ApplyDamage(data);
+                target.ApplyDamage(data);
+            }
         }
+        else
+        {
+            ShowTracer(origin, origin + direction * 100f);
+        }
+    }
+
+    private void ShowTracer(Vector3 start, Vector3 end)
+    {
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, end);
+        lineRenderer.enabled = true;
+        StartCoroutine(HideTracer());
+    }
+
+    private IEnumerator HideTracer()
+    {
+        yield return new WaitForSeconds(0.05f);
+        lineRenderer.enabled = false;
     }
 }

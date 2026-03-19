@@ -63,6 +63,10 @@ public class InputManager : MonoBehaviour
             playerControls.Action.ToolSelect.performed += ctx => OnToolSelect(ctx);
 
             playerControls.Action.UseTool.performed += ctx => OnUseTool();
+            playerControls.Action.AltUseTool.performed += ctx => OnAltUseTool();
+
+            playerControls.Action.UseTool.canceled += ctx => OnToolCancelled();
+            playerControls.Action.AltUseTool.canceled += ctx => OnToolCancelled();
 
         }
         playerControls.Enable();
@@ -97,23 +101,22 @@ public class InputManager : MonoBehaviour
 
     private void OnUseTool()
     {
-        playerManager.Input_UseTool();
+        playerManager.Input_UseTool(false);
+    }
+    private void OnAltUseTool()
+    {
+        playerManager.Input_UseTool(true);
     }
 
+    private void OnToolCancelled()
+    {
+        playerManager.Input_CancelTool();
+    }
     private void OnJump()
     {
         playerManager.Input_HandleJump();
     }
 
-    public void OnLateUpdate()
-    {
-        ResetJumpFlag();
-    }
-
-    private void ResetJumpFlag()
-    {
-        jumpFlag = false;
-    }
     #endregion
 
 

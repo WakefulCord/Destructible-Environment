@@ -240,6 +240,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltUseTool"",
+                    ""type"": ""Button"",
+                    ""id"": ""5a2f9c0e-0d56-492c-808c-e984189b4727"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -308,6 +317,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""UseTool"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a5a540f9-5152-4fcd-8a91-6152a036f02e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltUseTool"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -324,6 +344,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Action = asset.FindActionMap("Action", throwIfNotFound: true);
         m_Action_ToolSelect = m_Action.FindAction("ToolSelect", throwIfNotFound: true);
         m_Action_UseTool = m_Action.FindAction("UseTool", throwIfNotFound: true);
+        m_Action_AltUseTool = m_Action.FindAction("AltUseTool", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -536,6 +557,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IActionActions> m_ActionActionsCallbackInterfaces = new List<IActionActions>();
     private readonly InputAction m_Action_ToolSelect;
     private readonly InputAction m_Action_UseTool;
+    private readonly InputAction m_Action_AltUseTool;
     /// <summary>
     /// Provides access to input actions defined in input action map "Action".
     /// </summary>
@@ -555,6 +577,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Action/UseTool".
         /// </summary>
         public InputAction @UseTool => m_Wrapper.m_Action_UseTool;
+        /// <summary>
+        /// Provides access to the underlying input action "Action/AltUseTool".
+        /// </summary>
+        public InputAction @AltUseTool => m_Wrapper.m_Action_AltUseTool;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -587,6 +613,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @UseTool.started += instance.OnUseTool;
             @UseTool.performed += instance.OnUseTool;
             @UseTool.canceled += instance.OnUseTool;
+            @AltUseTool.started += instance.OnAltUseTool;
+            @AltUseTool.performed += instance.OnAltUseTool;
+            @AltUseTool.canceled += instance.OnAltUseTool;
         }
 
         /// <summary>
@@ -604,6 +633,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @UseTool.started -= instance.OnUseTool;
             @UseTool.performed -= instance.OnUseTool;
             @UseTool.canceled -= instance.OnUseTool;
+            @AltUseTool.started -= instance.OnAltUseTool;
+            @AltUseTool.performed -= instance.OnAltUseTool;
+            @AltUseTool.canceled -= instance.OnAltUseTool;
         }
 
         /// <summary>
@@ -694,5 +726,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUseTool(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AltUseTool" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAltUseTool(InputAction.CallbackContext context);
     }
 }

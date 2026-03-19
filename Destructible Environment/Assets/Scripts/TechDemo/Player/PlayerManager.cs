@@ -40,15 +40,6 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Start Up
-    private void Awake() // temp
-    {
-        OnAwake();    
-    }
-    private void Start() // temp
-    {
-        OnStart();
-    }
-
     public void OnAwake()
     {
         inputManager = InputManager.Instance;
@@ -91,9 +82,16 @@ public class PlayerManager : MonoBehaviour
         playerToolManager.HandleEquipTool(slotNum);
     }
 
-    public void Input_UseTool()
+    public void Input_UseTool(bool altFire)
     {
-        playerToolManager.HandleUseTool();
+        if (!altFire)
+        {
+            playerToolManager.HandleUseTool();
+        }
+        else
+        {
+            playerToolManager.HandleAltToolUse();
+        }
     }
 
     public void Input_HandleJump()
@@ -102,6 +100,11 @@ public class PlayerManager : MonoBehaviour
         {
             playerMovement.HandleJump();
         }
+    }
+
+    public void Input_CancelTool()
+    {
+        playerToolManager.HandleCancelTool();
     }
     #endregion
 }

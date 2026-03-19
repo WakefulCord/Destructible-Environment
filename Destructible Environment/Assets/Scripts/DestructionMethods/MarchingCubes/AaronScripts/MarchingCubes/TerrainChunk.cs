@@ -87,8 +87,8 @@ public class TerrainChunk : MonoBehaviour
         {
             Color[] colours = new Color[meshVerts.Count]; // colour each vert
 
-            float globalMinHeight = 0f;
-            float globalMaxHeight = terrainManager.TerrainHeight;
+            float globalMinHeight = terrainManager.GridOrigin.y;
+            float globalMaxHeight = terrainManager.GridOrigin.y + terrainManager.TerrainHeight;
 
             for (int i = 0; i < meshVerts.Count; i++)
             {

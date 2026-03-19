@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74db19f462b768e4ab555e9ada6fa8e7, type: 3}
-  m_Name: Gun_WeakShot
+  m_Script: {fileID: 11500000, guid: c6a1937676954b34f92c811d07245cfb, type: 3}
+  m_Name: Terra_Average
   m_EditorClassIdentifier: 
-  destructionDamage: 1
-  destructionRadius: 1
+  destructionDamage: 3
+  destructionRadius: 3
+  terraformRange: 25
+  terraformCooldown: 0.1

@@ -83,6 +83,22 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
             activeTool.OnToolUse();
         }
     }
+
+    public void HandleAltToolUse()
+    {
+        if (HasActiveTool)
+        {
+            activeTool.OnToolAltUse();
+        }
+    }
+
+    public void HandleCancelTool()
+    {
+        if (HasActiveTool)
+        {
+            activeTool.OnToolCancelled();
+        }
+    }
     #endregion
 
     #region Helper

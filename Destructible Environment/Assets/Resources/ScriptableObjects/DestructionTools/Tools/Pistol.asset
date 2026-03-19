@@ -16,5 +16,5 @@ MonoBehaviour:
   toolPrefab: {fileID: 6428584709714666492, guid: ee347964b25178c45b0007172764939d, type: 3}
   toolIcon: {fileID: 0}
   data: {fileID: 11400000, guid: 73bc22883a6e93e419c20acf1aa01ec1, type: 2}
-  compatibleLayers: 6
+  compatibleLayers: -1
   fireRate: 1

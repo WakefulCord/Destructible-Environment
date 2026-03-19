@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class TerrainManager : MonoBehaviour // main script for handling marching cubes terrain
+public class TerrainManager : MonoBehaviour, IDestructable // main script for handling marching cubes terrain
 {
     #region Class References
     private static TerrainManager _instance;
@@ -26,6 +26,8 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     private int worldChunksZ;
     private int worldChunksY;
     [SerializeField] private float isoLevel = 0f; 
+
+    private Vector3 gridOrigin;
 
     [Header("Visual/Noise Fields")]
     private static float seed;
@@ -59,18 +61,24 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     public Material ChunkMaterial => chunkMaterial;
     public int TerrainHeight => height;
 
+    public DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
+    public Vector3 GridOrigin => gridOrigin;
+
 
     #endregion
 
     #region Start Up
     private void Start()
     {
-        gridManager = GetComponent<GridManager>();
+        //gridManager = GetComponent<GridManager>();
 
         //initilise fields
         chunks = new Dictionary<Vector3Int, TerrainChunk>();
 
         densityGrid = new float[width, height, depth]; // initialise density grid 
+
+        // center the terrain on this GameObject's position
+        gridOrigin = transform.position - new Vector3(width / 2f, height / 2f, depth / 2f);
 
         seed = UnityEngine.Random.Range(0f, 9999f);
 
@@ -103,7 +111,8 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
     public float TerrainDensity(int x, int y, int z) // not made by me
     {
-        float heightMap = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal) * height * 0.4f;
+        float noise = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal);
+        float heightMap = height * 0.5f + (noise - 0.5f) * height * 0.4f;
 
 
         float distanceFromSurface = heightMap - y;
@@ -154,11 +163,11 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
        
 
         
-        chunk.transform.position = new Vector3(
+        chunk.transform.position = gridOrigin + new Vector3(
             chunkPos.x * chunkSize,
             chunkPos.y * chunkSize,
             chunkPos.z * chunkSize
-        ); 
+        );
 
         if (chunkMaterial != null)
         {
@@ -173,10 +182,11 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     }
     public TerrainChunk GetChunkFromWorldPos(Vector3 worldPos) // convert world pos to  closest chunk for terraform
     {
+        Vector3 gridPos = WorldToGrid(worldPos);
         Vector3Int chunkCoord = new Vector3Int(
-           Mathf.FloorToInt(worldPos.x / chunkSize),
-           Mathf.FloorToInt(worldPos.y / chunkSize),
-           Mathf.FloorToInt(worldPos.z / chunkSize)
+           Mathf.FloorToInt(gridPos.x / chunkSize),
+           Mathf.FloorToInt(gridPos.y / chunkSize),
+           Mathf.FloorToInt(gridPos.z / chunkSize)
        );
 
         if (chunks.TryGetValue(chunkCoord, out TerrainChunk chunk))
@@ -216,13 +226,14 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
     public void UpdateDensityAndRegenerate(Vector3 worldPos, float amount, float radius)
     {
-        //convert world pos to bounds of terraform0
-        int minX = Mathf.FloorToInt(worldPos.x - radius);
-        int maxX = Mathf.CeilToInt(worldPos.x + radius);
-        int minY = Mathf.FloorToInt(worldPos.y - radius);
-        int maxY = Mathf.CeilToInt(worldPos.y + radius);
-        int minZ = Mathf.FloorToInt(worldPos.z - radius);
-        int maxZ = Mathf.CeilToInt(worldPos.z + radius);
+        // convert world pos to grid space then to bounds of terraform
+        Vector3 gridPos = WorldToGrid(worldPos);
+        int minX = Mathf.FloorToInt(gridPos.x - radius);
+        int maxX = Mathf.CeilToInt(gridPos.x + radius);
+        int minY = Mathf.FloorToInt(gridPos.y - radius);
+        int maxY = Mathf.CeilToInt(gridPos.y + radius);
+        int minZ = Mathf.FloorToInt(gridPos.z - radius);
+        int maxZ = Mathf.CeilToInt(gridPos.z + radius);
 
         HashSet<TerrainChunk> affectedChunks = new HashSet<TerrainChunk>(); // hash set prevents duplicate chunks in set - 
 
@@ -235,13 +246,13 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
                 {
 
                     //to make it ciruclar ignore any points that are not in "radius"
-                    float distance = Vector3.Distance(worldPos, new Vector3(x, y, z));
+                    float distance = Vector3.Distance(gridPos, new Vector3(x, y, z));
                     if (distance <= radius)
                     {
                         float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
                         UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
 
-                        TerrainChunk chunk = GetChunkFromWorldPos(new Vector3(x, y, z)); // get chunk of current density grid point 
+                        TerrainChunk chunk = GetChunkFromWorldPos(GridToWorld(new Vector3(x, y, z))); // get chunk of current density grid point 
                         if (chunk != null)
                         {
                             affectedChunks.Add(chunk); // add chunk to list to be regenerated
@@ -260,6 +271,16 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
 
     #region Helpers
+    private Vector3 WorldToGrid(Vector3 worldPos)
+    {
+        return worldPos - gridOrigin;
+    }
+
+    private Vector3 GridToWorld(Vector3 gridPos)
+    {
+        return gridPos + gridOrigin;
+    }
+
     public bool IsInBounds(int x, int y, int z)
     {
         return x >= 0 && x < width &&
@@ -267,5 +288,18 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         z >= 0 && z < depth;
 
     }
+
+    public void ApplyDamage(DestructionHitData hitData)
+    {
+        UpdateDensityAndRegenerate(hitData.hitPoint, hitData.damage, hitData.radius);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+
+        Gizmos.DrawWireCube(transform.position, new Vector3(width, height, depth));
+    }
+
     #endregion
 }

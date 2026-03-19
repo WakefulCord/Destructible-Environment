@@ -3,5 +3,10 @@ using UnityEngine;
 
 public class TerrainTool : DestructionTool
 {
-    
+    [Header("Terrain Tool Fields")]
+    [SerializeField] private GameObject indicatorPrefab;
+
+    public GameObject GetIndicatorPrefab => indicatorPrefab;
+
+    public TerraformData GetTerraData => (TerraformData)GetData;
 }
