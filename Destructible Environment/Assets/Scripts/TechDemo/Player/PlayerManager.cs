@@ -12,7 +12,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Private Fields
-
+    
     #endregion
 
     #region Properties
@@ -33,6 +33,10 @@ public class PlayerManager : MonoBehaviour
     }
 
     public bool IsSprinting => inputManager.SprintFlag;
+
+    //public bool JumpFlag => inputManager.JumpFlag;
+
+    public bool IsGrounded => playerMovement.IsGrounded;
     #endregion
 
     #region Start Up
@@ -90,6 +94,14 @@ public class PlayerManager : MonoBehaviour
     public void Input_UseTool()
     {
         playerToolManager.HandleUseTool();
+    }
+
+    public void Input_HandleJump()
+    {
+        if (IsGrounded)
+        {
+            playerMovement.HandleJump();
+        }
     }
     #endregion
 }

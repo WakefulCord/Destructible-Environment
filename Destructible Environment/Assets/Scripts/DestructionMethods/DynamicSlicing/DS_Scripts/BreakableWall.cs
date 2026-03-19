@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BreakableWall : MonoBehaviour
+public class BreakableWall : MonoBehaviour, IDestructable
 {
     public int width;
     public int height;
@@ -20,6 +20,8 @@ public class BreakableWall : MonoBehaviour
     { 95, 25 }, { 104, 26 }, { 106, 27 }, { 107, 28 }, { 120, 29 }, { 122, 30 }, { 123, 31 }, { 126, 32 },
     { 127, 33 }, { 208, 34 }, { 210, 35 }, { 214, 36 }, { 216, 37 }, { 218, 38 }, { 219, 39 }, { 222, 40 },
     { 223, 41 }, { 248, 42 }, { 250, 43 }, { 251, 44 }, { 254, 45 }, { 255, 46 }, { 0, 47 }};
+
+    public DestructionLayer GetLayer => DestructionLayer.VoxelWall;
 
     private void Awake()
     {
@@ -197,6 +199,16 @@ public class BreakableWall : MonoBehaviour
                     voxels[x, y].breakVoxel();//destroy it
                 }
             }
+        }
+    }
+
+    public void ApplyDamage(DestructionHitData hitData)
+    {
+        float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position);
+        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
+        {
+            if (collider.GetComponent<WallVoxel>() != null)
+                collider.GetComponent<WallVoxel>().breakVoxel();
         }
     }
 }

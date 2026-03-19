@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
 
     [Header("Input Flags")]
     [SerializeField] private bool sprintFlag;
+    [SerializeField] private bool jumpFlag;
     #endregion
 
     #region Properties
@@ -40,6 +41,8 @@ public class InputManager : MonoBehaviour
     public Vector2 GetLookInput => lookVector;
 
     public bool SprintFlag => sprintFlag;
+
+    public bool JumpFlag => jumpFlag;
     #endregion
 
     #region Start Up
@@ -54,6 +57,8 @@ public class InputManager : MonoBehaviour
 
             playerControls.Movement.Sprint.started += ctx => OnSprintToggle(true);
             playerControls.Movement.Sprint.canceled += ctx => OnSprintToggle(false);
+
+            playerControls.Movement.Jump.performed += ctx => OnJump();
 
             playerControls.Action.ToolSelect.performed += ctx => OnToolSelect(ctx);
 
@@ -93,6 +98,21 @@ public class InputManager : MonoBehaviour
     private void OnUseTool()
     {
         playerManager.Input_UseTool();
+    }
+
+    private void OnJump()
+    {
+        playerManager.Input_HandleJump();
+    }
+
+    public void OnLateUpdate()
+    {
+        ResetJumpFlag();
+    }
+
+    private void ResetJumpFlag()
+    {
+        jumpFlag = false;
     }
     #endregion
 

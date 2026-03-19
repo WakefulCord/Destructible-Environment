@@ -23,5 +23,7 @@ public class WallManager : MonoBehaviour, IDestructable
     private void ExplodeWall(DestructionHitData h)
     {
         brokenWall.GetComponentInChildren<Rigidbody>().AddExplosionForce(h.damage, h.hitPoint, h.radius);
+
+        
     }
 }
