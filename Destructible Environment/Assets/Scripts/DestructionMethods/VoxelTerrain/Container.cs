@@ -92,8 +92,10 @@ public class Container : MonoBehaviour
         meshFilter.mesh = meshData.mesh;
 
         if (meshData.vertices.Count > 3)
+        {
+            meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = meshData.mesh;
-
+        }             
     }
 
     public Voxel this[Vector3 index]

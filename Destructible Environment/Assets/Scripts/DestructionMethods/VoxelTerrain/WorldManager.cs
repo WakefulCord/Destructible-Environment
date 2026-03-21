@@ -47,4 +47,64 @@ public class WorldManager : MonoBehaviour
 
     }
 
+    public void CreateBlock(Vector3Int pos, byte id)
+    {
+        if (id == 0)
+            container[pos] = new Voxel() { ID = 0 };
+        else
+            container[pos] = new Voxel() { ID = id };
+
+        container.GenerateMesh();
+        container.UploadMesh();
+    }
+
+    public void CreateBlock(Vector3 pos, byte id)
+    {
+        CreateBlock(WorldToVoxel(pos), id);
+    }
+
+    public void DestroyBlock(Vector3Int pos)
+    {
+        CreateBlock(pos, 0);
+    }
+
+    public void DestroyBlock(Vector3 pos)
+    {
+        CreateBlock(WorldToVoxel(pos), 0);
+    }
+
+    Vector3Int WorldToVoxel(Vector3 worldPos) //helper function to convert world coords to voxel ints
+    {
+        return new Vector3Int(
+            Mathf.FloorToInt(worldPos.x),
+            Mathf.FloorToInt(worldPos.y),
+            Mathf.FloorToInt(worldPos.z)
+        );
+    }
+
+    public void DestroyMultiple(Vector3 worldPos, int radius) //Destroy blocks in a circle around coords
+    {
+        Vector3Int centerVoxel = Vector3Int.FloorToInt(worldPos);
+
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int z = -radius; z <= radius; z++)
+                {
+                    Vector3Int offset = new Vector3Int(x, y, z);
+                    Vector3Int pos = centerVoxel + offset;
+
+                    // Only destroy blocks within spherical radius
+                    if (offset.magnitude <= radius)
+                    {
+                        container[pos] = new Voxel() { ID = 0 };
+                    }
+                }
+            }
+        }
+        container.GenerateMesh();
+        container.UploadMesh();
+    }
+
 }
