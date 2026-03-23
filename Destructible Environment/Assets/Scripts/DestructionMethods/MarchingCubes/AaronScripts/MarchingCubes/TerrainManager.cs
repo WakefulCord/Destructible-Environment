@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class TerrainManager : MonoBehaviour // main script for handling marching cubes terrain
+public class TerrainManager : MonoBehaviour, IDestructable // main script for handling marching cubes terrain
 {
     #region Class References
     private static TerrainManager _instance;
@@ -26,6 +26,8 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     private int worldChunksZ;
     private int worldChunksY;
     [SerializeField] private float isoLevel = 0f; 
+
+    private Vector3 gridOrigin;
 
     [Header("Visual/Noise Fields")]
     private static float seed;
@@ -59,6 +61,8 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
     public Material ChunkMaterial => chunkMaterial;
     public int TerrainHeight => height;
 
+    public DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
+
 
     #endregion
 
@@ -78,6 +82,7 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         worldChunksZ = depth / chunkSize;
         worldChunksY = height / chunkSize;
 
+        gridOrigin = new Vector3(-width / 2f, -height / 2f, -depth / 2f);
 
         //Terrain Noise vals
         InitaliseTerrainValues();
@@ -154,7 +159,7 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
        
 
         
-        chunk.transform.position = new Vector3(
+        chunk.transform.localPosition = gridOrigin + new Vector3(
             chunkPos.x * chunkSize,
             chunkPos.y * chunkSize,
             chunkPos.z * chunkSize
@@ -171,12 +176,12 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
 
         chunks.Add(chunkPos, chunk);
     }
-    public TerrainChunk GetChunkFromWorldPos(Vector3 worldPos) // convert world pos to  closest chunk for terraform
+    public TerrainChunk GetChunkFromGridPos(Vector3 gridPos) // convert grid pos to closest chunk for terraform
     {
         Vector3Int chunkCoord = new Vector3Int(
-           Mathf.FloorToInt(worldPos.x / chunkSize),
-           Mathf.FloorToInt(worldPos.y / chunkSize),
-           Mathf.FloorToInt(worldPos.z / chunkSize)
+           Mathf.FloorToInt(gridPos.x / chunkSize),
+           Mathf.FloorToInt(gridPos.y / chunkSize),
+           Mathf.FloorToInt(gridPos.z / chunkSize)
        );
 
         if (chunks.TryGetValue(chunkCoord, out TerrainChunk chunk))
@@ -185,9 +190,9 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         return null;
     }
 
-    public void RegenerateChunk(Vector3 worldPos) // rebuulds chunk after deformation 
+    public void RegenerateChunk(Vector3 gridPos) // rebuulds chunk after deformation 
     {
-        TerrainChunk chunk = GetChunkFromWorldPos(worldPos);
+        TerrainChunk chunk = GetChunkFromGridPos(gridPos);
         if (chunk != null)
         {
             chunk.RegenerateMesh();
@@ -241,7 +246,7 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
                         float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
                         UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
 
-                        TerrainChunk chunk = GetChunkFromWorldPos(new Vector3(x, y, z)); // get chunk of current density grid point 
+                        TerrainChunk chunk = GetChunkFromGridPos(new Vector3(x, y, z)); // get chunk of current density grid point 
                         if (chunk != null)
                         {
                             affectedChunks.Add(chunk); // add chunk to list to be regenerated
@@ -267,5 +272,39 @@ public class TerrainManager : MonoBehaviour // main script for handling marching
         z >= 0 && z < depth;
 
     }
+
+    public Vector3 WorldToGrid(Vector3 worldPos)
+    {
+        return transform.InverseTransformPoint(worldPos) - gridOrigin;
+    }
+
+    public Vector3 GridToWorld(Vector3 gridPos)
+    {
+        return transform.TransformPoint(gridPos + gridOrigin);
+    }
+
+    public void ApplyDamage(DestructionHitData hitData)
+    {
+        Vector3 gridPos = WorldToGrid(hitData.hitPoint);
+        UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+
+        Gizmos.DrawWireCube(transform.position, new Vector3(width, height, depth));
+
+        float avgWorldY = transform.position.y;
+
+        Vector3 center = new Vector3(transform.position.x, avgWorldY, transform.position.z);
+        Vector3 size = new Vector3(width, 0f, depth);
+
+        Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
+        Gizmos.DrawCube(center, size);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center, size);
+    }
+
     #endregion
 }

@@ -41,7 +41,7 @@ public class WorldManager : MonoBehaviour
         container.UploadMesh();
     }
 
-    // Update is called once per frame
+    // OnExplosiveUpdate is called once per frame
     void Update()
     {
 

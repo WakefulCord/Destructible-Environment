@@ -35,11 +35,22 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     #region Class Methods 
 
-    public void OnUpdate()
+    public void OnUpdate(bool isUseHeld)
     {
+        float dt = Time.deltaTime;
         if (HasActiveTool)
         {
-            activeTool.OnToolUpdate();
+            activeTool.OnToolUpdate(dt);
+
+            // Automatic fire logic for any tool
+            DestructionTool toolData = activeTool.GetToolData;
+            if (toolData != null && toolData.IsAutomatic)
+            {
+                if (isUseHeld && activeTool.CanUseTool)
+                {
+                    activeTool.OnToolUse();
+                }
+            }
         }
     }
     
@@ -55,7 +66,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
         if (activeTool != null)
         {
 
-            Destroy(activeTool); // might have to replaec with safer version  
+            Destroy(activeTool.gameObject); // might have to replaec with safer version  
         }
     }
 
@@ -63,7 +74,11 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
     {
         currentEquippedTool = tool;
 
-        activeTool = Instantiate(currentEquippedTool.GetPrefab, tooltransform.position, Quaternion.identity, tooltransform).GetComponent<ToolBehaviour>();
+        GameObject toolObj = Instantiate(currentEquippedTool.GetPrefab, tooltransform);
+        toolObj.transform.localPosition = Vector3.zero;
+        toolObj.transform.localRotation = Quaternion.identity;
+
+        activeTool = toolObj.GetComponent<ToolBehaviour>();
         activeTool.OnToolInit(tool);
     }
     #endregion
@@ -81,6 +96,22 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
         if (HasActiveTool)
         {
             activeTool.OnToolUse();
+        }
+    }
+
+    public void HandleAltUseTool()
+    {
+        if (HasActiveTool)
+        {
+            activeTool.OnToolAltUse();
+        }
+    }
+
+    public void HandleCancelTool()
+    {
+        if (HasActiveTool)
+        {
+            activeTool.OnToolCancelled();
         }
     }
     #endregion

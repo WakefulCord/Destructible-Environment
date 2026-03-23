@@ -143,8 +143,7 @@ public class BreakableWall : MonoBehaviour, IDestructable
 
     public void ApplyDamage(DestructionHitData hitData)
     {
-        float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position); 
-        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
+        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, hitData.radius))    //breaks each voxel in a radius
         {
             if (collider.GetComponent<WallVoxel>() != null)
                 collider.GetComponent<WallVoxel>().breakVoxel();
