@@ -5,7 +5,7 @@ public class PlayerMovementVoxel : MonoBehaviour
     public float speed = 6f;
     public float jumpHeight = 1.5f;
     public float gravity = -9.81f;
-    public float mouseSensitivity = 300f;
+    public float mouseSensitivity = 2f;
 
     CharacterController controller;
     Vector3 velocity;
@@ -28,8 +28,8 @@ public class PlayerMovementVoxel : MonoBehaviour
 
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;// * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;// * Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
@@ -56,8 +56,13 @@ public class PlayerMovementVoxel : MonoBehaviour
             DestroyBlock();
         }
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            PlaceBlock();
+        }
 
-      
+
+
     }
 
     private void DestroyBlock()
@@ -76,7 +81,26 @@ public class PlayerMovementVoxel : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 10f))
         {           
             Vector3 removePos = hit.point - hit.normal * 0.01f;
-            worldManager.DestroyMultiple(hit.point, 2);
+            worldManager.DestroyMultiple(removePos, 2);
+        }
+    }
+
+    private void PlaceBlock()
+    {
+        if (cam == null)
+        {
+            return; //safety check to make sure screen to point world cast isn't done on a different angle camera
+        }
+
+        // Ray from screen center
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        Ray ray = cam.ScreenPointToRay(screenCenter);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 10f))
+        {
+            Vector3 addPos = hit.point + hit.normal * 0.01f;
+            worldManager.CreateBlock(addPos, 1);
         }
     }
 }

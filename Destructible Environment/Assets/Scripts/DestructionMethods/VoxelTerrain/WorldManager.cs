@@ -11,6 +11,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] float maxHeight = 16f;
     [SerializeField] int worldSize = 32;
 
+    Coroutine rebuildRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -32,30 +33,38 @@ public class WorldManager : MonoBehaviour
 
                 for (int y = 0; y < height; y++)
                 {
-                    container[new Vector3(x, y, z)] = new Voxel() { ID = 1 };
+                    container[new Vector3Int(x, y, z)] = new Voxel() { ID = 1 };
                 }
             }
         }
 
+        RebuildMesh();
+    }
+    
+
+    void RebuildMesh()
+    {
+        if (rebuildRoutine != null)
+            StopCoroutine(rebuildRoutine);
+
+        rebuildRoutine = StartCoroutine(RebuildMeshDelayed());
+    }
+
+    IEnumerator RebuildMeshDelayed()
+    {
+        yield return null; // wait 1 frame
+
         container.GenerateMesh();
         container.UploadMesh();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void CreateBlock(Vector3Int pos, byte id)
     {
         if (id == 0)
             container[pos] = new Voxel() { ID = 0 };
         else
-            container[pos] = new Voxel() { ID = id };
+            container[pos] = new Voxel() { ID = 1 };
 
-        container.GenerateMesh();
-        container.UploadMesh();
+        RebuildMesh();
     }
 
     public void CreateBlock(Vector3 pos, byte id)
@@ -103,8 +112,7 @@ public class WorldManager : MonoBehaviour
                 }
             }
         }
-        container.GenerateMesh();
-        container.UploadMesh();
+        RebuildMesh();
     }
 
 }

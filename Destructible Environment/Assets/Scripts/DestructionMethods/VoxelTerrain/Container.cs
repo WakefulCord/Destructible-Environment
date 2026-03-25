@@ -10,7 +10,7 @@ public class Container : MonoBehaviour
 {
     public Vector3 containerPosition;
 
-    private Dictionary<Vector3, Voxel> data;
+    private Dictionary<Vector3Int, Voxel> data;
     private MeshData meshData = new MeshData();
 
     private MeshRenderer meshRenderer;
@@ -20,7 +20,7 @@ public class Container : MonoBehaviour
     public void Initialize(Material mat, Vector3 position)
     {
         ConfigureComponents();
-        data = new Dictionary<Vector3, Voxel>();
+        data = new Dictionary<Vector3Int, Voxel>();
         meshRenderer.sharedMaterial = mat;
         containerPosition = position;
     }
@@ -41,14 +41,14 @@ public class Container : MonoBehaviour
     {
         meshData.ClearData();
 
-        Vector3 blockPos;
+        Vector3Int blockPos;
         Voxel block;
 
         int counter = 0;
         Vector3[] faceVertices = new Vector3[4];
         Vector2[] faceUVs = new Vector2[4];
 
-        foreach (KeyValuePair<Vector3, Voxel> kvp in data)
+        foreach (KeyValuePair<Vector3Int, Voxel> kvp in data)
         {
             if (!kvp.Value.isSolid)
                 continue;
@@ -59,7 +59,7 @@ public class Container : MonoBehaviour
             //Iterate over each face direction
             for (int i = 0; i < 6; i++)
             {
-                if (this[blockPos + voxelFaceChecks[i]].isSolid)
+                if (this[blockPos + Vector3Int.RoundToInt(voxelFaceChecks[i])].isSolid)
                     continue;
 
                 //Draw this face
@@ -67,7 +67,8 @@ public class Container : MonoBehaviour
                 //Collect the appropriate vertices from the default vertices and add the block position
                 for (int j = 0; j < 4; j++)
                 {
-                    faceVertices[j] = voxelVertices[voxelVertexIndex[i, j]] + blockPos;
+                    Vector3 blockWorldPos = (Vector3)blockPos;
+                    faceVertices[j] = voxelVertices[voxelVertexIndex[i, j]] + blockWorldPos;
                     faceUVs[j] = voxelUVs[j];
                 }
 
@@ -98,7 +99,7 @@ public class Container : MonoBehaviour
         }             
     }
 
-    public Voxel this[Vector3 index]
+    public Voxel this[Vector3Int index]
     {
         get
         {
@@ -110,6 +111,13 @@ public class Container : MonoBehaviour
 
         set
         {
+            if (value.ID == 0)
+            {
+                if (data.ContainsKey(index))
+                    data.Remove(index);
+                return;
+            }
+
             if (data.ContainsKey(index))
                 data[index] = value;
             else
