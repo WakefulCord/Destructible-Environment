@@ -30,6 +30,7 @@ public class WallVoxel : MonoBehaviour
 
         breakableWall.updateWall();
         breakableWall.spawnDebris(this);
+        breakableWall.CheckFloating(breakableWall.voxels);
         Destroy(gameObject);
     }
 

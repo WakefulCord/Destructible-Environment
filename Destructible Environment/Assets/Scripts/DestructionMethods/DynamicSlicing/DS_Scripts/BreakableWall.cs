@@ -24,7 +24,7 @@ public class BreakableWall : MonoBehaviour
     private void Awake()
     {
         voxels = new WallVoxel[width, height];
-        StartCoroutine(CheckFloatingCoroutine());
+        //StartCoroutine(CheckFloatingCoroutine());
     }
     public void addToArray(WallVoxel voxel)
     {
@@ -138,14 +138,14 @@ public class BreakableWall : MonoBehaviour
         return voxels[checkX, checkY] != null;
     }
 
-    IEnumerator CheckFloatingCoroutine()    //calls the CheckFloating function every 0.2 seconds for performance
+    /*IEnumerator CheckFloatingCoroutine()    //calls the CheckFloating function every 0.2 seconds for performance
     {
         while (true)
         {
             yield return new WaitForSeconds(0.2f);
             CheckFloating(voxels);
         }
-    }
+    }*/
 
     public void CheckFloating(WallVoxel[,] voxels) //uses breadth first search to check if there are any voxels that are floating
     {
