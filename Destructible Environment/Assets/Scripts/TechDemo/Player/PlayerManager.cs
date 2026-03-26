@@ -12,7 +12,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Private Fields
-    
+
     #endregion
 
     #region Properties
@@ -20,10 +20,10 @@ public class PlayerManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null )
+            if (_instance == null)
             {
                 _instance = FindFirstObjectByType<PlayerManager>();
-                if (_instance == null )
+                if (_instance == null)
                 {
                     Debug.LogError("PlayerManager has not been assigned");
                 }
@@ -33,13 +33,18 @@ public class PlayerManager : MonoBehaviour
     }
 
     public bool IsSprinting => inputManager.SprintFlag;
-
-    //public bool JumpFlag => inputManager.JumpFlag;
-
-    public bool IsGrounded => playerMovement.IsGrounded;
     #endregion
 
     #region Start Up
+    private void Awake() // temp
+    {
+        OnAwake();
+    }
+    private void Start() // temp
+    {
+        OnStart();
+    }
+
     public void OnAwake()
     {
         inputManager = InputManager.Instance;
@@ -67,7 +72,7 @@ public class PlayerManager : MonoBehaviour
     public void OnUpdate()
     {
         playerMovement.OnUpdate(inputManager.GetMovementInput.x, inputManager.GetMovementInput.y, IsSprinting);
-        playerToolManager.OnUpdate();
+        playerToolManager.OnUpdate(inputManager.IsUseToolHeld);
     }
     #endregion
 
@@ -82,24 +87,14 @@ public class PlayerManager : MonoBehaviour
         playerToolManager.HandleEquipTool(slotNum);
     }
 
-    public void Input_UseTool(bool altFire)
+    public void Input_UseTool()
     {
-        if (!altFire)
-        {
-            playerToolManager.HandleUseTool();
-        }
-        else
-        {
-            playerToolManager.HandleAltToolUse();
-        }
+        playerToolManager.HandleUseTool();
     }
 
-    public void Input_HandleJump()
+    public void Input_AltUseTool()
     {
-        if (IsGrounded)
-        {
-            playerMovement.HandleJump();
-        }
+        playerToolManager.HandleAltUseTool();
     }
 
     public void Input_CancelTool()

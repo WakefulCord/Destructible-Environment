@@ -31,15 +31,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "f4488fc9-0168-4dd3-9484-fdd4a4c1220f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -119,17 +110,6 @@
                     "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bd2d5d6f-4ff7-4fa8-9de1-efa6d8d490d7",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -156,9 +136,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AltUseTool",
+                    "name": "UseToolAlt",
                     "type": "Button",
-                    "id": "5a2f9c0e-0d56-492c-808c-e984189b4727",
+                    "id": "2d54c599-bd7e-467a-8224-a520287ace9f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -234,12 +214,12 @@
                 },
                 {
                     "name": "",
-                    "id": "a5a540f9-5152-4fcd-8a91-6152a036f02e",
+                    "id": "796626ee-0650-4608-bf79-fefaa2f201b6",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "AltUseTool",
+                    "action": "UseToolAlt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

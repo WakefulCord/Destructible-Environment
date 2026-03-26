@@ -13,8 +13,19 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   toolName: Pistol
-  toolPrefab: {fileID: 6428584709714666492, guid: ee347964b25178c45b0007172764939d, type: 3}
+  toolPrefab: {fileID: 2447886619259798093, guid: ee347964b25178c45b0007172764939d, type: 3}
   toolIcon: {fileID: 0}
-  data: {fileID: 11400000, guid: 73bc22883a6e93e419c20acf1aa01ec1, type: 2}
-  compatibleLayers: -1
-  fireRate: 1
+  destructionData: {fileID: 11400000, guid: b610224a013d02a4da84be1f350c9175, type: 2}
+  compatibleLayers: 6
+  useCooldown: 0.4
+  altUseCooldown: 0
+  damage: 1.25
+  radius: -0.12
+  useAudio: {fileID: 8300000, guid: 854a8c832eae91e49b9ca8fe816fb542, type: 3}
+  useAudioVolume: 0.1
+  useEffect: {fileID: 6807015768005804764, guid: aaaf33a72592d3b40b8a41bc606f9c6f, type: 3}
+  doAimAtCursor: 1
+  isAutomatic: 0
+  useTracer: 1
+  tracerPrefab: {fileID: 2968512427402550875, guid: 27e824c968ffcf24b97f0e709d7c381b, type: 3}
+  tracerSpeed: 150

@@ -16,7 +16,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     [SerializeField] private Material chunkMaterial;
     Dictionary<Vector3Int, TerrainChunk> chunks;
     [SerializeField] int chunkSize = 16;
-    
+
     [Header("Terrain Fields")]
     [SerializeField] private int width;
     [SerializeField] private int height;
@@ -25,7 +25,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     private int worldChunksX;
     private int worldChunksZ;
     private int worldChunksY;
-    [SerializeField] private float isoLevel = 0f; 
+    [SerializeField] private float isoLevel = 0f;
 
     private Vector3 gridOrigin;
 
@@ -46,7 +46,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
             if (_instance == null)
             {
                 _instance = FindFirstObjectByType<TerrainManager>();
-                if (_instance == null )
+                if (_instance == null)
                 {
                     Debug.LogError("Terrain Manager has not been assigned");
                 }
@@ -55,14 +55,13 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
         }
     }
-   
+
     public float GetIsoLevel => isoLevel;
     public Gradient TerrainGradient => terrainGradient;
     public Material ChunkMaterial => chunkMaterial;
     public int TerrainHeight => height;
 
     public DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
-    public Vector3 GridOrigin => gridOrigin;
 
 
     #endregion
@@ -70,15 +69,12 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     #region Start Up
     private void Start()
     {
-        //gridManager = GetComponent<GridManager>();
+        gridManager = GetComponent<GridManager>();
 
         //initilise fields
         chunks = new Dictionary<Vector3Int, TerrainChunk>();
 
         densityGrid = new float[width, height, depth]; // initialise density grid 
-
-        // center the terrain on this GameObject's position
-        gridOrigin = transform.position - new Vector3(width / 2f, height / 2f, depth / 2f);
 
         seed = UnityEngine.Random.Range(0f, 9999f);
 
@@ -86,17 +82,18 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         worldChunksZ = depth / chunkSize;
         worldChunksY = height / chunkSize;
 
+        gridOrigin = new Vector3(-width / 2f, -height / 2f, -depth / 2f);
 
         //Terrain Noise vals
         InitaliseTerrainValues();
 
-        
+
         GenerateChunks();
 
         //gridManager.VisualiseNoise(densityGrid);
     }
 
-   
+
 
     private void InitaliseTerrainValues()
     {
@@ -111,18 +108,17 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
     public float TerrainDensity(int x, int y, int z) // not made by me
     {
-        float noise = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal);
-        float heightMap = height * 0.5f + (noise - 0.5f) * height * 0.4f;
+        float heightMap = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal) * height * 0.4f;
 
 
         float distanceFromSurface = heightMap - y;
 
 
-        float noise3D = Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) * 
+        float noise3D = Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) *
                         Mathf.PerlinNoise(z * noiseVal + seed, y * noiseVal + 100f);
-        noise3D = (noise3D - 0.5f) * 2f; 
+        noise3D = (noise3D - 0.5f) * 2f;
 
-       
+
         float density = distanceFromSurface + noise3D * 3f;
 
         return density;
@@ -133,7 +129,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     #region Chunk Methods
     private void GenerateChunks() // creates chunks for terrain
     {
-       
+
         for (int x = 0; x < worldChunksX; x++)
         {
             for (int y = 0; y < worldChunksY; y++)
@@ -160,10 +156,10 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         chunkObj.name = $"Chunk_{chunkPos.x}_{chunkPos.y}_{chunkPos.z}"; // name it its chunk pos
 
         TerrainChunk chunk = chunkObj.GetComponent<TerrainChunk>();
-       
 
-        
-        chunk.transform.position = gridOrigin + new Vector3(
+
+
+        chunk.transform.localPosition = gridOrigin + new Vector3(
             chunkPos.x * chunkSize,
             chunkPos.y * chunkSize,
             chunkPos.z * chunkSize
@@ -172,7 +168,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         if (chunkMaterial != null)
         {
             MeshRenderer renderer = chunkObj.GetComponent<MeshRenderer>();
-           
+
             renderer.sharedMaterial = chunkMaterial;
         }
 
@@ -180,9 +176,8 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
         chunks.Add(chunkPos, chunk);
     }
-    public TerrainChunk GetChunkFromWorldPos(Vector3 worldPos) // convert world pos to  closest chunk for terraform
+    public TerrainChunk GetChunkFromGridPos(Vector3 gridPos) // convert grid pos to closest chunk for terraform
     {
-        Vector3 gridPos = WorldToGrid(worldPos);
         Vector3Int chunkCoord = new Vector3Int(
            Mathf.FloorToInt(gridPos.x / chunkSize),
            Mathf.FloorToInt(gridPos.y / chunkSize),
@@ -195,9 +190,9 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         return null;
     }
 
-    public void RegenerateChunk(Vector3 worldPos) // rebuulds chunk after deformation 
+    public void RegenerateChunk(Vector3 gridPos) // rebuulds chunk after deformation 
     {
-        TerrainChunk chunk = GetChunkFromWorldPos(worldPos);
+        TerrainChunk chunk = GetChunkFromGridPos(gridPos);
         if (chunk != null)
         {
             chunk.RegenerateMesh();
@@ -210,7 +205,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     public float GetDensity(int x, int y, int z) // get desnity at x,y,z from density grid 
     {
         if (IsInBounds(x, y, z))
-        { 
+        {
             return densityGrid[x, y, z];
         }
         return 0f;
@@ -226,19 +221,18 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
     public void UpdateDensityAndRegenerate(Vector3 worldPos, float amount, float radius)
     {
-        // convert world pos to grid space then to bounds of terraform
-        Vector3 gridPos = WorldToGrid(worldPos);
-        int minX = Mathf.FloorToInt(gridPos.x - radius);
-        int maxX = Mathf.CeilToInt(gridPos.x + radius);
-        int minY = Mathf.FloorToInt(gridPos.y - radius);
-        int maxY = Mathf.CeilToInt(gridPos.y + radius);
-        int minZ = Mathf.FloorToInt(gridPos.z - radius);
-        int maxZ = Mathf.CeilToInt(gridPos.z + radius);
+        //convert world pos to bounds of terraform0
+        int minX = Mathf.FloorToInt(worldPos.x - radius);
+        int maxX = Mathf.CeilToInt(worldPos.x + radius);
+        int minY = Mathf.FloorToInt(worldPos.y - radius);
+        int maxY = Mathf.CeilToInt(worldPos.y + radius);
+        int minZ = Mathf.FloorToInt(worldPos.z - radius);
+        int maxZ = Mathf.CeilToInt(worldPos.z + radius);
 
         HashSet<TerrainChunk> affectedChunks = new HashSet<TerrainChunk>(); // hash set prevents duplicate chunks in set - 
 
         //loop through terraform range (in a square)
-        for (int x = minX; x <= maxX; x++) 
+        for (int x = minX; x <= maxX; x++)
         {
             for (int y = minY; y <= maxY; y++)
             {
@@ -246,13 +240,13 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
                 {
 
                     //to make it ciruclar ignore any points that are not in "radius"
-                    float distance = Vector3.Distance(gridPos, new Vector3(x, y, z));
+                    float distance = Vector3.Distance(worldPos, new Vector3(x, y, z));
                     if (distance <= radius)
                     {
                         float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
                         UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
 
-                        TerrainChunk chunk = GetChunkFromWorldPos(GridToWorld(new Vector3(x, y, z))); // get chunk of current density grid point 
+                        TerrainChunk chunk = GetChunkFromGridPos(new Vector3(x, y, z)); // get chunk of current density grid point 
                         if (chunk != null)
                         {
                             affectedChunks.Add(chunk); // add chunk to list to be regenerated
@@ -271,16 +265,6 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
 
     #region Helpers
-    private Vector3 WorldToGrid(Vector3 worldPos)
-    {
-        return worldPos - gridOrigin;
-    }
-
-    private Vector3 GridToWorld(Vector3 gridPos)
-    {
-        return gridPos + gridOrigin;
-    }
-
     public bool IsInBounds(int x, int y, int z)
     {
         return x >= 0 && x < width &&
@@ -289,9 +273,20 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
     }
 
+    public Vector3 WorldToGrid(Vector3 worldPos)
+    {
+        return transform.InverseTransformPoint(worldPos) - gridOrigin;
+    }
+
+    public Vector3 GridToWorld(Vector3 gridPos)
+    {
+        return transform.TransformPoint(gridPos + gridOrigin);
+    }
+
     public void ApplyDamage(DestructionHitData hitData)
     {
-        UpdateDensityAndRegenerate(hitData.hitPoint, hitData.damage, hitData.radius);
+        Vector3 gridPos = WorldToGrid(hitData.hitPoint);
+        UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);
     }
 
     private void OnDrawGizmos()
@@ -299,6 +294,16 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         Gizmos.color = Color.black;
 
         Gizmos.DrawWireCube(transform.position, new Vector3(width, height, depth));
+
+        float avgWorldY = transform.position.y;
+
+        Vector3 center = new Vector3(transform.position.x, avgWorldY, transform.position.z);
+        Vector3 size = new Vector3(width, 0f, depth);
+
+        Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
+        Gizmos.DrawCube(center, size);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center, size);
     }
 
     #endregion
