@@ -7,6 +7,10 @@ public class BreakableWall : MonoBehaviour, IDestructable
     public int width;
     public int height;
 
+    Structurestress structureStress;
+    public int originalVoxelCount;
+    public float integrityThreshold = 0.25f; // Threshold for wall integrity
+
     public WallVoxel[,] voxels;
     [SerializeField] Sprite up, down, left, right, uL, uR, dL, dR;
     [SerializeField] GameObject debris;
@@ -27,6 +31,7 @@ public class BreakableWall : MonoBehaviour, IDestructable
     {
         voxels = new WallVoxel[width, height];
         StartCoroutine(CheckFloatingCoroutine());
+        originalVoxelCount = width * height;
     }
     public void addToArray(WallVoxel voxel)
     {
@@ -209,6 +214,31 @@ public class BreakableWall : MonoBehaviour, IDestructable
         {
             if (collider.GetComponent<WallVoxel>() != null)
                 collider.GetComponent<WallVoxel>().breakVoxel();
+        }
+    }
+
+    public int CountCurrentVoxels()
+    {
+        int count = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (voxels[x, y] != null)
+                { 
+                    count++; 
+                }
+            }
+        }
+        return count;
+    }
+
+    public void CheckWallIntegrity()
+    {
+        int currentVoxelCount = CountCurrentVoxels();
+        if(originalVoxelCount > 0 && (float)currentVoxelCount / originalVoxelCount < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
+        {
+            Destroy(gameObject); // Destroy the wall
         }
     }
 }
