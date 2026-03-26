@@ -57,13 +57,7 @@ public class WorldManager : MonoBehaviour
         container.GenerateMesh();
         container.UploadMesh();
     }
-<<<<<<< HEAD
     public void CreateBlock(Vector3Int pos, byte id)
-=======
-
-    // OnExplosiveUpdate is called once per frame
-    void Update()
->>>>>>> Player
     {
         if (id == 0)
             container[pos] = new Voxel() { ID = 0 };

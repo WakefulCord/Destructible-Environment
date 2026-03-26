@@ -35,22 +35,11 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     #region Class Methods 
 
-    public void OnUpdate(bool isUseHeld)
+    public void OnUpdate()
     {
-        float dt = Time.deltaTime;
         if (HasActiveTool)
         {
-            activeTool.OnToolUpdate(dt);
-
-            // Automatic fire logic for any tool
-            DestructionTool toolData = activeTool.GetToolData;
-            if (toolData != null && toolData.IsAutomatic)
-            {
-                if (isUseHeld && activeTool.CanUseTool)
-                {
-                    activeTool.OnToolUse();
-                }
-            }
+            activeTool.OnToolUpdate();
         }
     }
     
@@ -66,7 +55,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
         if (activeTool != null)
         {
 
-            Destroy(activeTool.gameObject); // might have to replaec with safer version  
+            Destroy(activeTool); // might have to replaec with safer version  
         }
     }
 
@@ -74,11 +63,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
     {
         currentEquippedTool = tool;
 
-        GameObject toolObj = Instantiate(currentEquippedTool.GetPrefab, tooltransform);
-        toolObj.transform.localPosition = Vector3.zero;
-        toolObj.transform.localRotation = Quaternion.identity;
-
-        activeTool = toolObj.GetComponent<ToolBehaviour>();
+        activeTool = Instantiate(currentEquippedTool.GetPrefab, tooltransform.position, Quaternion.identity, tooltransform).GetComponent<ToolBehaviour>();
         activeTool.OnToolInit(tool);
     }
     #endregion
@@ -99,11 +84,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
         }
     }
 
-<<<<<<< HEAD
     public void HandleAltToolUse()
-=======
-    public void HandleAltUseTool()
->>>>>>> Player
     {
         if (HasActiveTool)
         {

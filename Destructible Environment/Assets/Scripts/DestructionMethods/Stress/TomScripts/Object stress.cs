@@ -28,11 +28,7 @@ public class Objectstress : MonoBehaviour
         }
         else if (currentStress >= (stressLimit * 0.74f)) // If the current stress exceeds the stress limit
         {
-<<<<<<< HEAD
             parentStruct.GetComponent<Structurestress>().structLimitCalc(objStructIntegrity); 
-=======
-            updateStructIntegrity(); // OnExplosiveUpdate the structure integrity before destroying the object
->>>>>>> Player
             Debug.Log("Object integrity failed (destroyed)");
             Destroy(gameObject); // Destroy the object
         }
