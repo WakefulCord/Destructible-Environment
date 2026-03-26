@@ -7,11 +7,11 @@ public class WallVoxel : MonoBehaviour
     public int y;
 
     BreakableWall breakableWall;
-    Objectstress objectstress;
+    Objectstress objectStress;
 
     private void Start()
     {
-        objectstress = transform.GetComponentInParent<Objectstress>();
+        objectStress = GetComponentInParent<Objectstress>();
         breakableWall = transform.GetComponentInParent<BreakableWall>();
         breakableWall.addToArray(this);
         StartCoroutine(shouldFall());
@@ -32,7 +32,7 @@ public class WallVoxel : MonoBehaviour
         breakableWall.spawnDebris(this);
         Destroy(gameObject);
         breakableWall.CheckWallIntegrity();
-        objectstress.limitCalc(1f); // Simulate taking 1 damage to the object stress when a voxel is broken
+        objectStress.limitCalc(1f); // Simulate taking 1 damage to the object stress when a voxel is broken
 
     }
 

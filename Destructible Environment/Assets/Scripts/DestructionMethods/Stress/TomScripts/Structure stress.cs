@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Structurestress : MonoBehaviour
 {
-    public float stressLimit = 0f; // Maximum stress limit for the structure
-    public float currentStress = 0f; // Current stress on the structure
+    public float stressLimit = 0f;
+    public float currentStress = 0f; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,18 +30,15 @@ public class Structurestress : MonoBehaviour
         if (currentStress >= (stressLimit * 0.4f) && currentStress < (stressLimit * 0.6f)) // If the current stress exceeds 40% of the stress limit
         {
             Debug.Log("Object at 60% integrity (damaged)");
-            //destuct code here
         }
         else if (currentStress >= (stressLimit * 0.6f) && currentStress < (stressLimit * 0.8f)) // If the current stress 60% of the stress limit
         {
             Debug.Log("Object 40% integrity (nearly broken)");
-            //destuct code here
         }
         else if (currentStress >= (stressLimit * 0.74f)) // If the current stress exceeds the stress limit
         {
             Debug.Log("Object integrity failed (destroyed)");
-            //call parent function to destuct structure here
-            Destroy(gameObject); // Destroy the object
+            Destroy(gameObject);
         }
 
     }
