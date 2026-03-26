@@ -156,9 +156,15 @@
                     "initialStateCheck": false
                 },
                 {
+<<<<<<< HEAD
                     "name": "AltUseTool",
                     "type": "Button",
                     "id": "5a2f9c0e-0d56-492c-808c-e984189b4727",
+=======
+                    "name": "UseToolAlt",
+                    "type": "Button",
+                    "id": "2d54c599-bd7e-467a-8224-a520287ace9f",
+>>>>>>> Player
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -234,12 +240,20 @@
                 },
                 {
                     "name": "",
+<<<<<<< HEAD
                     "id": "a5a540f9-5152-4fcd-8a91-6152a036f02e",
+=======
+                    "id": "796626ee-0650-4608-bf79-fefaa2f201b6",
+>>>>>>> Player
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
+<<<<<<< HEAD
                     "action": "AltUseTool",
+=======
+                    "action": "UseToolAlt",
+>>>>>>> Player
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

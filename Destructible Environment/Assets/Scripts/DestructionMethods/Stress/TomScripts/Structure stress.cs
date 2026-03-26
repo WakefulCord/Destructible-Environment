@@ -6,7 +6,7 @@ public class Structurestress : MonoBehaviour
     public float stressLimit = 0f; // Maximum stress limit for the structure
     public float currentStress = 0f; // Current stress on the structure
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Start is called once before the first execution of OnExplosiveUpdate after the MonoBehaviour is created
     void Start()
     {
         // Get all Objectstress components in children (including inactive if needed)

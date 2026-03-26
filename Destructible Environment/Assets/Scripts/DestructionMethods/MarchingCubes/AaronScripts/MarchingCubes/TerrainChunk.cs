@@ -92,8 +92,8 @@ public class TerrainChunk : MonoBehaviour
 
             for (int i = 0; i < meshVerts.Count; i++)
             {
-                float worldY = meshVerts[i].y + transform.position.y;
-                float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, worldY);
+                float gridY = meshVerts[i].y + chunkPos.y * chunkSize;
+                float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, gridY);
 
                 t *= 2f;
                 t = Mathf.Clamp01(t);

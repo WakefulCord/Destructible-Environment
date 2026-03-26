@@ -62,7 +62,10 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     public int TerrainHeight => height;
 
     public DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
+<<<<<<< HEAD
     public Vector3 GridOrigin => gridOrigin;
+=======
+>>>>>>> Player
 
 
     #endregion
@@ -86,6 +89,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         worldChunksZ = depth / chunkSize;
         worldChunksY = height / chunkSize;
 
+        gridOrigin = new Vector3(-width / 2f, -height / 2f, -depth / 2f);
 
         //Terrain Noise vals
         InitaliseTerrainValues();
@@ -163,7 +167,11 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
        
 
         
+<<<<<<< HEAD
         chunk.transform.position = gridOrigin + new Vector3(
+=======
+        chunk.transform.localPosition = gridOrigin + new Vector3(
+>>>>>>> Player
             chunkPos.x * chunkSize,
             chunkPos.y * chunkSize,
             chunkPos.z * chunkSize
@@ -180,7 +188,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
         chunks.Add(chunkPos, chunk);
     }
-    public TerrainChunk GetChunkFromWorldPos(Vector3 worldPos) // convert world pos to  closest chunk for terraform
+    public TerrainChunk GetChunkFromGridPos(Vector3 gridPos) // convert grid pos to closest chunk for terraform
     {
         Vector3 gridPos = WorldToGrid(worldPos);
         Vector3Int chunkCoord = new Vector3Int(
@@ -195,9 +203,9 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         return null;
     }
 
-    public void RegenerateChunk(Vector3 worldPos) // rebuulds chunk after deformation 
+    public void RegenerateChunk(Vector3 gridPos) // rebuulds chunk after deformation 
     {
-        TerrainChunk chunk = GetChunkFromWorldPos(worldPos);
+        TerrainChunk chunk = GetChunkFromGridPos(gridPos);
         if (chunk != null)
         {
             chunk.RegenerateMesh();
@@ -252,7 +260,11 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
                         float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
                         UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
 
+<<<<<<< HEAD
                         TerrainChunk chunk = GetChunkFromWorldPos(GridToWorld(new Vector3(x, y, z))); // get chunk of current density grid point 
+=======
+                        TerrainChunk chunk = GetChunkFromGridPos(new Vector3(x, y, z)); // get chunk of current density grid point 
+>>>>>>> Player
                         if (chunk != null)
                         {
                             affectedChunks.Add(chunk); // add chunk to list to be regenerated
@@ -289,9 +301,26 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
     }
 
+<<<<<<< HEAD
     public void ApplyDamage(DestructionHitData hitData)
     {
         UpdateDensityAndRegenerate(hitData.hitPoint, hitData.damage, hitData.radius);
+=======
+    public Vector3 WorldToGrid(Vector3 worldPos)
+    {
+        return transform.InverseTransformPoint(worldPos) - gridOrigin;
+    }
+
+    public Vector3 GridToWorld(Vector3 gridPos)
+    {
+        return transform.TransformPoint(gridPos + gridOrigin);
+    }
+
+    public void ApplyDamage(DestructionHitData hitData)
+    {
+        Vector3 gridPos = WorldToGrid(hitData.hitPoint);
+        UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);
+>>>>>>> Player
     }
 
     private void OnDrawGizmos()
@@ -299,6 +328,19 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         Gizmos.color = Color.black;
 
         Gizmos.DrawWireCube(transform.position, new Vector3(width, height, depth));
+<<<<<<< HEAD
+=======
+
+        float avgWorldY = transform.position.y;
+
+        Vector3 center = new Vector3(transform.position.x, avgWorldY, transform.position.z);
+        Vector3 size = new Vector3(width, 0f, depth);
+
+        Gizmos.color = new Color(0f, 1f, 0f, 0.25f);
+        Gizmos.DrawCube(center, size);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center, size);
+>>>>>>> Player
     }
 
     #endregion

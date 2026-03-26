@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51dd31af4030a674b9eee2dd6b8b80a1, type: 3}
+  m_Name: AutoRifle
+  m_EditorClassIdentifier: 
+  toolName: AutoRifle
+  toolPrefab: {fileID: 1536321778185208653, guid: 7e8b87f69fe5a30448243c50c3693b2e, type: 3}
+  toolIcon: {fileID: 0}
+  destructionData: {fileID: 11400000, guid: 33ba5eb6f0c886745a5474b4354ec6ae, type: 2}
+  compatibleLayers: 6
+  useCooldown: 0.1
+  altUseCooldown: 0
+  damage: 1.25
+  radius: 0.1
+  useAudio: {fileID: 0}
+  useAudioVolume: 0.1
+  useEffect: {fileID: 6807015768005804764, guid: da4c9a4915d3f6645bb2ec524ff24cc3, type: 3}
+  doAimAtCursor: 1
+  isAutomatic: 1
+  useTracer: 1
+  tracerPrefab: {fileID: 2968512427402550875, guid: fb9a665fa2f2d7d489d7ecb93176a601, type: 3}
+  tracerSpeed: 150

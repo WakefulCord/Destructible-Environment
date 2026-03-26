@@ -67,7 +67,7 @@ public class PlayerManager : MonoBehaviour
     public void OnUpdate()
     {
         playerMovement.OnUpdate(inputManager.GetMovementInput.x, inputManager.GetMovementInput.y, IsSprinting);
-        playerToolManager.OnUpdate();
+        playerToolManager.OnUpdate(inputManager.IsUseToolHeld);
     }
     #endregion
 
@@ -100,6 +100,16 @@ public class PlayerManager : MonoBehaviour
         {
             playerMovement.HandleJump();
         }
+    }
+
+    public void Input_CancelTool()
+    {
+        playerToolManager.HandleCancelTool();
+    }
+
+    public void Input_AltUseTool()
+    {
+        playerToolManager.HandleAltUseTool();
     }
 
     public void Input_CancelTool()

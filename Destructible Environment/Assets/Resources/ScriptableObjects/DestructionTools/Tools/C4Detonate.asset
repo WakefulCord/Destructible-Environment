@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a2a8b1f7305e54db3736a7eba4fcee, type: 3}
+  m_Name: C4Detonate
+  m_EditorClassIdentifier: 
+  toolName: C4Detonate
+  toolPrefab: {fileID: 518018486553129352, guid: 3748f10a24d089d4a978fb8dfcf09f1e, type: 3}
+  toolIcon: {fileID: 0}
+  destructionData: {fileID: 11400000, guid: 9f354a980c9792b42a4d4ede98f7fb66, type: 2}
+  compatibleLayers: 6
+  useCooldown: 1.5
+  altUseCooldown: 0
+  damage: 3
+  radius: 5
+  useAudio: {fileID: 8300000, guid: b8f6b291f06d2914eacff2fe48889e3d, type: 3}
+  useAudioVolume: 0.4
+  useEffect: {fileID: 0}
+  doAimAtCursor: 0
+  isAutomatic: 0
+  explosivePrefab: {fileID: 3451455021427857733, guid: c76a1f0887bf6324ead3684d98ae51af, type: 3}
+  temp: Nothing yet!

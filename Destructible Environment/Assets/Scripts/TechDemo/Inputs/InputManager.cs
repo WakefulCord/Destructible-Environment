@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Vector2 lookVector;
 
     [Header("Input Flags")]
+    [SerializeField] private bool isUseToolHeld;
     [SerializeField] private bool sprintFlag;
     [SerializeField] private bool jumpFlag;
     #endregion
@@ -42,7 +43,11 @@ public class InputManager : MonoBehaviour
 
     public bool SprintFlag => sprintFlag;
 
+<<<<<<< HEAD
     public bool JumpFlag => jumpFlag;
+=======
+    public bool IsUseToolHeld => isUseToolHeld;
+>>>>>>> Player
     #endregion
 
     #region Start Up
@@ -62,19 +67,34 @@ public class InputManager : MonoBehaviour
 
             playerControls.Action.ToolSelect.performed += ctx => OnToolSelect(ctx);
 
+<<<<<<< HEAD
             playerControls.Action.UseTool.performed += ctx => OnUseTool();
             playerControls.Action.AltUseTool.performed += ctx => OnAltUseTool();
 
             playerControls.Action.UseTool.canceled += ctx => OnToolCancelled();
             playerControls.Action.AltUseTool.canceled += ctx => OnToolCancelled();
+=======
+            playerControls.Action.UseTool.performed += ctx => { isUseToolHeld = true; OnUseTool(); };
+            playerControls.Action.UseTool.canceled += ctx => { isUseToolHeld = false; OnToolCancel(); };
+            playerControls.Action.UseToolAlt.performed += ctx => OnAltUseTool();
+            playerControls.Action.UseToolAlt.canceled += ctx => OnToolCancel();
+            
+>>>>>>> Player
 
         }
         playerControls.Enable();
     }
 
+    private void OnDisable()
+    {
+        playerControls.Disable();
+    }
+
     private void Start()
     {
         playerManager = PlayerManager.Instance;
+
+        ToggleCursor(false);
     }
     #endregion
 
@@ -103,6 +123,7 @@ public class InputManager : MonoBehaviour
     {
         playerManager.Input_UseTool(false);
     }
+<<<<<<< HEAD
     private void OnAltUseTool()
     {
         playerManager.Input_UseTool(true);
@@ -117,6 +138,24 @@ public class InputManager : MonoBehaviour
         playerManager.Input_HandleJump();
     }
 
+=======
+
+    private void OnAltUseTool()
+    {
+        playerManager.Input_AltUseTool();
+    }
+
+    public void ToggleCursor(bool isEnabled)
+    {
+        Cursor.visible = isEnabled;
+        Cursor.lockState = isEnabled ? CursorLockMode.Locked : CursorLockMode.None;
+    }
+
+    private void OnToolCancel()
+    {
+        playerManager.Input_CancelTool();
+    }
+>>>>>>> Player
     #endregion
 
 
