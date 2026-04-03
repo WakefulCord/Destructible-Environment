@@ -10,13 +10,13 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
    
     [Header(" Tool Maanager fields")]
     [SerializeField] private DestructionTool currentEquippedTool;
-    [SerializeField] private ToolBehaviour activeTool;
+    [SerializeField] private ToolBehaviour activeToolBehaviour;
 
     [SerializeField] private Transform tooltransform;
     #endregion
 
     #region Properties
-    public bool HasActiveTool => activeTool != null;
+    public bool HasActiveTool => activeToolBehaviour != null;
     #endregion
 
     #region Start Up
@@ -35,21 +35,27 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     #region Class Methods 
 
-    public void OnUpdate(bool isUseHeld)
+    public void OnUpdate(bool isPrimaryHeld, bool isSecondaryHeld)
     {
         float dt = Time.deltaTime;
         if (HasActiveTool)
         {
-            activeTool.OnToolUpdate(dt);
+            activeToolBehaviour.OnToolUpdate(dt);
 
-            // Automatic fire logic for any tool
-            DestructionTool toolData = activeTool.GetToolData;
-            if (toolData != null && toolData.IsAutomatic)
+            DestructionTool toolData = activeToolBehaviour.GetToolData;
+            if (toolData == null)
             {
-                if (isUseHeld && activeTool.CanUseTool)
-                {
-                    activeTool.OnToolUse();
-                }
+                return;
+            }
+
+            if (isPrimaryHeld && activeToolBehaviour.IsPrimaryHoldMode() && activeToolBehaviour.CanUseTool)
+            {
+                activeToolBehaviour.OnPrimaryUse();
+            }
+
+            if (isSecondaryHeld && activeToolBehaviour.IsSecondaryHoldMode() && activeToolBehaviour.CanSecondaryUseTool)
+            {
+                activeToolBehaviour.OnSecondaryUse();
             }
         }
     }
@@ -57,29 +63,44 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     private void UnequipCurrentTool()
     {
-        currentEquippedTool = null;
-        DestroyTool();
-    }
-
-    private void DestroyTool()
-    {
-        if (activeTool != null)
+        
+        if (activeToolBehaviour != null)
         {
-
-            Destroy(activeTool.gameObject); // might have to replaec with safer version  
+            activeToolBehaviour.OnUnequip(); 
+            Destroy(activeToolBehaviour.gameObject); // might have to replaec with safer version  
         }
+        currentEquippedTool = null;
+        activeToolBehaviour = null;
     }
+
+    
 
     private void EquipNewTool(DestructionTool tool)
     {
         currentEquippedTool = tool;
 
+        if (currentEquippedTool == null)
+        {
+            Debug.LogWarning($"Tool {currentEquippedTool.GetName}: Cannot equip.");
+            return;
+        }
+        if (currentEquippedTool.GetPrefab == null)
+        {
+            Debug.LogWarning($"Tool {currentEquippedTool.GetName}: Does not have a prefab assigned, cannot equip.");
+            return;
+        }
         GameObject toolObj = Instantiate(currentEquippedTool.GetPrefab, tooltransform);
         toolObj.transform.localPosition = Vector3.zero;
         toolObj.transform.localRotation = Quaternion.identity;
 
-        activeTool = toolObj.GetComponent<ToolBehaviour>();
-        activeTool.OnToolInit(tool);
+        activeToolBehaviour = toolObj.GetComponent<ToolBehaviour>();
+        if (activeToolBehaviour == null)
+        {
+            Debug.LogWarning($"Tool {currentEquippedTool.GetName}: Is missing behaviour scriptm cannot equip.");
+            UnequipCurrentTool(); // clear tool data to prevent issues with broken tool
+            return;
+        }
+        activeToolBehaviour.OnToolInit(tool);
     }
     #endregion
 
@@ -87,31 +108,37 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
     public void HandleEquipTool(int slot)
     {
         UnequipCurrentTool();
-
-
         EquipNewTool(GetToolInSlot(slot));
     }
     public void HandleUseTool()
     {
-        if (HasActiveTool)
+        if (HasActiveTool && activeToolBehaviour.IsPrimarySingleClickMode())
         {
-            activeTool.OnToolUse();
+            activeToolBehaviour.OnPrimaryUse();
         }
     }
 
     public void HandleAltUseTool()
     {
-        if (HasActiveTool)
+        if (HasActiveTool && activeToolBehaviour.IsSecondarySingleClickMode())
         {
-            activeTool.OnToolAltUse();
+            activeToolBehaviour.OnSecondaryUse();
         }
     }
 
-    public void HandleCancelTool()
+    public void HandleCancelPrimaryTool()
     {
         if (HasActiveTool)
         {
-            activeTool.OnToolCancelled();
+            activeToolBehaviour.OnPrimaryCancelled();
+        }
+    }
+
+    public void HandleCancelSecondaryTool()
+    {
+        if (HasActiveTool)
+        {
+            activeToolBehaviour.OnSecondaryCancelled();
         }
     }
     #endregion

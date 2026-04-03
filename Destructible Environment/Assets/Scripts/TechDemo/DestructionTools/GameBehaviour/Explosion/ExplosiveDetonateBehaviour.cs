@@ -22,15 +22,15 @@ public class ExplosiveDetonateBehaviour : ToolBehaviour
 
     }
 
-    protected override void ToolUseBehaviour()
+    protected override void PrimaryUseBehaviour()
     {
-        base.ToolUseBehaviour();
+        base.PrimaryUseBehaviour();
         PlaceBomb();
     }
 
-    protected override void ToolAltUseBehaviour()
+    protected override void SecondaryUseBehaviour()
     {
-        base.ToolAltUseBehaviour();
+        base.SecondaryUseBehaviour();
         DetonateAll();
     }
 

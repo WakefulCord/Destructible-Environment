@@ -22,15 +22,15 @@ public class ExplosiveLauncherBehaviour : ToolBehaviour
 
     
 
-    protected override void ToolUseBehaviour()
+    protected override void PrimaryUseBehaviour()
     {
-        base.ToolUseBehaviour();
+        base.PrimaryUseBehaviour();
         Launch();
     }
 
-    protected override void ToolAltUseBehaviour()
+    protected override void SecondaryUseBehaviour()
     {
-        base.ToolAltUseBehaviour();
+        base.SecondaryUseBehaviour();
 
         //Show projectile prediction line?
         Debug.Log("No alt Use logic yet!");
@@ -46,7 +46,7 @@ public class ExplosiveLauncherBehaviour : ToolBehaviour
         { 
             origin = effectPoint.position + effectPoint.forward * 0.01f; 
         }
-        // calculate launch direction use camera forward so in line with hit marker
+        // calculate launch direction use mainCam forward so in line with hit marker
         Vector3 direction = cam.transform.forward;
 
         GameObject projectile = Instantiate(

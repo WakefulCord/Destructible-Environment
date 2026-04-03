@@ -10,6 +10,11 @@ public class DecalFadeOut : MonoBehaviour
     {
         decal = GetComponent<DecalProjector>();
 
+        if (decal == null )
+        {
+            Debug.LogWarning($"DecalFadeOut: No DecalProjector found on {gameObject.name}.");
+            return;
+        }
         StartCoroutine(FadeOut(fadeTimer));
     }
 

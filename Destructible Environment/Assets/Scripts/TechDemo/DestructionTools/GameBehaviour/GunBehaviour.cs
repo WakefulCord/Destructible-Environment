@@ -3,27 +3,42 @@ using System.Collections.Generic;
 
 public class GunBehaviour : ToolBehaviour
 {
+    private const float DefaultShotDistance = 1000f;
+
+    private struct PelletShotData
+    {
+        public Vector3 endPoint;
+    }
 
     public GunTool GetGunTool => (GunTool)GetToolData;
 
 
     [Header("Tracer Fields")]
     [SerializeField] private List<TracerEffect> activeTracers = new List<TracerEffect>();
+    private readonly List<PelletShotData> pendingShotVisuals = new List<PelletShotData>();
     Vector3 lastTracerEnd;
 
+    bool isAiming = false;
+
+    #region Set Up 
     public override void OnToolInit(DestructionTool t)
     {
         base.OnToolInit(t);
+        isAiming = false;
 
-        
     }
+    #endregion
 
- 
-
+    #region Update
     public override void OnToolUpdate(float dt)
     {
         base.OnToolUpdate(dt);
 
+        UpdateTracers(dt);
+    }
+    
+    private void UpdateTracers(float dt)
+    {
         if (GetGunTool.UseTracer)
         {
 
@@ -46,46 +61,64 @@ public class GunBehaviour : ToolBehaviour
             }
         }
     }
+    #endregion
 
 
-    //protected override void OnToolUseLogic()
-    //{
-    //    base.OnToolUseLogic();
-    //    Shoot();
-    //}
 
-    protected override void ToolUseBehaviour()
+
+
+    protected override void PrimaryUseBehaviour()
     {
-        base.ToolUseBehaviour();
+        base.PrimaryUseBehaviour(); // handles visuals
         Shoot();
     }
-    protected override void ToolAltUseBehaviour()
+    protected override void SecondaryUseBehaviour()
     {
-        base.ToolAltUseBehaviour();
-        //aim?
-        Debug.Log("No alt Use logic yet!");
+        base.SecondaryUseBehaviour();
 
+        if (GetGunTool.CanAim)
+        {
+            ToggleAim(true);
+        }
     }
 
-    protected override void OnUseEffect()
+    public override void OnSecondaryCancelled()
     {
-        base.OnUseEffect();
+        base.OnSecondaryCancelled();
 
-        if (GetGunTool.GetBulletFeedback == null) return;
+        if (GetGunTool.CanAim)
+        {
+            ToggleAim(false);
+        }
+    }
+
+    private void ToggleAim(bool state)
+    {
+        isAiming = state;
+
+        if (isAiming)
+        {
+            Debug.Log($"{GetGunTool.GetName}: Is Aiming");
+            CameraManager.Instance.EnableADS(GetGunTool.AimFOV);
+        }
+        else
+        {
+            CameraManager.Instance.DisableADS();
+        }
+    }
+
+
+
+    protected override void PrimaryUseFeedback()
+    {
+        base.PrimaryUseFeedback();
+
+        if (!GetGunTool.UseTracer || GetGunTool.GetTracerPrefab == null) return;
 
         Vector3 origin = effectPoint != null ? effectPoint.position : Camera.main.transform.position;
-        Vector3 direction = Camera.main.transform.forward;
-        Vector3 tracerEnd = origin + direction * 1000f; // default far point
 
-        RaycastHit hit;
-        if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity))
+        foreach (PelletShotData pellet in pendingShotVisuals)
         {
-            tracerEnd = hit.point;
-        }
-
-        if (GetGunTool.UseTracer)
-        {
-
             GameObject tracer = Instantiate(
                 GetGunTool.GetTracerPrefab,
                 origin,
@@ -93,18 +126,16 @@ public class GunBehaviour : ToolBehaviour
                 this.transform
             );
             TracerEffect tracerEffect = tracer.GetComponent<TracerEffect>();
-            tracerEffect.OnInit(GetGunTool.GetTracerSpeed, origin, tracerEnd);
+            tracerEffect.OnInit(GetGunTool.GetTracerSpeed, origin, pellet.endPoint);
             activeTracers.Add(tracerEffect);
-            lastTracerEnd = tracerEnd;
+            lastTracerEnd = pellet.endPoint;
         }
-
-        
-
+        pendingShotVisuals.Clear();
     }
 
-    protected override void OnAltUseEffect()
+    protected override void SecondaryUseFeedback()
     {
-        base.OnAltUseEffect();
+        base.SecondaryUseFeedback();
         //zoom in soudns?   - might be nothing
 
     }
@@ -113,44 +144,70 @@ public class GunBehaviour : ToolBehaviour
     {
         Debug.Log("BANG SHOOT");
 
+        pendingShotVisuals.Clear();
+
         Vector3 origin = Camera.main.transform.position;
         Vector3 direction = Camera.main.transform.forward;
+        int bulletCount = Mathf.Max(1, GetGunTool.BulletCount);
 
-        RaycastHit hit;
-
-
-        //tracer
-
-
-
-        if (!Physics.Raycast(origin, direction, out hit, Mathf.Infinity))
+        for (int i = 0; i < bulletCount; i++)
         {
+            Vector3 pelletDirection = GetPelletDirection(direction, bulletCount);
+            Vector3 pelletEnd = origin + pelletDirection * DefaultShotDistance;
 
-            return;
-        }
+            RaycastHit hit;
+            if (Physics.Raycast(origin, pelletDirection, out hit, Mathf.Infinity))
+            {
+                pelletEnd = hit.point;
 
-        DestructionHitData hitData = new DestructionHitData()
-        {
-            damage = GetToolData.Damage,
-            radius = GetToolData.Radius,
-            hitNormal = hit.normal,
-            hitPoint = hit.point,
-        };
+                DestructionHitData hitData = new DestructionHitData()
+                {
+                    damage = GetToolData.Damage,
+                    radius = GetToolData.Radius,
+                    hitNormal = hit.normal,
+                    hitPoint = hit.point,
+                };
 
-        //bullet hit 
+                OnBulletHit(hitData);
 
-        OnHitEffect(hitData);
+                IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
+                if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
+                {
+                    target.ApplyDamage(hitData);
+                }
+            }
 
-        IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
-        if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
-        {
-            target.ApplyDamage(hitData);
+            pendingShotVisuals.Add(new PelletShotData
+            {
+                endPoint = pelletEnd
+            });
         }
 
     }
-    protected override void OnHitEffect(DestructionHitData hitData)
+
+    private Vector3 GetPelletDirection(Vector3 baseDirection, int bulletCount)
     {
-        base.OnHitEffect(hitData);
+        float countSpreadAngle = Mathf.Max(0f, bulletCount - 1) * 1.5f;
+        float spreadAngle = Mathf.Max(GetGunTool.SpreadAngle, countSpreadAngle);
+
+        if (spreadAngle <= 0f || bulletCount <= 1)
+        {
+            return baseDirection;
+        }
+
+        float pitch = Random.Range(-spreadAngle, spreadAngle);
+        float yaw = Random.Range(-spreadAngle, spreadAngle);
+
+        return (Quaternion.Euler(pitch, yaw, 0f) * baseDirection).normalized;
+    }
+
+    private void OnBulletHit(DestructionHitData hitData) // runs tool behaviour OnHit
+    {
+        OnHit(hitData);
+    }
+    protected override void OnHitFeedback(DestructionHitData hitData)
+    {
+        base.OnHitFeedback(hitData);
 
         if (GetGunTool.GetBulletFeedback == null) return;
 
@@ -171,9 +228,17 @@ public class GunBehaviour : ToolBehaviour
 
         
     }
-       
-       
-    
+
+
+    public override void OnUnequip()
+    {
+        base.OnUnequip();
+
+        if (GetGunTool != null && GetGunTool.CanAim)
+        {
+            ToggleAim(false);
+        }
+    }
 
    
 }

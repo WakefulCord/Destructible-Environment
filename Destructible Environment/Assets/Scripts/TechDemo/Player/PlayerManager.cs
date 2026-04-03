@@ -72,7 +72,7 @@ public class PlayerManager : MonoBehaviour
     public void OnUpdate()
     {
         playerMovement.OnUpdate(inputManager.GetMovementInput.x, inputManager.GetMovementInput.y, IsSprinting);
-        playerToolManager.OnUpdate(inputManager.IsUseToolHeld);
+        playerToolManager.OnUpdate(inputManager.IsPrimaryToolHeld, inputManager.IsSecondaryToolHeld);
     }
     #endregion
 
@@ -97,9 +97,14 @@ public class PlayerManager : MonoBehaviour
         playerToolManager.HandleAltUseTool();
     }
 
-    public void Input_CancelTool()
+    public void Input_CancelPrimaryTool()
     {
-        playerToolManager.HandleCancelTool();
+        playerToolManager.HandleCancelPrimaryTool();
+    }
+
+    public void Input_CancelSecondaryTool()
+    {
+        playerToolManager.HandleCancelSecondaryTool();
     }
     #endregion
 }

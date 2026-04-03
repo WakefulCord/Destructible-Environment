@@ -16,7 +16,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Vector2 lookVector;
 
     [Header("Input Flags")]
-    [SerializeField] private bool isUseToolHeld;
+    [SerializeField] private bool isPrimaryToolHeld;
+    [SerializeField] private bool isSecondaryToolHeld;
     [SerializeField] private bool sprintFlag;
     #endregion
 
@@ -42,7 +43,8 @@ public class InputManager : MonoBehaviour
 
     public bool SprintFlag => sprintFlag;
 
-    public bool IsUseToolHeld => isUseToolHeld;
+    public bool IsPrimaryToolHeld => isPrimaryToolHeld;
+    public bool IsSecondaryToolHeld => isSecondaryToolHeld;
     #endregion
 
     #region Start Up
@@ -60,10 +62,10 @@ public class InputManager : MonoBehaviour
 
             playerControls.Action.ToolSelect.performed += ctx => OnToolSelect(ctx);
 
-            playerControls.Action.UseTool.performed += ctx => { isUseToolHeld = true; OnUseTool(); };
-            playerControls.Action.UseTool.canceled += ctx => { isUseToolHeld = false; OnToolCancel(); };
-            playerControls.Action.UseToolAlt.performed += ctx => OnAltUseTool();
-            playerControls.Action.UseToolAlt.canceled += ctx => OnToolCancel();
+            playerControls.Action.UseTool.performed += ctx => { isPrimaryToolHeld = true; OnUseTool(); };
+            playerControls.Action.UseTool.canceled += ctx => { isPrimaryToolHeld = false; OnPrimaryToolCancel(); };
+            playerControls.Action.UseToolAlt.performed += ctx => { isSecondaryToolHeld = true; OnAltUseTool(); };
+            playerControls.Action.UseToolAlt.canceled += ctx => { isSecondaryToolHeld = false; OnSecondaryToolCancel(); };
             
 
         }
@@ -120,9 +122,14 @@ public class InputManager : MonoBehaviour
         Cursor.lockState = isEnabled ? CursorLockMode.Locked : CursorLockMode.None;
     }
 
-    private void OnToolCancel()
+    private void OnPrimaryToolCancel()
     {
-        playerManager.Input_CancelTool();
+        playerManager.Input_CancelPrimaryTool();
+    }
+
+    private void OnSecondaryToolCancel()
+    {
+        playerManager.Input_CancelSecondaryTool();
     }
     #endregion
 

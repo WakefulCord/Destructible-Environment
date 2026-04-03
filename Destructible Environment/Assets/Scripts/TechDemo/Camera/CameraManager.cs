@@ -12,12 +12,15 @@ public class CameraManager : MonoBehaviour
     #region Private Fields
     [Header("Camera Fields")]
     [SerializeField] private Transform targetTransform;
-    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Camera mainCam;
 
     [SerializeField][Range(0f, 1f)] private float mouseSens;
 
     private float xRot;
     private float yRot;
+
+    [SerializeField] private int defaultFOV = 60;
+    
     #endregion
 
     #region Properties
@@ -45,6 +48,7 @@ public class CameraManager : MonoBehaviour
     }
     public void OnAwake() 
     {
+        mainCam = Camera.main;
         inputManager = InputManager.Instance;
         playerManager = PlayerManager.Instance;
     }
@@ -74,13 +78,23 @@ public class CameraManager : MonoBehaviour
         yRot += x * mouseSens;
         xRot = Mathf.Clamp(xRot, -80f, 80f);
 
-        Vector3 targetRot = new Vector3(xRot, yRot, 0); // camera rotation
+        Vector3 targetRot = new Vector3(xRot, yRot, 0); // mainCam rotation
 
-        cameraTransform.rotation = Quaternion.Euler(targetRot);
+        mainCam.transform.rotation = Quaternion.Euler(targetRot);
 
         //player roation - temp
         targetRot = new Vector3(0, yRot, 0);
         playerManager.transform.rotation = Quaternion.Euler(targetRot);
+    }
+
+    public void EnableADS(float newFOV)
+    {
+        mainCam.fieldOfView = newFOV;
+    }
+
+    public void DisableADS()
+    {
+        mainCam.fieldOfView = defaultFOV;
     }
     #endregion
 }

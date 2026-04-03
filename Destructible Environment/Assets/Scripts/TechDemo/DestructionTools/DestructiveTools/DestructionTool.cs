@@ -15,39 +15,60 @@ public class DestructionTool : ScriptableObject
     [SerializeField] private DestructionLayer compatibleLayers;
     [Space(4)]
 
+    
     [Header("Tool Stats")]
-    [SerializeField] private float useCooldown;
-    [SerializeField] private float altUseCooldown;
     [SerializeField] private float damage;
     [SerializeField] private float radius;
+
+    [Header("---Primary Action Settings---")]
+    [Header("Action")]
+    [SerializeField] private ToolFireMode primaryFireMode;
+    [SerializeField] private bool primaryUsesCooldown = true;
+    [SerializeField] private float primaryCooldown;
+
+    [Header("Fire Feedback")]
+    [SerializeField] private AudioClip primaryAudio;
+    [Range(0f, 1f)][SerializeField] private float primaryAudioVolume;
+    [SerializeField] private GameObject primaryEffect;
     [Space(4)]
 
-    [Header("Tool Effects")]
-    [SerializeField] private AudioClip useAudio;
+    [Header("---Secondary Action Settings---")]
+    [Header("Action")]
+    [SerializeField] private ToolFireMode secondaryFireMode;
+    [SerializeField] private bool secondaryUsesCooldown = true;
+    [SerializeField] private float secondaryCooldown;
 
-    [Range(0f, 1f)][SerializeField] private float useAudioVolume;
-    [SerializeField] private GameObject useEffect;
+
     [Space(4)]
 
     [Header("Animation Fields")]
-    [SerializeField] private bool doAimAtCursor;
-    [Space(4)]
+    [SerializeField] private bool doPointAtCursor;
+   
 
-    [Header("Tool Modes")]
-    [SerializeField] private bool isAutomatic = false;
-    public GameObject GetUseEffect => useEffect;
+   
+    public GameObject PrimaryEffect => primaryEffect;
 
-    public bool DoAimAtCursor => doAimAtCursor;
+    public bool DoPointAtCursor => doPointAtCursor;
     public DestructionFeedback GetDestructionFeedback => destructionData;
-    public float GetUseVolume => useAudioVolume;
-    public AudioClip GetUseAudio => useAudio;
+    public float GetUseVolume => primaryAudioVolume;
+    public AudioClip PrimaryAudio => primaryAudio;
     public DestructionLayer GetCompatibleLayers => compatibleLayers;
-    public float UseCooldown => useCooldown;
-    public float AltUseCooldown => altUseCooldown;
+    public float UseCooldown => primaryCooldown;
+    public float AltUseCooldown => secondaryCooldown;
     public float Damage => damage;
     public float Radius => radius;
 
     public string GetName => toolName;
     public GameObject GetPrefab => toolPrefab;
-    public bool IsAutomatic => isAutomatic;
+    public ToolFireMode PrimaryFireMode => primaryFireMode;
+    public ToolFireMode SecondaryFireMode => secondaryFireMode;
+    public bool PrimaryUsesCooldown => primaryUsesCooldown;
+    public bool SecondaryUsesCooldown => secondaryUsesCooldown;
+
+
+}
+public enum ToolFireMode
+{
+    SingleClick,
+    Hold
 }

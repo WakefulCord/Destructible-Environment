@@ -38,39 +38,45 @@ public class TerraToolBehaviour : ToolBehaviour
         {            
             ModifyTerrain();
             //play use effect each frame while using
-            if (GetToolData.GetUseEffect != null)
+            if (GetToolData.PrimaryEffect != null)
             {
-                Instantiate(GetToolData.GetUseEffect, effectPoint.position, Quaternion.identity, effectPoint);
+                Instantiate(GetToolData.PrimaryEffect, effectPoint.position, Quaternion.identity, effectPoint);
 
             }
             // resest can use
         }
     }
 
-    protected override void OnHitEffect(DestructionHitData hitData)
+    protected override void OnHitFeedback(DestructionHitData hitData)
     {
-        base.OnHitEffect(hitData);
+        base.OnHitFeedback(hitData);
     }
 
-
-    protected override void ToolUseBehaviour()
+    protected override void PrimaryUseBehaviour()
     {
-        base.ToolUseBehaviour();
+        base.PrimaryUseBehaviour();
         terraVal = -1f;
 
         
     }
 
-    protected override void ToolAltUseBehaviour()
+    protected override void SecondaryUseBehaviour()
     {
-        base.ToolAltUseBehaviour();
+        base.SecondaryUseBehaviour();
         terraVal = 1f;
 
     }
 
-    public override void OnToolCancelled()
+    public override void OnPrimaryCancelled()
     {
-        base.OnToolCancelled();
+        base.OnPrimaryCancelled();
+
+        terraVal = 0f;
+    }
+
+    public override void OnSecondaryCancelled()
+    {
+        base.OnSecondaryCancelled();
 
         terraVal = 0f;
     }
@@ -103,7 +109,7 @@ public class TerraToolBehaviour : ToolBehaviour
         Debug.Log("Terraforming");
 
         RaycastHit hit;
-        //shoot from camera - for now?
+        //shoot from mainCam - for now?
         if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, GetTerrainTool.GetTerraRange))
         {
             return;
@@ -121,7 +127,7 @@ public class TerraToolBehaviour : ToolBehaviour
             };
 
             target.ApplyDamage(data);
-            OnHitEffect(data);
+            OnHitFeedback(data);
 
         }
     }

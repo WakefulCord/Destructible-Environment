@@ -17,15 +17,24 @@ MonoBehaviour:
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: b610224a013d02a4da84be1f350c9175, type: 2}
   compatibleLayers: 6
-  useCooldown: 0.4
-  altUseCooldown: 0
   damage: 1.25
   radius: -0.12
-  useAudio: {fileID: 8300000, guid: 854a8c832eae91e49b9ca8fe816fb542, type: 3}
-  useAudioVolume: 0.1
-  useEffect: {fileID: 6807015768005804764, guid: aaaf33a72592d3b40b8a41bc606f9c6f, type: 3}
+  primaryFireMode: 0
+  primaryUsesCooldown: 0
+  primaryCooldown: 0.1
+  primaryAudio: {fileID: 0}
+  primaryAudioVolume: 0
+  primaryEffect: {fileID: 0}
+  secondaryFireMode: 0
+  secondaryUsesCooldown: 1
+  secondaryCooldown: 0
   doAimAtCursor: 1
-  isAutomatic: 0
   useTracer: 1
   tracerPrefab: {fileID: 2968512427402550875, guid: 27e824c968ffcf24b97f0e709d7c381b, type: 3}
   tracerSpeed: 150
+  bulletCount: 1
+  spreadAngle: 0
+  canAim: 0
+  aimFOV: 0
+  aimSpeed: 0
+  aimOverlay: {fileID: 0}

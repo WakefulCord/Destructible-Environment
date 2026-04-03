@@ -12,12 +12,17 @@ public class ToolBehaviour : MonoBehaviour
     [SerializeField] private float useTimer;
     [SerializeField] private float useCooldown;
     [SerializeField] private bool canUse;
+    [SerializeField] private bool isPrimaryInUse;
 
-    [SerializeField] private float altUseTimer;
-    [SerializeField] private float altUseCooldown;
-    [SerializeField] private bool canAltUse;
+    [SerializeField] private float secondaryTimer;
+    [SerializeField] private float secondaryCooldown;
+    [SerializeField] private bool canSecondaryUse;
+    [SerializeField] private bool isSecondaryInUse;
 
     public bool CanUseTool => canUse;
+    public bool CanSecondaryUseTool => canSecondaryUse;
+
+    #region Set Up
     public virtual void OnToolInit(DestructionTool t)
     {
         tool = t;
@@ -30,14 +35,24 @@ public class ToolBehaviour : MonoBehaviour
         //set up
         canUse = true;
         useTimer = 0.0f;
+        isPrimaryInUse = false;
 
-        canAltUse = true;
-        altUseTimer = 0.0f;
+        canSecondaryUse = true;
+        secondaryTimer = 0.0f;
+        isSecondaryInUse = false;
+
         //apply stats
+        if (GetToolData == null)
+        {
+            Debug.LogError("No tool data assigned to " + gameObject.name + ", failed to set up.");
+            return;
+        }
         useCooldown = GetToolData.UseCooldown;
-        altUseCooldown = GetToolData.AltUseCooldown;
+        secondaryCooldown = GetToolData.AltUseCooldown;
     }
+    #endregion
 
+    #region Update
     public virtual void OnToolUpdate(float dt)
     {
         if (!canUse)
@@ -51,18 +66,18 @@ public class ToolBehaviour : MonoBehaviour
             }
         }
 
-        if (!canAltUse)
+        if (!canSecondaryUse)
         {
-            altUseTimer += dt;
-            if (altUseTimer >= altUseCooldown)
+            secondaryTimer += dt;
+            if (secondaryTimer >= secondaryCooldown)
             {
-                canAltUse = true;
-                altUseTimer = 0.0f;
+                canSecondaryUse = true;
+                secondaryTimer = 0.0f;
             }
         }
 
         // Aim at cursor if enabled in tool data
-        if (GetToolData != null && GetToolData.DoAimAtCursor)
+        if (GetToolData != null && GetToolData.DoPointAtCursor)
         {
             Camera cam = Camera.main;
             if (cam != null)
@@ -83,82 +98,219 @@ public class ToolBehaviour : MonoBehaviour
             }
         }
 
-       
+
     }
+    #endregion
 
-    
-
-    public virtual void OnToolUse()
+    #region Primary Tool Use
+    public virtual void OnPrimaryUse()
     {
         if (!canUse) return; // exits out of any tool use
-        
-        ToolUseBehaviour();
-        OnUseEffect();
-        canUse = false;
+        if (UsesContinuousPrimaryUse() && isPrimaryInUse) return;
+
+        PrimaryUseBehaviour();
+        PrimaryUseFeedback();
+
+        if (UsesContinuousPrimaryUse())
+        {
+            isPrimaryInUse = true;
+            return;
+        }
+
+        if (UsesPrimaryCooldown())
+        {
+            canUse = false;
+        }
     }
 
-    protected virtual void ToolUseBehaviour()
+    protected virtual void PrimaryUseBehaviour()
     {
-        Debug.Log("Used " + GetToolData.GetName);
-        //play audio
-        SoundManager.Instance.PlayClipAtPoint(GetToolData.GetUseAudio, transform.position, GetToolData.GetUseVolume);
+        //nothing - implemented in children classes like gun/launcher/terraformer
+        // could run a ray cast here for hitscan weapons but for now just run it in the gun class
 
-        //use effects like muzzle flash for guns/launcher or drill particles? for terraformer
-        if (GetToolData.GetUseEffect != null)
+    }
+    protected virtual void PrimaryUseFeedback() // Guns shoot, terraform drill, launcher shoot - handles visuals and audio
+    {
+        if (GetToolData == null)
         {
-            Instantiate(GetToolData.GetUseEffect, effectPoint.position, Quaternion.identity, effectPoint);
+            Debug.LogError($"{name}: No Tool Data assigned - No feedback to show for primary use");
+            return;
+        }
+        //play audio
+        if (GetToolData.PrimaryAudio != null)
+        {
+            SoundManager.Instance.PlayClipAtPoint(GetToolData.PrimaryAudio, transform.position, GetToolData.GetUseVolume);
+        }
+        else
+        {
+            Debug.LogError($"{GetToolData.GetName}: No Primary Use Audio assigned");
+
 
         }
 
-    }
-
-    public virtual void OnToolAltUse()
-    {
-        if (!canAltUse) return; // exits out of any tool use
-
-        ToolAltUseBehaviour();
-        OnAltUseEffect();
-
-        canAltUse = false;
-    }
-
-    protected virtual void ToolAltUseBehaviour()
-    {
-        //play audio
-        SoundManager.Instance.PlayClipAtPoint(GetToolData.GetUseAudio, transform.position, GetToolData.GetUseVolume);
-
-        //use effects like muzzle flash for guns/launcher or drill particles? for terraformer
-        if (GetToolData.GetUseEffect != null)
+        // effects
+        if (GetToolData.PrimaryEffect != null)
         {
-            Instantiate(GetToolData.GetUseEffect, effectPoint.position, Quaternion.identity, effectPoint);
+            Instantiate(GetToolData.PrimaryEffect, effectPoint.position, Quaternion.identity, effectPoint);
 
         }
+        else
+        {
+            Debug.LogError($"{GetToolData.GetName}: No Primary Use Effect assgined");
+        }
     }
+    #endregion
+
+    #region Secondary Tool Use
+    public virtual void OnSecondaryUse()
+    {
+        if (!canSecondaryUse) return; // exits out of any tool use
+        if (UsesContinuousSecondaryUse() && isSecondaryInUse) return;
+
+        SecondaryUseBehaviour();
+        SecondaryUseFeedback();
+
+        if (UsesContinuousSecondaryUse())
+        {
+            isSecondaryInUse = true;
+            return;
+        }
+
+        if (UsesSecondaryCooldown())
+        {
+            canSecondaryUse = false;
+        }
+    }
+    protected virtual void SecondaryUseBehaviour()
+    {
+        // no second behaviour yet - might be ads or line of fire visuals - for drill will be addign terrains
+    }
+    protected virtual void SecondaryUseFeedback()
+    {
+        // no second feedback yet - might be weapon moving sounds when aiming or for drill will be adding terrain
+    }
+
+    #endregion
+
+    #region Fire Modes
+    public bool IsPrimaryHoldMode()
+    {
+        return GetToolData != null && GetToolData.PrimaryFireMode == ToolFireMode.Hold;
+    }
+
+    public bool IsSecondaryHoldMode()
+    {
+        return GetToolData != null && GetToolData.SecondaryFireMode == ToolFireMode.Hold;
+    }
+
+    public bool IsPrimarySingleClickMode()
+    {
+        return GetToolData != null && GetToolData.PrimaryFireMode == ToolFireMode.SingleClick;
+    }
+
+    public bool IsSecondarySingleClickMode()
+    {
+        return GetToolData != null && GetToolData.SecondaryFireMode == ToolFireMode.SingleClick;
+    }
+    #endregion
+
+    #region Use Type
+    protected bool UsesPrimaryCooldown()
+    {
+        return GetToolData != null && GetToolData.PrimaryUsesCooldown;
+    }
+
+    protected bool UsesSecondaryCooldown()
+    {
+        return GetToolData != null && GetToolData.SecondaryUsesCooldown;
+    }
+
+    protected virtual bool UsesContinuousPrimaryUse()
+    {
+        return IsPrimaryHoldMode() && !UsesPrimaryCooldown();
+    }
+
+    protected virtual bool UsesContinuousSecondaryUse()
+    {
+        return IsSecondaryHoldMode() && !UsesSecondaryCooldown();
+    }
+    #endregion
+
+    #region Destrustion Hit
+    //not all tools implement - for example explives shoot explosives which handle their own stuff, get data from here tho
+
+    protected virtual void OnHit(DestructionHitData hitData) // when the tools destruction happens like bullet hitting wall or explosion or terraform effect - ran from children classes like gun when bullet hits.
+    {
+        OnHitFeedback(hitData);
+    }
+
+    protected virtual void OnHitFeedback(DestructionHitData hitData) // when the tools destruction happens like bullet hitting wall or explosion or terraform effect
+    {
+        if (GetToolData == null || GetToolData.GetDestructionFeedback == null)
+        {
+            Debug.LogWarning("Tool " + GetToolData.GetName + " does not have destruction feedback assigned, skipping hit effects.");
+            return;
+        }
+
+        //visual  + effects
+        Instantiate(GetToolData.GetDestructionFeedback.DestructionEffect, hitData.hitPoint, Quaternion.identity);
+        SoundManager.Instance.PlayClipAtPoint(GetToolData.GetDestructionFeedback.GetDestructionAudio, hitData.hitPoint, GetToolData.GetDestructionFeedback.GetDestructionVolume);
+
+    }
+    #endregion
+
+    #region Other Tool Methods
+
+    public virtual void OnPrimaryCancelled()
+    {
+        if (isPrimaryInUse)
+        {
+            isPrimaryInUse = false;
+            if (UsesPrimaryCooldown())
+            {
+                canUse = false;
+                useTimer = 0.0f;
+            }
+            else
+            {
+                canUse = true;
+            }
+        }
+    }
+
+    public virtual void OnSecondaryCancelled()
+    {
+        if (isSecondaryInUse)
+        {
+            isSecondaryInUse = false;
+            if (UsesSecondaryCooldown())
+            {
+                canSecondaryUse = false;
+                secondaryTimer = 0.0f;
+            }
+            else
+            {
+                canSecondaryUse = true;
+            }
+        }
+    }
+
     public virtual void OnToolCancelled()
     {
-
+        OnPrimaryCancelled();
+        OnSecondaryCancelled();
     }
-    
-    protected virtual void OnUseEffect()
+
+    public virtual void OnUnequip()
     {
-
+        // any behaviour when unequipping tool - like resetting camera fov after ads or something
     }
-    protected virtual void OnAltUseEffect()
-    {
+    #endregion
 
-    }
-    protected virtual void OnHitEffect(DestructionHitData hitData) // when the tools destruction happens like bullet hitting wall or explosion or terraform effect
-    {
-        if (GetToolData == null || GetToolData.GetDestructionFeedback == null) return;
 
-        if (GetToolData != null && GetToolData.GetDestructionFeedback != null)
-        {
-            //visual  + effects
-            Instantiate(GetToolData.GetDestructionFeedback.DestructionEffect, hitData.hitPoint, Quaternion.identity);
-            SoundManager.Instance.PlayClipAtPoint(GetToolData.GetDestructionFeedback.GetDestructionAudio, hitData.hitPoint, GetToolData.GetDestructionFeedback.GetDestructionVolume);
-        }
-    }
 
-   
+
+
+
+
 }
-
