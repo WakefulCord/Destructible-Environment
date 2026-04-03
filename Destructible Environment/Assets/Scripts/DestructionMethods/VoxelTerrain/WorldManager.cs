@@ -11,6 +11,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] float maxHeight = 16f;
     [SerializeField] int worldSize = 32;
 
+    Coroutine rebuildRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -32,19 +33,86 @@ public class WorldManager : MonoBehaviour
 
                 for (int y = 0; y < height; y++)
                 {
-                    container[new Vector3(x, y, z)] = new Voxel() { ID = 1 };
+                    container[new Vector3Int(x, y, z)] = new Voxel() { ID = 1 };
                 }
             }
         }
 
+        RebuildMesh();
+    }
+    
+
+    void RebuildMesh()
+    {
+        if (rebuildRoutine != null)
+            StopCoroutine(rebuildRoutine);
+
+        rebuildRoutine = StartCoroutine(RebuildMeshDelayed());
+    }
+
+    IEnumerator RebuildMeshDelayed()
+    {
+        yield return null; // wait 1 frame
+
         container.GenerateMesh();
         container.UploadMesh();
     }
-
-    // OnExplosiveUpdate is called once per frame
-    void Update()
+    public void CreateBlock(Vector3Int pos, byte id)
     {
+        if (id == 0)
+            container[pos] = new Voxel() { ID = 0 };
+        else
+            container[pos] = new Voxel() { ID = 1 };
 
+        RebuildMesh();
+    }
+
+    public void CreateBlock(Vector3 pos, byte id)
+    {
+        CreateBlock(WorldToVoxel(pos), id);
+    }
+
+    public void DestroyBlock(Vector3Int pos)
+    {
+        CreateBlock(pos, 0);
+    }
+
+    public void DestroyBlock(Vector3 pos)
+    {
+        CreateBlock(WorldToVoxel(pos), 0);
+    }
+
+    Vector3Int WorldToVoxel(Vector3 worldPos) //helper function to convert world coords to voxel ints
+    {
+        return new Vector3Int(
+            Mathf.FloorToInt(worldPos.x),
+            Mathf.FloorToInt(worldPos.y),
+            Mathf.FloorToInt(worldPos.z)
+        );
+    }
+
+    public void DestroyMultiple(Vector3 worldPos, int radius) //Destroy blocks in a circle around coords
+    {
+        Vector3Int centerVoxel = Vector3Int.FloorToInt(worldPos);
+
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                for (int z = -radius; z <= radius; z++)
+                {
+                    Vector3Int offset = new Vector3Int(x, y, z);
+                    Vector3Int pos = centerVoxel + offset;
+
+                    // Only destroy blocks within spherical radius
+                    if (offset.magnitude <= radius)
+                    {
+                        container[pos] = new Voxel() { ID = 0 };
+                    }
+                }
+            }
+        }
+        RebuildMesh();
     }
 
 }

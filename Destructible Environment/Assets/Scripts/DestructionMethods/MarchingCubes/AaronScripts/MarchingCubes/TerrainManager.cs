@@ -16,7 +16,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     [SerializeField] private Material chunkMaterial;
     Dictionary<Vector3Int, TerrainChunk> chunks;
     [SerializeField] int chunkSize = 16;
-    
+
     [Header("Terrain Fields")]
     [SerializeField] private int width;
     [SerializeField] private int height;
@@ -25,7 +25,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     private int worldChunksX;
     private int worldChunksZ;
     private int worldChunksY;
-    [SerializeField] private float isoLevel = 0f; 
+    [SerializeField] private float isoLevel = 0f;
 
     private Vector3 gridOrigin;
 
@@ -46,7 +46,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
             if (_instance == null)
             {
                 _instance = FindFirstObjectByType<TerrainManager>();
-                if (_instance == null )
+                if (_instance == null)
                 {
                     Debug.LogError("Terrain Manager has not been assigned");
                 }
@@ -55,7 +55,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
 
         }
     }
-   
+
     public float GetIsoLevel => isoLevel;
     public Gradient TerrainGradient => terrainGradient;
     public Material ChunkMaterial => chunkMaterial;
@@ -87,13 +87,13 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         //Terrain Noise vals
         InitaliseTerrainValues();
 
-        
+
         GenerateChunks();
 
         //gridManager.VisualiseNoise(densityGrid);
     }
 
-   
+
 
     private void InitaliseTerrainValues()
     {
@@ -114,11 +114,11 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         float distanceFromSurface = heightMap - y;
 
 
-        float noise3D = Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) * 
+        float noise3D = Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) *
                         Mathf.PerlinNoise(z * noiseVal + seed, y * noiseVal + 100f);
-        noise3D = (noise3D - 0.5f) * 2f; 
+        noise3D = (noise3D - 0.5f) * 2f;
 
-       
+
         float density = distanceFromSurface + noise3D * 3f;
 
         return density;
@@ -129,7 +129,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     #region Chunk Methods
     private void GenerateChunks() // creates chunks for terrain
     {
-       
+
         for (int x = 0; x < worldChunksX; x++)
         {
             for (int y = 0; y < worldChunksY; y++)
@@ -156,19 +156,19 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         chunkObj.name = $"Chunk_{chunkPos.x}_{chunkPos.y}_{chunkPos.z}"; // name it its chunk pos
 
         TerrainChunk chunk = chunkObj.GetComponent<TerrainChunk>();
-       
 
-        
+
+
         chunk.transform.localPosition = gridOrigin + new Vector3(
             chunkPos.x * chunkSize,
             chunkPos.y * chunkSize,
             chunkPos.z * chunkSize
-        ); 
+        );
 
         if (chunkMaterial != null)
         {
             MeshRenderer renderer = chunkObj.GetComponent<MeshRenderer>();
-           
+
             renderer.sharedMaterial = chunkMaterial;
         }
 
@@ -205,7 +205,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     public float GetDensity(int x, int y, int z) // get desnity at x,y,z from density grid 
     {
         if (IsInBounds(x, y, z))
-        { 
+        {
             return densityGrid[x, y, z];
         }
         return 0f;
@@ -232,7 +232,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         HashSet<TerrainChunk> affectedChunks = new HashSet<TerrainChunk>(); // hash set prevents duplicate chunks in set - 
 
         //loop through terraform range (in a square)
-        for (int x = minX; x <= maxX; x++) 
+        for (int x = minX; x <= maxX; x++)
         {
             for (int y = minY; y <= maxY; y++)
             {

@@ -20,10 +20,10 @@ public class PlayerManager : MonoBehaviour
     {
         get
         {
-            if (_instance == null )
+            if (_instance == null)
             {
                 _instance = FindFirstObjectByType<PlayerManager>();
-                if (_instance == null )
+                if (_instance == null)
                 {
                     Debug.LogError("PlayerManager has not been assigned");
                 }
@@ -38,7 +38,7 @@ public class PlayerManager : MonoBehaviour
     #region Start Up
     private void Awake() // temp
     {
-        OnAwake();    
+        OnAwake();
     }
     private void Start() // temp
     {

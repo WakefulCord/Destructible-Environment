@@ -4,12 +4,26 @@ using UnityEngine;
 
 public class BreakableWall : MonoBehaviour, IDestructable
 {
-    public int width = 10;
-    public int height = 10;
+    public int width;
+    public int height;
+
+    Structurestress structureStress;
+    public int originalVoxelCount;
+    public float integrityThreshold = 0.25f; // Threshold for wall integrity
 
     public WallVoxel[,] voxels;
     [SerializeField] Sprite up, down, left, right, uL, uR, dL, dR;
     [SerializeField] GameObject debris;
+
+    [SerializeField] Sprite[] bitmaskSprites;
+
+    public Dictionary<int, int> bitMaskSprite = new Dictionary<int, int>() //disctionary for bitmask
+    {{ 2, 1 }, { 8, 2 }, { 10, 3 }, { 11, 4 }, { 16, 5 }, { 18, 6 }, { 22, 7 }, { 24, 8 },
+    { 26, 9 }, { 27, 10 }, { 30, 11 }, { 31, 12 }, { 64, 13 }, { 66, 14 }, { 72, 15 }, { 74, 16 },
+    { 75, 17 }, { 80, 18 }, { 82, 19 }, { 86, 20 }, { 88, 21 }, { 90, 22 }, { 91, 23 }, { 94, 24 },
+    { 95, 25 }, { 104, 26 }, { 106, 27 }, { 107, 28 }, { 120, 29 }, { 122, 30 }, { 123, 31 }, { 126, 32 },
+    { 127, 33 }, { 208, 34 }, { 210, 35 }, { 214, 36 }, { 216, 37 }, { 218, 38 }, { 219, 39 }, { 222, 40 },
+    { 223, 41 }, { 248, 42 }, { 250, 43 }, { 251, 44 }, { 254, 45 }, { 255, 46 }, { 0, 47 }};
 
     public DestructionLayer GetLayer => DestructionLayer.VoxelWall;
 
@@ -17,8 +31,8 @@ public class BreakableWall : MonoBehaviour, IDestructable
     {
         voxels = new WallVoxel[width, height];
         StartCoroutine(CheckFloatingCoroutine());
-
-}
+        originalVoxelCount = width * height;
+    }
     public void addToArray(WallVoxel voxel)
     {
         voxels[voxel.x, voxel.y] = voxel;
@@ -31,7 +45,7 @@ public class BreakableWall : MonoBehaviour, IDestructable
 
     public bool CheckCardinal(WallVoxel voxel)  //returns false if there is 3 or less cardinaly adjacent voxels
     {
-        int missingCount = 0;
+        int missingCount = 0;   //for each missing voxel, count up
 
         // Up
         if (voxel.y + 1 >= height || voxels[voxel.x, voxel.y + 1] == null)
@@ -77,6 +91,58 @@ public class BreakableWall : MonoBehaviour, IDestructable
         //down-right
         if (voxel.y - 1 >= 0 && voxel.x + 1 < width && voxels[voxel.x + 1, voxel.y - 1] != null)
             voxels[voxel.x + 1, voxel.y - 1].updateTexture(dR);
+    }
+
+    public void updateWall() //loops through entire wall and updates textures
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (voxels[x, y] != null)
+                {
+                    voxels[x, y].updateTile(bitmaskSprites);
+                }
+            }
+        }
+    }
+
+    public int GetBitmask(WallVoxel voxel)
+    {
+        int mask = 0;
+
+        bool north = CheckVoxel(voxel, new Vector2(0, 1));
+        bool south = CheckVoxel(voxel, new Vector2(0, -1));
+        bool west = CheckVoxel(voxel, new Vector2(-1, 0));
+        bool east = CheckVoxel(voxel, new Vector2(1, 0));
+
+        bool northWest = CheckVoxel(voxel, new Vector2(-1, 1));
+        bool northEast = CheckVoxel(voxel, new Vector2(1, 1));
+        bool southWest = CheckVoxel(voxel, new Vector2(-1, -1));
+        bool southEast = CheckVoxel(voxel, new Vector2(1, -1));
+
+        //creates the bitmask using the bools above
+        if (northWest && north && west) mask += 1;
+        if (north) mask += 2;
+        if (northEast && north && east) mask += 4;
+        if (west) mask += 8;
+        if (east) mask += 16;
+        if (southWest && south && west) mask += 32;
+        if (south) mask += 64;
+        if (southEast && south && east) mask += 128;
+
+        return mask;
+    }
+
+    public bool CheckVoxel(WallVoxel voxel, Vector2 checkPos)
+    {
+        int checkX = voxel.x + (int)checkPos.x;
+        int checkY = voxel.y + (int)checkPos.y;
+
+        if (checkX < 0 || checkX >= width || checkY < 0 || checkY >= height)    //check whether voxel is in the bounds of the array
+            return true; //returns true to treat out of bounds as filled - this makes it so the wall edges aren't affected by missing out of bounds voxels
+
+        return voxels[checkX, checkY] != null;
     }
 
     IEnumerator CheckFloatingCoroutine()    //calls the CheckFloating function every 0.2 seconds for performance
@@ -143,12 +209,36 @@ public class BreakableWall : MonoBehaviour, IDestructable
 
     public void ApplyDamage(DestructionHitData hitData)
     {
-        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, hitData.radius))    //breaks each voxel in a radius
+        float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position);
+        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
         {
             if (collider.GetComponent<WallVoxel>() != null)
                 collider.GetComponent<WallVoxel>().breakVoxel();
         }
     }
 
-  
+    public int CountCurrentVoxels()
+    {
+        int count = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (voxels[x, y] != null)
+                { 
+                    count++; 
+                }
+            }
+        }
+        return count;
+    }
+
+    public void CheckWallIntegrity()
+    {
+        int currentVoxelCount = CountCurrentVoxels();
+        if(originalVoxelCount > 0 && (float)currentVoxelCount / originalVoxelCount < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
+        {
+            Destroy(gameObject); // Destroy the wall
+        }
+    }
 }

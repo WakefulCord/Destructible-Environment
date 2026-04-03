@@ -15,10 +15,27 @@ public class PlayerMovement : MonoBehaviour
 
     private float movementSpeed;
 
+
+    [Header("Grounded Fields")]
+    [SerializeField] private float groundRayOffset;
+    [SerializeField] private float groundRayDist;
+
+    [SerializeField] private LayerMask ignoreForGroundCheck;
+    [SerializeField] private bool isGrounded;
+
+    [Header("Jump Fields")]
+    [SerializeField] private float jumpForce;
+
+    [SerializeField] private float jumpTimer;
+    [SerializeField] private float jumpCooldown = 0.5f;
+    [SerializeField] private bool canJump;
+
     #endregion
 
     #region Properties
+    public bool IsGrounded => isGrounded;
 
+    
     #endregion
 
     #region Start Up
@@ -33,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
     {
         movementSpeed = walkSpeed;
 
+        canJump = true;
+        jumpTimer = 0;
+
     }
     #endregion
 
@@ -41,9 +61,55 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnUpdate(float h, float v, bool isSprinting)
     {
-        HandleMovement(h, v, isSprinting);
+        isGrounded = HandleGroundCheck();
+
+
+        if (isGrounded)
+            HandleMovement(h, v, isSprinting);
+
+
+        if (!canJump)
+        {
+            jumpTimer += Time.deltaTime;
+
+            if (jumpTimer >= jumpCooldown)
+            {
+                canJump = true;
+                jumpTimer = 0;
+            }
+        }
     }
 
+    private bool HandleGroundCheck()
+    {
+        Vector3 origin = transform.position;
+        origin.y += groundRayOffset;
+
+        if (Physics.Raycast(origin, -Vector3.up, groundRayDist, ~ignoreForGroundCheck))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void HandleJump()
+    {
+        if (canJump)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            canJump = false;
+            jumpTimer = 0;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+
+        Vector3 origin = transform.position;
+        origin.y += groundRayOffset;
+        Gizmos.DrawRay(origin, -Vector3.up * groundRayDist);
+    }
     private void HandleMovement(float hor, float vert, bool sprint)
     {
 

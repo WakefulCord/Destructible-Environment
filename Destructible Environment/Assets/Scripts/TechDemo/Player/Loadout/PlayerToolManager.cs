@@ -7,7 +7,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
     #endregion
 
     #region Private Fields
-   
+
     [Header(" Tool Maanager fields")]
     [SerializeField] private DestructionTool currentEquippedTool;
     [SerializeField] private ToolBehaviour activeToolBehaviour;
@@ -59,7 +59,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
             }
         }
     }
-    
+
 
     private void UnequipCurrentTool()
     {
