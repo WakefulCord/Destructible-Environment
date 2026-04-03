@@ -1,8 +1,13 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+
+//Might need an explosive manager as explosives break when tool is switched
 
 public class ExplosiveBehaviour : MonoBehaviour // actual explosion - runs logic and communicates with destruction, not a "useable tool"
 {
+    public event Action<ExplosiveBehaviour> Exploded; // so it can talk to whatever spawned it if it needs to, like for remote detonator to know when its explosive has gone off
+
     [SerializeField] private bool isProjectile;
 
     private float damage;
@@ -10,54 +15,96 @@ public class ExplosiveBehaviour : MonoBehaviour // actual explosion - runs logic
     private DestructionLayer compatibleLayers;
     private ExplosionFeedback explosionData;
 
+    private float fuseDuration;
     private float fuseTimer;
     private bool hasExploded;
 
     private ExplosionTool GetTool;
+   
+    private bool isActive; // is explosive active, start timers/explode
 
-    public void OnExplosiveInit(ExplosionTool tool)
+    public bool HasExploded => hasExploded;
+
+    public void OnRemoteExplosiveInit(ExplosionTool tool)
     {
-        damage = tool.Damage;
-        radius = tool.Radius;
-        compatibleLayers = tool.GetCompatibleLayers;
-        explosionData = tool.GetExplosionFeedback;
-        fuseTimer = 0f;
-        hasExploded = false;
+        SetExplosionStats(tool);
+        
 
+
+
+        
+        
+
+     
+    }
+
+    public void OnFuseExplosiveInit(ExplosionTool tool, float fuseTimer)
+    {
+        SetExplosionStats(tool);
+        
+
+
+        fuseDuration = fuseTimer;
+        
+       
+    }
+
+    public void OnImpactExplosiveInit(ExplosionTool tool)
+    {
+        SetExplosionStats(tool);
+        isProjectile = true;
+        
+        fuseDuration = -1f;
+    }
+
+    private void SetExplosionStats(ExplosionTool tool)
+    {
         GetTool = tool;
+        explosionData = GetTool.GetExplosionFeedback;
+        isActive = false;
+        
+        hasExploded = false;
+        isProjectile = false;
+        fuseDuration = -1f; // instant explosion, no fuse - default
+        damage = GetTool.Damage;
+        radius = GetTool.Radius;
+        compatibleLayers = GetTool.GetCompatibleLayers;
+        explosionData = GetTool.GetExplosionFeedback;
+
+        fuseTimer = 0f;
     }
 
-    private void OnExplosiveUpdate()
+    public void OnExplosiveUpdate()
     {
-        if (hasExploded) return;
+        if (!isActive || hasExploded) return;
 
-        if (explosionData != null && explosionData.FuseTime > 0f)
-        {
-            fuseTimer += Time.deltaTime;
-            if (fuseTimer >= explosionData.FuseTime)
-            {
-                Explode();
-            }
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (isProjectile && !hasExploded)
+        fuseTimer += Time.deltaTime;
+        if (fuseTimer >= fuseDuration)
         {
             Explode();
         }
     }
 
-    public void Detonate()
+    private void OnCollisionEnter(Collision collision) //launcher 
     {
-        Explode();
+        if (isProjectile && !hasExploded)
+        {
+            Explode(); // straight to explode - nothing is managing it
+        }
     }
+
+    public void ActivateExplosive()
+    {
+        isActive = true;
+    }
+
+   
 
     private void Explode()
     {
         if (hasExploded) return;
         hasExploded = true;
+        Exploded?.Invoke(this);
          // explosion visuals
         if (explosionData != null && explosionData.DestructionEffect != null) 
         {

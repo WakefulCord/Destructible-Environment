@@ -142,7 +142,6 @@ public class GunBehaviour : ToolBehaviour
 
     private void Shoot() // ADD BUllet SPREAD
     {
-        Debug.Log("BANG SHOOT");
 
         pendingShotVisuals.Clear();
 
@@ -215,14 +214,16 @@ public class GunBehaviour : ToolBehaviour
         {
             //create decal at hit
 
-        
+            
             GameObject decal = Instantiate(
                 GetGunTool.GetBulletFeedback.GetDecal,
                 hitData.hitPoint,
                 Quaternion.LookRotation(-hitData.hitNormal)
             );
 
-            decal.GetComponent<DecalFadeOut>().OnInit(GetGunTool.GetBulletFeedback.GetDecalFadeTimer);
+            
+
+            decal.GetComponent<DecalEffect>().OnInit(GetGunTool.GetBulletFeedback.DecalScale,GetGunTool.GetBulletFeedback.GetDecalFadeTimer);
         }
 
 

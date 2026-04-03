@@ -19,3 +19,4 @@ MonoBehaviour:
   useDecal: 1
   bulletDecalPrefab: {fileID: 8223976710113877590, guid: fd0574371ce141b41aae72ffd48225e2, type: 3}
   decalFadeTimer: 1
+  decalScale: 0.184

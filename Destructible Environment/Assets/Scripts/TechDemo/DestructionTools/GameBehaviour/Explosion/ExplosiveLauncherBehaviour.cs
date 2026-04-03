@@ -58,7 +58,7 @@ public class ExplosiveLauncherBehaviour : ToolBehaviour
         ExplosiveBehaviour explosive = projectile.GetComponent<ExplosiveBehaviour>();
         if (explosive != null)
         {
-            explosive.OnExplosiveInit(GetLauncherTool);
+            explosive.OnImpactExplosiveInit(GetLauncherTool);
         }
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();

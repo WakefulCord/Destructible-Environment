@@ -2,11 +2,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class DecalFadeOut : MonoBehaviour
+public class DecalEffect : MonoBehaviour
 {
     DecalProjector decal;
 
-    public void OnInit(float fadeTimer)
+    public void OnInit(float decalScale, float fadeTimer)
     {
         decal = GetComponent<DecalProjector>();
 
@@ -15,6 +15,18 @@ public class DecalFadeOut : MonoBehaviour
             Debug.LogWarning($"DecalFadeOut: No DecalProjector found on {gameObject.name}.");
             return;
         }
+        //scale
+        decal.size = new Vector3(decal.size.x * decalScale, decal.size.y * decalScale, decal.size.z);
+
+        //rotation - random z rotation
+        float randomZRot = Random.Range(0.0f, 360f);
+        Vector3 currentEuler = transform.rotation.eulerAngles;
+        Vector3 newEuler = new Vector3(currentEuler.x, currentEuler.y, currentEuler.z + randomZRot);
+
+        transform.rotation = Quaternion.Euler(newEuler);
+        
+
+
         StartCoroutine(FadeOut(fadeTimer));
     }
 

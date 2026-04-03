@@ -32,6 +32,7 @@ public class WallVoxel : MonoBehaviour
         breakableWall.spawnDebris(this);
         Destroy(gameObject);
         breakableWall.CheckWallIntegrity();
+        if (!objectStress) return;
         objectStress.limitCalc(1f); // Simulate taking 1 damage to the object stress when a voxel is broken
 
     }
