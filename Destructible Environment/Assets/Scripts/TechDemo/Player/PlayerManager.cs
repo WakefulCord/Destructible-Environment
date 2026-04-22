@@ -36,15 +36,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Start Up
-    private void Awake() // temp
-    {
-        OnAwake();
-    }
-    private void Start() // temp
-    {
-        OnStart();
-    }
-
+    
     public void OnAwake()
     {
         inputManager = InputManager.Instance;

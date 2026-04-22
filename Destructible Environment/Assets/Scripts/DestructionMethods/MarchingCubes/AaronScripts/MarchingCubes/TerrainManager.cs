@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class TerrainManager : MonoBehaviour, IDestructable // main script for handling marching cubes terrain
+public class TerrainManager : DestructableBehaviour // main script for handling marching cubes terrain
 {
     #region Class References
     private static TerrainManager _instance;
@@ -61,13 +61,18 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
     public Material ChunkMaterial => chunkMaterial;
     public int TerrainHeight => height;
 
-    public DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
+    public override DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
 
 
     #endregion
 
     #region Start Up
-    private void Start()
+    public override void InitializeDestruction()
+    {
+        base.InitializeDestruction();
+        OnStart();
+    }
+    private void OnStart()
     {
         gridManager = GetComponent<GridManager>();
 
@@ -283,7 +288,7 @@ public class TerrainManager : MonoBehaviour, IDestructable // main script for ha
         return transform.TransformPoint(gridPos + gridOrigin);
     }
 
-    public void ApplyDamage(DestructionHitData hitData)
+    public override void ApplyDamage(DestructionHitData hitData)
     {
         Vector3 gridPos = WorldToGrid(hitData.hitPoint);
         UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);

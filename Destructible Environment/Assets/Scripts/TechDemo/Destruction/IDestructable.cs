@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IDestructable 
 {
     DestructionLayer GetLayer { get; }
+    public void InitializeDestruction();
     public void ApplyDamage(DestructionHitData hitData);
 }
 public struct DestructionHitData 

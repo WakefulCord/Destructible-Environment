@@ -5,13 +5,14 @@ public class GameManager : MonoBehaviour
     #region Class References
     private static GameManager _instance;
 
+    CameraManager cameraManager;
     PlayerManager playerManager;
     InputManager inputManager;
     PlayerUIManager playerUIManager;
     #endregion
 
     #region Private Fields
-
+    [SerializeField] private DestructableBehaviour[] destructables;
     #endregion
 
     #region Properties
@@ -43,21 +44,32 @@ public class GameManager : MonoBehaviour
         playerManager = PlayerManager.Instance;
         inputManager = InputManager.Instance;
         playerUIManager = PlayerUIManager.Instance;
+        cameraManager = CameraManager.Instance;
 
         playerManager.OnAwake();
         //inputManager.OnAwake();
         playerUIManager.OnAwake();
+        cameraManager.OnAwake();
     }
 
     private void Start()
     {
         OnStart();
+
     }
 
     private void OnStart()
     {
         playerManager.OnStart();
         playerUIManager.OnStart();
+        cameraManager.OnStart();
+        
+        destructables = FindObjectsByType<DestructableBehaviour>(FindObjectsSortMode.None);
+
+        foreach (DestructableBehaviour detruct in destructables)
+        {
+            detruct.InitializeDestruction();
+        }
     }
     #endregion
 
@@ -70,6 +82,7 @@ public class GameManager : MonoBehaviour
     private void OnUpdate()
     {
         playerManager.OnUpdate();
+        cameraManager.OnUpdate();
     }
     #endregion
 }

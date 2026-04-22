@@ -1,14 +1,15 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class WallManager : MonoBehaviour, IDestructable
+public class WallManager : DestructableBehaviour
 {
     [SerializeField] GameObject brokenWall;
     [SerializeField] GameObject wall;
 
-    public DestructionLayer GetLayer => DestructionLayer.WallSwitch;
+    public override DestructionLayer GetLayer => DestructionLayer.WallSwitch;
 
-    public void ApplyDamage(DestructionHitData hitData)
+
+    public override void ApplyDamage(DestructionHitData hitData)
     {
         breakWall(hitData);
     }

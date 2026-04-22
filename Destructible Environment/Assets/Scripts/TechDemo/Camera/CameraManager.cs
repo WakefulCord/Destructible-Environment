@@ -42,23 +42,22 @@ public class CameraManager : MonoBehaviour
     #endregion
 
     #region Start Up
-    private void Awake()
-    {
-        OnAwake();
-    }
+  
     public void OnAwake() 
     {
         mainCam = Camera.main;
         inputManager = InputManager.Instance;
         playerManager = PlayerManager.Instance;
     }
+
+    public void OnStart()
+    {
+
+    }
     #endregion
 
     #region Class Methods
-    private void Update()
-    {
-        OnUpdate();
-    }
+   
     public void OnUpdate()
     {
         FollowTarget();
