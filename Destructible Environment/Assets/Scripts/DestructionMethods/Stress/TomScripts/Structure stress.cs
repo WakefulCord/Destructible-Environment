@@ -9,7 +9,7 @@ public class Structurestress : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Get all Objectstress components in children (including inactive if needed)
+        /*// Get all Objectstress components in children (including inactive if needed)
         Objectstress[] childStresses = GetComponentsInChildren<Objectstress>();
         float totalIntegrity = 0f;
 
@@ -17,8 +17,8 @@ public class Structurestress : MonoBehaviour
         {
             totalIntegrity += objStress.objStructIntegrity;
         }
-
-        stressLimit = totalIntegrity;
+*/
+        stressLimit = GetComponentsInChildren<BreakableWall>().Length;
         Debug.Log("Total Structure Stress Limit: " + stressLimit);
     }
 
