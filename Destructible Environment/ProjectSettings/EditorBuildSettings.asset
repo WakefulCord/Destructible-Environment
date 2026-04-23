@@ -6,14 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/PrototypeScenes/Voxel World.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/UI/1_MainMenu.unity
+    guid: 66b124d10366d744a8b20996b71bdaa1
+  - enabled: 1
+    path: Assets/Scenes/UI/2_SceneMenu.unity
+    guid: 4d24e2f35e1eacd44ad352540d17fbc6
   - enabled: 1
     path: Assets/Scenes/Tech demo Scenes/MarchingCubes.unity
     guid: a5693842084b1d1429194ad19dd52f03
   - enabled: 1
     path: Assets/Scenes/Tech demo Scenes/DynamicSlicing.unity
     guid: 93e23a7294a143f46b2d5b72aaf25d83
+  - enabled: 1
+    path: Assets/Scenes/PrototypeScenes/DynamicSlicingScene.unity
+    guid: 169d05562d5252745a5933290e12dce0
+  - enabled: 1
+    path: Assets/Scenes/Tech demo Scenes/PlayerTest.unity
+    guid: 9cc4f420a29428544a67c2112a0e9f0b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

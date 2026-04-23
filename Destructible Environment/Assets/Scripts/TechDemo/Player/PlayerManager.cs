@@ -37,6 +37,7 @@ public class PlayerManager : MonoBehaviour
 
     #region Start Up
     
+
     public void OnAwake()
     {
         inputManager = InputManager.Instance;

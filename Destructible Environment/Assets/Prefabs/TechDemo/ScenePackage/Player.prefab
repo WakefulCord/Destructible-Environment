@@ -264,8 +264,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 10
   sprintSpeed: 20
-  groundRayOffset: 0.5
-  groundRayDist: 1.55
+  groundRayOffset: 0
+  groundRayDist: 1.25
   ignoreForGroundCheck:
     serializedVersion: 2
     m_Bits: 0
@@ -287,10 +287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   avaiableTools:
-  - {fileID: 11400000, guid: 690ef9ad3e6632d4592eed9d3e7b10ce, type: 2}
-  - {fileID: 11400000, guid: 915d381ae08ac5e459b78cfee32e64b6, type: 2}
-  - {fileID: 11400000, guid: a5b87d76e6b7f9145b9e5b2139be4049, type: 2}
-  - {fileID: 11400000, guid: f4d06e38f1fd0f04d856f72735f47c60, type: 2}
+  - {fileID: 11400000, guid: 1200ff0afa5558842bc2766b8342b848, type: 2}
 --- !u!114 &3665612308767655588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,5 +301,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEquippedTool: {fileID: 0}
-  activeToolBehaviour: {fileID: 0}
+  activeTool: {fileID: 0}
   tooltransform: {fileID: 5863200417444313543}

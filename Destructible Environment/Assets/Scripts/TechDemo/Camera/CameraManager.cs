@@ -42,7 +42,7 @@ public class CameraManager : MonoBehaviour
     #endregion
 
     #region Start Up
-  
+    
     public void OnAwake() 
     {
         mainCam = Camera.main;
@@ -50,13 +50,13 @@ public class CameraManager : MonoBehaviour
         playerManager = PlayerManager.Instance;
     }
 
+
     public void OnStart()
     {
-
     }
     #endregion
 
-    #region Class Methods
+        #region Class Methods
    
     public void OnUpdate()
     {

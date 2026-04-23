@@ -1,4 +1,4 @@
-/*using UnityEngine;
+using UnityEngine;
 
 public class Objectstress : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class Objectstress : MonoBehaviour
 
     void Start()
     {
-        stressLimit = GetComponentsInChildren<BreakableWall>().Length;
+        stressLimit = GetComponentsInChildren<WallVoxel>().Length;
         Debug.Log("Initial Object Stress Limit: " + stressLimit); // Log the initial object stress limit
         currentStress = 0f;
     }
@@ -34,4 +34,4 @@ public class Objectstress : MonoBehaviour
         }
     }
 
-}*/
+}

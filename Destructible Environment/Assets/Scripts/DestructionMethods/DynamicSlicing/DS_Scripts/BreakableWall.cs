@@ -10,8 +10,6 @@ public class BreakableWall : DestructableBehaviour
     Structurestress structureStress;
     public int originalVoxelCount;
     public float integrityThreshold = 0.25f; // Threshold for wall integrity
-    private bool isDestroyed = false;
-    public int structureWeight = 1;
 
     public WallVoxel[,] voxels;
     [SerializeField] Sprite up, down, left, right, uL, uR, dL, dR;
@@ -29,13 +27,8 @@ public class BreakableWall : DestructableBehaviour
 
     public override DestructionLayer GetLayer => DestructionLayer.VoxelWall;
 
-    public override void InitializeDestruction()
-    {
-        base.InitializeDestruction();
-
-        OnAwake();
-    }
-    private void OnAwake()
+    
+    private void Awake()
     {
         voxels = new WallVoxel[width, height];
         StartCoroutine(CheckFloatingCoroutine());
@@ -217,6 +210,7 @@ public class BreakableWall : DestructableBehaviour
 
     public override void ApplyDamage(DestructionHitData hitData)
     {
+        
         float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position);
         foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
         {
@@ -241,24 +235,12 @@ public class BreakableWall : DestructableBehaviour
         return count;
     }
 
-    
-
     public void CheckWallIntegrity()
     {
-        if (isDestroyed) return; 
-
         int currentVoxelCount = CountCurrentVoxels();
-        if(originalVoxelCount > 0 && ((float)currentVoxelCount / originalVoxelCount) < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
+        if(originalVoxelCount > 0 && (float)currentVoxelCount / originalVoxelCount < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
         {
-            Debug.Log("Wall integrity failed"); // Log the wall destruction
-            updateStructure(); // Update the structure stress
             Destroy(gameObject); // Destroy the wall
-            isDestroyed = true;
         }
-    }
-    public void updateStructure()
-    {
-        structureStress = GetComponentInParent<Structurestress>(); // Get the Structurestress component from the parent object
-        structureStress.structLimitCalc(structureWeight); //apply damage to the structure stress script
     }
 }

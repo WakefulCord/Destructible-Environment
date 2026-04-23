@@ -56,6 +56,12 @@ public class GameManager : MonoBehaviour
     {
         OnStart();
 
+        destructables = FindObjectsByType<DestructableBehaviour>(FindObjectsSortMode.None);
+
+        foreach (DestructableBehaviour detruct in destructables)
+        {
+            detruct.InitializeDestruction();
+        }
     }
 
     private void OnStart()
@@ -63,13 +69,6 @@ public class GameManager : MonoBehaviour
         playerManager.OnStart();
         playerUIManager.OnStart();
         cameraManager.OnStart();
-        
-        destructables = FindObjectsByType<DestructableBehaviour>(FindObjectsSortMode.None);
-
-        foreach (DestructableBehaviour detruct in destructables)
-        {
-            detruct.InitializeDestruction();
-        }
     }
     #endregion
 

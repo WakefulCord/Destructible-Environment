@@ -46,9 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 0}
-  mainCam: {fileID: 3790363056197402419}
+  cameraTransform: {fileID: 4960073460267749362}
   mouseSens: 0.416
-  defaultFOV: 60
 --- !u!1 &2551432118921646604
 GameObject:
   m_ObjectHideFlags: 0

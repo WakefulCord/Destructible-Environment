@@ -51,6 +51,4 @@ public class PlayerUIManager : MonoBehaviour
     #endregion
 
    
-
-   
 }
