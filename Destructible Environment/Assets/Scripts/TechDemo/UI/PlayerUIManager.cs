@@ -44,11 +44,15 @@ public class PlayerUIManager : MonoBehaviour
     #endregion
 
     #region Class Methods
-    public void SetUpToolbarUI()
+  
+    #endregion
+
+    #region Update Methods
+    public void OnUpdate()
     {
 
     }
     #endregion
 
-   
+
 }

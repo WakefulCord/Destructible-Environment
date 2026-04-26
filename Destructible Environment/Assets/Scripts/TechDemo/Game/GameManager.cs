@@ -82,6 +82,8 @@ public class GameManager : MonoBehaviour
     {
         playerManager.OnUpdate();
         cameraManager.OnUpdate();
+
+        playerUIManager.OnUpdate();
     }
     #endregion
 }
