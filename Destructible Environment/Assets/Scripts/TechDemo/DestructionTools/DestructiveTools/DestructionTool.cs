@@ -65,6 +65,9 @@ public class DestructionTool : ScriptableObject
     public bool PrimaryUsesCooldown => primaryUsesCooldown;
     public bool SecondaryUsesCooldown => secondaryUsesCooldown;
 
+    // Used By WeaponBar UI for displaying the prefab icon
+    public Sprite GetIcon => toolIcon;
+
 
 }
 public enum ToolFireMode

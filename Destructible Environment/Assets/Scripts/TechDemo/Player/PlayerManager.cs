@@ -78,6 +78,9 @@ public class PlayerManager : MonoBehaviour
             return;
         }
         playerToolManager.HandleEquipTool(slotNum);
+
+        // Notify the UI of the tool change so it can update the icon and cooldown display on UI - WeaponHotbar
+        PlayerUIManager.Instance?.NotifyToolSelected(slotNum);
     }
 
     public void Input_UseTool()
