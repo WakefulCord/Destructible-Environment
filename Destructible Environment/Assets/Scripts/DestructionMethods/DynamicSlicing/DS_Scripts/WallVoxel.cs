@@ -9,6 +9,8 @@ public class WallVoxel : MonoBehaviour
     BreakableWall breakableWall;
     Objectstress objectStress;
 
+    [SerializeField] float debrisChance;
+
     
     private void Start()
     {
@@ -30,8 +32,13 @@ public class WallVoxel : MonoBehaviour
         breakableWall.voxels[x, y] = null;
 
         breakableWall.updateWall();
-        breakableWall.spawnDebris(this);
+
+        if(Random.value < debrisChance)
+            breakableWall.spawnDebris(this);
+
+
         breakableWall.CheckFloating(breakableWall.voxels);
+
         Destroy(gameObject);
         breakableWall.CheckWallIntegrity();
         if (!objectStress) return;

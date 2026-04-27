@@ -125,6 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
+  debrisChance: 0.25
 --- !u!1 &3979529486971632132
 GameObject:
   m_ObjectHideFlags: 0
