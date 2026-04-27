@@ -46,7 +46,7 @@ public class UI_WeaponPreview : MonoBehaviour
         _previewCamera.cullingMask = LayerMask.GetMask("UI_WeaponPreview");
     }
 
-    public Sprite Generate_WeaponPreview(GameObject prefab)
+    public Sprite Generate_WeaponPreview(GameObject prefab) // bug: weapon preview texture doesnt "clear" 
     {
         // 1. Spawn the prefab off-screen on our preview layer
         GameObject previewObj = Instantiate(prefab, new Vector3(0, -1000, 0), Quaternion.identity);

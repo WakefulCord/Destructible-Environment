@@ -1,5 +1,9 @@
 using UnityEngine;
 
+
+//Might have an issue with tools and toolbar sync
+
+
 public class PlayerUIManager : MonoBehaviour
 {
     #region Class References
@@ -40,10 +44,12 @@ public class PlayerUIManager : MonoBehaviour
     {
         // On Awake, get references to the UI elements that will be used by the PlayerManager to update the UI when needed.
         weaponBar = GetComponentInChildren<UI_WeaponBar>();
+
+        
     }
     public void OnStart()
     {
-        
+        weaponBar.OnStart();
     }
     #endregion
 
@@ -55,6 +61,8 @@ public class PlayerUIManager : MonoBehaviour
         // It will pass the slot index (1-based) of the selected tool, and the UI can then update the highlight on the weapon bar accordingly.
         weaponBar.Select_WeaponSlot(slotIndex);
     }
+
+
 
     #endregion
 

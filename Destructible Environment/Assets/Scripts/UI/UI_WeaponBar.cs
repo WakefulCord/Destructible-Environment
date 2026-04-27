@@ -26,9 +26,11 @@ public class UI_WeaponBar : MonoBehaviour
 
 
     // ============= Unity Methods =============
-    private void Start()
+    public void OnStart()
     {
         _weaponPreview = GetComponent<UI_WeaponPreview>();                                      // Get the UI_WeaponPreview component for generating weapon icons
+        playerLoadout = PlayerManager.Instance.GetLoadout;
+
         Initialise_WeaponSlots();
     }
 

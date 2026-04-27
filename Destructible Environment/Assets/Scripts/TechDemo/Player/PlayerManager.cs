@@ -33,10 +33,13 @@ public class PlayerManager : MonoBehaviour
     }
 
     public bool IsSprinting => inputManager.SprintFlag;
+
+
+    public PlayerLoadout GetLoadout => playerLoadout;
     #endregion
 
     #region Start Up
-    
+
 
     public void OnAwake()
     {
