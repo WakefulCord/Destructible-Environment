@@ -6,22 +6,34 @@ EditorUserSettings:
   serializedVersion: 4
   m_ConfigSettings:
     RecentlyUsedSceneGuid-0:
-      value: 52060354560d5b020c08092649725e4445161e737d2971367a784466b0b76c6b
+      value: 56080c0251045d5f095b0e2013750f444e151c2c782b2467782f1c32b2e4303c
       flags: 0
     RecentlyUsedSceneGuid-1:
-      value: 5a08575f5207595a0f5d59741173094444164f7d7d2a23317c7a4465bbe1646d
+      value: 0701575f5c515c5a5b5d0d2616210c44154e1979742a7f657f701b37b0b83239
       flags: 0
     RecentlyUsedSceneGuid-2:
-      value: 015557545700085d54565e74427b5b4447154d7d287d73617b7b4e60bab73739
+      value: 0106575f5c565b5e5e5a0e7614210d4446161c292e2974327d714f36e7b5316e
       flags: 0
     RecentlyUsedSceneGuid-3:
-      value: 5557055155045003585d5a2413210644154e1d72297970327a78496be7b6626d
+      value: 0705515203500b02095b0873452508444015402e2a7d24617f794c63bbb4303d
       flags: 0
     RecentlyUsedSceneGuid-4:
-      value: 575304555506500954575d711525064412161a7f782a7263282a4561e0b53769
+      value: 5757000055025e5d5e575e7013740f44424f1d7d742973667f784d6bbbe6636b
       flags: 0
     RecentlyUsedSceneGuid-5:
-      value: 52070d0255005c0d5f0a59704571084443164d737f7b74697d2c4c61e6e33168
+      value: 0509515050000f080b5b5824147a0f44414f1d282e7c7e35282d4c66e7b63169
+      flags: 0
+    RecentlyUsedSceneGuid-6:
+      value: 5000525506560b595f5d5b7714255e4414164979292976617d7c4a61e7e4306d
+      flags: 0
+    RecentlyUsedSceneGuid-7:
+      value: 015706045354080b0f0d5921117a0b44124e4e7e752b7364792f4966b5e46068
+      flags: 0
+    RecentlyUsedSceneGuid-8:
+      value: 5402075404510d585b57092149740c444f16487d757974322f2a1b37e7e53760
+      flags: 0
+    RecentlyUsedSceneGuid-9:
+      value: 5a02515456545e09545a0d734470594440154a2e792a71622c281b61b7e46c6b
       flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
@@ -31,7 +43,7 @@ EditorUserSettings:
   m_VCDebugCmd: 0
   m_VCDebugOut: 0
   m_SemanticMergeMode: 2
-  m_DesiredImportWorkerCount: 4
+  m_DesiredImportWorkerCount: 6
   m_StandbyImportWorkerCount: 2
   m_IdleImportWorkerShutdownDelay: 60000
   m_VCShowFailedCheckout: 1

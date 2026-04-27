@@ -145,7 +145,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -387,7 +387,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 851038975171031799, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 13.51
       objectReference: {fileID: 0}
     - target: {fileID: 851038975171031799, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
       propertyPath: m_LocalPosition.y
@@ -395,7 +395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 851038975171031799, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.47
+      value: 25.25
       objectReference: {fileID: 0}
     - target: {fileID: 851038975171031799, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
       propertyPath: m_LocalRotation.w
@@ -428,6 +428,14 @@ PrefabInstance:
     - target: {fileID: 3769409166350440061, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8956843945728203567, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
+      propertyPath: worldManager
+      value: 
+      objectReference: {fileID: 1820657924}
+    - target: {fileID: 8956843945728203567, guid: aa3981d8abd6c8d4f97ab2f89e280934, type: 3}
+      propertyPath: mouseSensitivity
+      value: 150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -528,7 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldMaterial: {fileID: 2100000, guid: 827321fb54bc4ad48ada0411a693dee6, type: 2}
-  scale: 0.05
+  scale: 0.01
   maxHeight: 16
   worldSize: 64
 --- !u!1660057539 &9223372036854775807

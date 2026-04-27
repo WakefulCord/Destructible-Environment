@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0d7ca34194ead84e966ae6298dcc097, type: 3}
+  m_Name: Remote_C4
+  m_EditorClassIdentifier: 
+  toolName: C4 Remote Detonator
+  toolPrefab: {fileID: 518018486553129352, guid: 3748f10a24d089d4a978fb8dfcf09f1e, type: 3}
+  toolIcon: {fileID: 0}
+  destructionData: {fileID: 11400000, guid: 9f354a980c9792b42a4d4ede98f7fb66, type: 2}
+  compatibleLayers: 6
+  damage: 3
+  radius: 3
+  primaryFireMode: 0
+  primaryUsesCooldown: 1
+  primaryCooldown: 0.5
+  primaryAudio: {fileID: 8300000, guid: b8f6b291f06d2914eacff2fe48889e3d, type: 3}
+  primaryAudioVolume: 0.1
+  primaryEffect: {fileID: 0}
+  secondaryFireMode: 0
+  secondaryUsesCooldown: 1
+  secondaryCooldown: 1
+  doPointAtCursor: 0
+  explosivePrefab: {fileID: 3451455021427857733, guid: c76a1f0887bf6324ead3684d98ae51af, type: 3}
+  explosiveTriggerMode: 1
+  fuseTimer: 1.5

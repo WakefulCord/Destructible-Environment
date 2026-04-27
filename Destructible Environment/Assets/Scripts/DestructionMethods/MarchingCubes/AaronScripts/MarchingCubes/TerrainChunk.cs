@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TerrainChunk : MonoBehaviour
 {
-    TerrainManager terrainManager; 
+    TerrainManager terrainManager;
 
     //mesh fields - need to build a mesh/collision
     List<Vector3> meshVerts;
@@ -15,7 +15,7 @@ public class TerrainChunk : MonoBehaviour
     Vector3[] edgeVertex = new Vector3[12];
 
     //fields from terrainmanager cached
-    int chunkSize; 
+    int chunkSize;
     Vector3Int chunkPos;
 
     //8 corner points for marching cube
@@ -37,17 +37,17 @@ public class TerrainChunk : MonoBehaviour
         terrainManager = manager;
         chunkPos = pos;
         chunkSize = size;
-        
+
         //set up components
         meshVerts = new List<Vector3>();
         meshTris = new List<int>();
 
         meshFilter = GetComponent<MeshFilter>();
-        
+
         meshRenderer = GetComponent<MeshRenderer>();
-        
+
         meshCollider = GetComponent<MeshCollider>();
-        
+
         GenerateMesh();
     }
 
@@ -92,8 +92,8 @@ public class TerrainChunk : MonoBehaviour
 
             for (int i = 0; i < meshVerts.Count; i++)
             {
-                float worldY = meshVerts[i].y + transform.position.y;
-                float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, worldY);
+                float gridY = meshVerts[i].y + chunkPos.y * chunkSize;
+                float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, gridY);
 
                 t *= 2f;
                 t = Mathf.Clamp01(t);
@@ -110,7 +110,7 @@ public class TerrainChunk : MonoBehaviour
     }
     private void MarchCube(int x, int y, int z)
     {
-        Vector3Int localPos = new Vector3Int(x, y, z); 
+        Vector3Int localPos = new Vector3Int(x, y, z);
 
         //get each denisty value from 8 corners of cube
         float[] cubeCorners = new float[8];

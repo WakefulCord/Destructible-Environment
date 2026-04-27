@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BreakableWall : MonoBehaviour
+public class BreakableWall : DestructableBehaviour
 {
     public int width;
     public int height;
+
+    Structurestress structureStress;
+    public int originalVoxelCount;
+    public float integrityThreshold = 0.25f; // Threshold for wall integrity
 
     public WallVoxel[,] voxels;
     [SerializeField] Sprite up, down, left, right, uL, uR, dL, dR;
@@ -21,10 +25,14 @@ public class BreakableWall : MonoBehaviour
     { 127, 33 }, { 208, 34 }, { 210, 35 }, { 214, 36 }, { 216, 37 }, { 218, 38 }, { 219, 39 }, { 222, 40 },
     { 223, 41 }, { 248, 42 }, { 250, 43 }, { 251, 44 }, { 254, 45 }, { 255, 46 }, { 0, 47 }};
 
+    public override DestructionLayer GetLayer => DestructionLayer.VoxelWall;
+
+    
     private void Awake()
     {
         voxels = new WallVoxel[width, height];
-        //StartCoroutine(CheckFloatingCoroutine());
+        StartCoroutine(CheckFloatingCoroutine());
+        originalVoxelCount = width * height;
     }
     public void addToArray(WallVoxel voxel)
     {
@@ -138,14 +146,14 @@ public class BreakableWall : MonoBehaviour
         return voxels[checkX, checkY] != null;
     }
 
-    /*IEnumerator CheckFloatingCoroutine()    //calls the CheckFloating function every 0.2 seconds for performance
+    IEnumerator CheckFloatingCoroutine()    //calls the CheckFloating function every 0.2 seconds for performance
     {
         while (true)
         {
             yield return new WaitForSeconds(0.2f);
             CheckFloating(voxels);
         }
-    }*/
+    }
 
     public void CheckFloating(WallVoxel[,] voxels) //uses breadth first search to check if there are any voxels that are floating
     {
@@ -197,6 +205,42 @@ public class BreakableWall : MonoBehaviour
                     voxels[x, y].breakVoxel();//destroy it
                 }
             }
+        }
+    }
+
+    public override void ApplyDamage(DestructionHitData hitData)
+    {
+        
+        float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position);
+        foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
+        {
+            if (collider.GetComponent<WallVoxel>() != null)
+                collider.GetComponent<WallVoxel>().breakVoxel();
+        }
+    }
+
+    public int CountCurrentVoxels()
+    {
+        int count = 0;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (voxels[x, y] != null)
+                { 
+                    count++; 
+                }
+            }
+        }
+        return count;
+    }
+
+    public void CheckWallIntegrity()
+    {
+        int currentVoxelCount = CountCurrentVoxels();
+        if(originalVoxelCount > 0 && (float)currentVoxelCount / originalVoxelCount < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
+        {
+            Destroy(gameObject); // Destroy the wall
         }
     }
 }

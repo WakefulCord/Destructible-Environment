@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51dd31af4030a674b9eee2dd6b8b80a1, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  toolName: Pistol
+  toolPrefab: {fileID: 2447886619259798093, guid: ee347964b25178c45b0007172764939d, type: 3}
+  toolIcon: {fileID: 0}
+  destructionData: {fileID: 11400000, guid: b610224a013d02a4da84be1f350c9175, type: 2}
+  compatibleLayers: 6
+  damage: 1.25
+  radius: -0.12
+  primaryFireMode: 0
+  primaryUsesCooldown: 0
+  primaryCooldown: 0.1
+  primaryAudio: {fileID: 0}
+  primaryAudioVolume: 0
+  primaryEffect: {fileID: 0}
+  secondaryFireMode: 0
+  secondaryUsesCooldown: 1
+  secondaryCooldown: 0
+  doPointAtCursor: 0
+  useTracer: 0
+  tracerPrefab: {fileID: 2968512427402550875, guid: 27e824c968ffcf24b97f0e709d7c381b, type: 3}
+  tracerSpeed: 150
+  bulletCount: 1
+  spreadAngle: 0
+  canAim: 0
+  aimFOV: 0
+  aimSpeed: 0
+  aimOverlay: {fileID: 0}
