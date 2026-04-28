@@ -71,6 +71,11 @@ public class UI_WeaponPreview : MonoBehaviour
         // 5. Clean up
         RenderTexture.active = null;
         _previewCamera.targetTexture = null;
+
+        // BUG FIX - Fixed the issue where the weapon preview texture would not "clear" properly,
+        // By ensuring that the RenderTexture is released and the preview object is destroyed after rendering.
+        previewObj.SetActive(false); 
+
         Destroy(previewObj);
         Destroy(rt);
 
