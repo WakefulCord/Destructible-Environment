@@ -6358,6 +6358,39 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2084232956}
     m_Modifications:
+    - target: {fileID: 323304261447706255, guid: 1144efe1444ba9246ad4c579d7d6b873, type: 3}
+      propertyPath: m_text
+      value: "<color=#FFFFFF><size=64>\nThe project shown is a collection of Destructible
+        Environment examples created by students at Manchester Metropolitan University
+        for the Second Year 25/26: Games Development (Thematic Project). Students
+        were paired into allocated groups to create a functional project based on
+        a topic assigned by the course lead. This Unity project shows the completed
+        group task of the assessment in alignment with University regulations, created
+        using Unity, industry-standard IDEs, Discord for communication, and Trello
+        for planning and sprint management.\n\nOur development process closely mirrors
+        Tuckman's model of group development. During the Forming stage, the team
+        oriented itself around the brief - exploring what destructible environments
+        meant in practice, referencing existing examples such as Minecraft and known
+        industry standard game mechanics, and settling on Unity as the engine. Task
+        boundaries were defined and responsibilities began to take shape.\n \nThe
+        Storming stage emerged naturally as the team debated which destructible techniques
+        were worth pursuing. Dynamic Slicing, Marching Cubes, and Voxel-based destruction
+        represent fundamentally different implementations, and aligning on scope
+        and ownership required negotiation. Trello sprints provided a structured
+        outlet for this, keeping conflict productive rather than disruptive.\n\nDuring
+        the Norming stage, our  team established shared conventions - sprint structure,
+        scene ownership, version control strategy, and UI design responsibilities.
+        Members who focused on project management and UI design provided the scaffolding
+        that allowed the technical work to progress cohesively.\n\nFinally, in the
+        Performing stage, our team functioned as an effective unit. Each member worked
+        autonomously on their area whether that was Dynamic Slicing, Marching Cubes,
+        Voxel destruction, or the overarching UI \u2014 while the project remained
+        coherent as a whole, culminating in the multi-scene tech demo presented here.\n\r"
+      objectReference: {fileID: 0}
+    - target: {fileID: 323304261447706255, guid: 1144efe1444ba9246ad4c579d7d6b873, type: 3}
+      propertyPath: m_isRightToLeft
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 713623413365992764, guid: 1144efe1444ba9246ad4c579d7d6b873, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
