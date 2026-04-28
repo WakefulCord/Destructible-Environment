@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6964430806920807353}
   m_Layer: 0
   m_Name: PlayerCamRef
-  m_TagString: Untagged
+  m_TagString: CamRef
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -250,6 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c262a4c96b5b12b408cf4a4017654b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGrounded: 0
 --- !u!114 &1704020710389207997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,5 +302,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEquippedTool: {fileID: 0}
-  activeTool: {fileID: 0}
+  activeToolBehaviour: {fileID: 0}
   tooltransform: {fileID: 5863200417444313543}

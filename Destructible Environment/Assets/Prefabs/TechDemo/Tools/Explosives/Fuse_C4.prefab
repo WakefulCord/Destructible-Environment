@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed57926b55068545bc0b3c5ec10ecf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectPoint: {fileID: 0}
-  toolPivot: {fileID: 0}
+  effectPoint: {fileID: 3435648079527025997}
+  toolPivot: {fileID: 1277146455018471743}
   useTimer: 0
   useCooldown: 0
   canUse: 0
@@ -55,6 +55,8 @@ MonoBehaviour:
   secondaryCooldown: 0
   canSecondaryUse: 0
   isSecondaryInUse: 0
+  damage: 0
+  radius: 0
 --- !u!1 &8629727211553719147
 GameObject:
   m_ObjectHideFlags: 0

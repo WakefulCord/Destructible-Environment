@@ -5,6 +5,7 @@ public class TerraToolBehaviour : ToolBehaviour
     //timer for perforamnce
     
     [SerializeField] private GameObject indicatorGO;
+    private MeshRenderer indicatorRenderer;
 
     public TerrainTool GetTerrainTool => (TerrainTool)GetToolData;
 
@@ -13,9 +14,10 @@ public class TerraToolBehaviour : ToolBehaviour
 
     private float terraVal;
 
-    public override void OnToolInit(DestructionTool t)
+    private bool hitTerrain;
+    public override void OnToolInit(DestructionTool t, Camera playerCam)
     {
-        base.OnToolInit(t);
+        base.OnToolInit(t, playerCam);
 
 
         terraVal = 0;
@@ -25,11 +27,11 @@ public class TerraToolBehaviour : ToolBehaviour
     private void CreateIndicator()
     {
         indicatorGO = Instantiate(GetTerrainTool.GetIndicatorPrefab, transform);
+        indicatorRenderer = indicatorGO.GetComponent<MeshRenderer>();   
     }
     public override void OnToolUpdate(float dt)
     {
 
-        UpdateIndicator();
        
 
         base.OnToolUpdate(dt);
@@ -45,6 +47,9 @@ public class TerraToolBehaviour : ToolBehaviour
             }
             // resest can use
         }
+
+        UpdateIndicator();
+        hitTerrain = false;
     }
 
     protected override void OnHitFeedback(DestructionHitData hitData)
@@ -89,13 +94,17 @@ public class TerraToolBehaviour : ToolBehaviour
     private void UpdateIndicator()
     {
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, GetTerrainTool.GetTerraRange))
+        if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, GetTerrainTool.GetTerraRange))
         {
             ToggleIndicator(true);
             indicatorGO.transform.position = hit.point;
             indicatorGO.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            float radius = GetToolData.Radius;
+            
+            Color indicatorColour = Color.white;
+
+            indicatorColour = hitTerrain ? Color.green : Color.red;
+            indicatorRenderer.material.color = indicatorColour;
         }
         else
         {
@@ -110,7 +119,7 @@ public class TerraToolBehaviour : ToolBehaviour
 
         RaycastHit hit;
         //shoot from mainCam - for now?
-        if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, GetTerrainTool.GetTerraRange))
+        if (!Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, GetTerrainTool.GetTerraRange))
         {
             return;
         }
@@ -120,8 +129,8 @@ public class TerraToolBehaviour : ToolBehaviour
         {
             DestructionHitData data = new DestructionHitData()
             {
-                damage = GetToolData.Damage * terraVal,
-                radius = GetToolData.Radius,
+                damage = damage * terraVal,
+                radius = radius,
                 hitNormal = hit.normal,
                 hitPoint = hit.point,
             };
@@ -129,6 +138,7 @@ public class TerraToolBehaviour : ToolBehaviour
             target.ApplyDamage(data);
             OnHitFeedback(data);
 
+            hitTerrain = true;
         }
     }
 }

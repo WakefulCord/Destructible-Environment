@@ -50,10 +50,19 @@ MonoBehaviour:
   useTimer: 0
   useCooldown: 0
   canUse: 0
-  altUseTimer: 0
-  altUseCooldown: 0
-  canAltUse: 0
+  isPrimaryInUse: 0
+  secondaryTimer: 0
+  secondaryCooldown: 0
+  canSecondaryUse: 0
+  isSecondaryInUse: 0
+  damage: 0
+  radius: 0
   activeTracers: []
+  showDebug: 1
+  debugLifetime: 6
+  normalDebugRayLength: 1
+  normalDebugColour: {r: 1, g: 0, b: 0, a: 1}
+  sphereHitDebugColour: {r: 0.17801023, g: 1, b: 0, a: 1}
 --- !u!1 &4058356556559560751
 GameObject:
   m_ObjectHideFlags: 0

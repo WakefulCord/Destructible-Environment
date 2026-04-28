@@ -9,7 +9,13 @@ public class GunBehaviour : ToolBehaviour
     {
         public Vector3 endPoint;
     }
-
+    private struct DebugData
+    {
+        public Vector3 position;
+        public Vector3 normal;
+        public float radius;
+        public float expireTime;
+    }
     public GunTool GetGunTool => (GunTool)GetToolData;
 
 
@@ -18,13 +24,25 @@ public class GunBehaviour : ToolBehaviour
     private readonly List<PelletShotData> pendingShotVisuals = new List<PelletShotData>();
     Vector3 lastTracerEnd;
 
+    [Header("Debug Fields")]
+    [SerializeField] private bool showDebug;
+    List<DebugData> pendingDebug;
+    [SerializeField] private float debugLifetime = 1.0f;
+    [SerializeField] private float normalDebugRayLength = 0.5f;
+    [SerializeField] private Color normalDebugColour = Color.red;
+    [SerializeField] private Color sphereHitDebugColour = Color.red;
+
     bool isAiming = false;
 
     #region Set Up 
-    public override void OnToolInit(DestructionTool t)
+    public override void OnToolInit(DestructionTool t, Camera playerCam)
     {
-        base.OnToolInit(t);
+        base.OnToolInit(t, playerCam);
         isAiming = false;
+
+        
+        pendingDebug = new List<DebugData>();
+        
 
     }
     #endregion
@@ -35,6 +53,8 @@ public class GunBehaviour : ToolBehaviour
         base.OnToolUpdate(dt);
 
         UpdateTracers(dt);
+
+        CleanupExpiredDebug();
     }
     
     private void UpdateTracers(float dt)
@@ -61,8 +81,52 @@ public class GunBehaviour : ToolBehaviour
             }
         }
     }
+
     #endregion
 
+    #region Debug
+    private void OnDrawGizmos()
+    {
+        if (!showDebug || pendingDebug == null || pendingDebug.Count == 0) return;
+
+        float now = Application.isPlaying ? Time.time : 0f;
+
+        for (int i = 0; i < pendingDebug.Count; i++)
+        {
+            DebugData data = pendingDebug[i];
+
+            if (Application.isPlaying && now > data.expireTime)
+                continue;
+
+            Gizmos.color = sphereHitDebugColour;
+            Gizmos.DrawSphere(data.position, Mathf.Max(0.01f, data.radius));
+
+            Gizmos.color = normalDebugColour;
+            Gizmos.DrawLine(
+                data.position,
+                data.position + data.normal.normalized * normalDebugRayLength
+            );
+        }
+    }
+
+    private void AddDebugData(Vector3 pos, Vector3 norm, float radius)
+    {
+        pendingDebug.Add(new DebugData
+        {
+            position = pos,
+            normal = norm,
+            radius = radius,
+            expireTime = Time.time + debugLifetime,
+        });
+    }
+    private void CleanupExpiredDebug()
+    {
+        if (!showDebug || pendingDebug == null || pendingDebug.Count == 0) return;
+
+        float now = Time.time;
+        pendingDebug.RemoveAll(data => now > data.expireTime);
+    }
+    #endregion
 
 
 
@@ -115,7 +179,7 @@ public class GunBehaviour : ToolBehaviour
 
         if (!GetGunTool.UseTracer || GetGunTool.GetTracerPrefab == null) return;
 
-        Vector3 origin = effectPoint != null ? effectPoint.position : Camera.main.transform.position;
+        Vector3 origin = effectPoint != null ? effectPoint.position : mainCam.transform.position;
 
         foreach (PelletShotData pellet in pendingShotVisuals)
         {
@@ -145,8 +209,8 @@ public class GunBehaviour : ToolBehaviour
 
         pendingShotVisuals.Clear();
 
-        Vector3 origin = Camera.main.transform.position;
-        Vector3 direction = Camera.main.transform.forward;
+        Vector3 origin = mainCam.transform.position;
+        Vector3 direction = mainCam.transform.forward;
         int bulletCount = Mathf.Max(1, GetGunTool.BulletCount);
 
         for (int i = 0; i < bulletCount; i++)
@@ -161,14 +225,18 @@ public class GunBehaviour : ToolBehaviour
 
                 DestructionHitData hitData = new DestructionHitData()
                 {
-                    damage = GetToolData.Damage,
-                    radius = GetToolData.Radius,
+                    damage = damage,
+                    radius = radius,
                     hitNormal = hit.normal,
                     hitPoint = hit.point,
                 };
 
                 OnBulletHit(hitData);
 
+                if (showDebug)
+                {
+                    AddDebugData(hitData.hitPoint, hitData.hitNormal, hitData.radius);
+                }
                 IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
                 if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
                 {

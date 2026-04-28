@@ -6,9 +6,9 @@ public class ExplosiveLauncherBehaviour : ToolBehaviour
 
     public ExplosiveLauncherTool GetLauncherTool => (ExplosiveLauncherTool)GetToolData;
 
-    public override void OnToolInit(DestructionTool t)
+    public override void OnToolInit(DestructionTool t, Camera playerCam)
     {
-        base.OnToolInit(t);
+        base.OnToolInit(t, playerCam);
 
       
     }
@@ -39,15 +39,15 @@ public class ExplosiveLauncherBehaviour : ToolBehaviour
     private void Launch()
     {
         
-        Camera cam = Camera.main;
-        Vector3 origin = cam.transform.position + cam.transform.forward;
+        
+        Vector3 origin = mainCam.transform.position + mainCam.transform.forward;
 
         if (effectPoint != null) // tip of launcher
         { 
             origin = effectPoint.position + effectPoint.forward * 0.01f; 
         }
         // calculate launch direction use mainCam forward so in line with hit marker
-        Vector3 direction = cam.transform.forward;
+        Vector3 direction = mainCam.transform.forward;
 
         GameObject projectile = Instantiate(
             GetLauncherTool.ExplosivePrefab,

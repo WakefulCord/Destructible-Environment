@@ -24,7 +24,7 @@ MonoBehaviour:
   primaryCooldown: 0.5
   primaryAudio: {fileID: 8300000, guid: b8f6b291f06d2914eacff2fe48889e3d, type: 3}
   primaryAudioVolume: 0.1
-  primaryEffect: {fileID: 0}
+  primaryEffect: {fileID: 1998598012248669843, guid: 2c727f9619c440e409fcbfeaf65538cc, type: 3}
   secondaryFireMode: 0
   secondaryUsesCooldown: 1
   secondaryCooldown: 1

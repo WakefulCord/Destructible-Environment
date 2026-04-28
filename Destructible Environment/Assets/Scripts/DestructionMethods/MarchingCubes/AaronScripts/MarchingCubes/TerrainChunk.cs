@@ -31,6 +31,11 @@ public class TerrainChunk : MonoBehaviour
     new Vector3(0,1,1)
     };
 
+    //chunk regen
+
+    [SerializeField] private bool isDirty;
+    public bool IsDirty => isDirty;
+
     public void Initialise(TerrainManager manager, Vector3Int pos, int size)
     {
         //cache reused values
@@ -199,5 +204,10 @@ public class TerrainChunk : MonoBehaviour
     public void RegenerateMesh()
     {
         GenerateMesh();
+    }
+
+    public void SetIsDirty(bool state)
+    {
+        isDirty = state;
     }
 }

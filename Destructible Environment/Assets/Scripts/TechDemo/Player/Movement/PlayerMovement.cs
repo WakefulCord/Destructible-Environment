@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     #region Class References
-    Transform camTransform;
     Rigidbody rb;
     #endregion
 
@@ -35,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     #region Properties
     public bool IsGrounded => isGrounded;
 
-    
+    public Transform MainCamTransform => PlayerManager.Instance.GetMainCam.transform;
     #endregion
 
     #region Start Up
@@ -44,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
     public void OnAwake()
     {
         rb = GetComponent<Rigidbody>();
-        camTransform = Camera.main.transform;
     }
     public void OnStart()
     {
@@ -59,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     #region Class Methods
 
 
-    public void OnUpdate(float h, float v, bool isSprinting)
+    public bool OnUpdate(float h, float v, bool isSprinting)
     {
         isGrounded = HandleGroundCheck();
 
@@ -78,6 +76,8 @@ public class PlayerMovement : MonoBehaviour
                 jumpTimer = 0;
             }
         }
+
+        return isGrounded;
     }
 
     private bool HandleGroundCheck()
@@ -114,8 +114,8 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //direction of movement
-        Vector3 forward = camTransform.forward;
-        Vector3 right = camTransform.right;
+        Vector3 forward = MainCamTransform.forward;
+        Vector3 right = MainCamTransform.right;
         forward.y = 0f;
         right.y = 0f;
         forward.Normalize();

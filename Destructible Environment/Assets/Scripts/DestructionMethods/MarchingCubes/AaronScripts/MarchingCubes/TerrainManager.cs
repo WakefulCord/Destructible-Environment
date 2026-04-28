@@ -132,6 +132,20 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     #endregion
 
     #region Chunk Methods
+
+    public override void UpdateDestruction()
+    {
+        base.UpdateDestruction();
+
+        foreach (TerrainChunk chunk in chunks.Values)
+        {
+            if (chunk.IsDirty)
+            {
+                chunk.RegenerateMesh();
+                chunk.SetIsDirty(false);
+            }
+        }
+    }
     private void GenerateChunks() // creates chunks for terrain
     {
 
@@ -263,7 +277,7 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
 
         foreach (TerrainChunk chunk in affectedChunks)
         {
-            chunk.RegenerateMesh();
+            chunk.SetIsDirty(true);
         }
     }
     #endregion

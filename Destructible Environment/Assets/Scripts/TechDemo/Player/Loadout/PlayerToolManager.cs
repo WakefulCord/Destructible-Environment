@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerToolManager : MonoBehaviour // manages currently equipped tool
 {
     #region Class References
+    PlayerManager playerManager;
     PlayerLoadout playerLoadout;
     #endregion
 
@@ -24,11 +25,18 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     public void OnAwake()
     {
+        playerManager = PlayerManager.Instance;
         playerLoadout = GetComponent<PlayerLoadout>();
     }
     public void OnStart()
     {
-
+        if (playerLoadout != null)
+        {
+            if (playerLoadout.ToolCount > 0)
+            {
+                HandleEquipTool(1); // first slot
+            }
+        }
 
     }
     #endregion
@@ -77,6 +85,8 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
 
     private void EquipNewTool(DestructionTool tool)
     {
+        if (tool == currentEquippedTool)
+            return;
         currentEquippedTool = tool;
 
         if (currentEquippedTool == null)
@@ -100,7 +110,7 @@ public class PlayerToolManager : MonoBehaviour // manages currently equipped too
             UnequipCurrentTool(); // clear tool data to prevent issues with broken tool
             return;
         }
-        activeToolBehaviour.OnToolInit(tool);
+        activeToolBehaviour.OnToolInit(tool, playerManager.GetMainCam);
     }
     #endregion
 

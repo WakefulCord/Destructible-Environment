@@ -57,8 +57,14 @@ public class InputManager : MonoBehaviour
             playerControls.Movement.Move.performed += ctx => OnMovementInput(ctx);
             playerControls.Movement.Camera.performed += ctx => OnLookInput(ctx);
 
+            playerControls.Movement.Move.canceled += ctx => OnMovementCancel();
+            playerControls.Movement.Camera.canceled += ctx => OnLookCancel();
+
+
             playerControls.Movement.Sprint.started += ctx => OnSprintToggle(true);
             playerControls.Movement.Sprint.canceled += ctx => OnSprintToggle(false);
+
+            playerControls.Movement.Jump.performed += _ => OnJumpInput();
 
             playerControls.Action.ToolSelect.performed += ctx => OnToolSelect(ctx);
 
@@ -95,6 +101,17 @@ public class InputManager : MonoBehaviour
         lookVector = ctx.ReadValue<Vector2>();
     }
 
+    private void OnMovementCancel()
+    {
+        movementVector = Vector2.zero;
+    }
+
+    private void OnLookCancel()
+    {
+        lookVector = Vector2.zero;
+
+    }
+
     private void OnSprintToggle(bool state)
     {
         sprintFlag = state;
@@ -119,7 +136,7 @@ public class InputManager : MonoBehaviour
     public void ToggleCursor(bool isEnabled)
     {
         Cursor.visible = isEnabled;
-        Cursor.lockState = isEnabled ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.lockState = isEnabled ? CursorLockMode.Confined : CursorLockMode.Locked;
     }
 
     private void OnPrimaryToolCancel()
@@ -130,6 +147,11 @@ public class InputManager : MonoBehaviour
     private void OnSecondaryToolCancel()
     {
         playerManager.Input_CancelSecondaryTool();
+    }
+
+    private void OnJumpInput()
+    {
+        playerManager.Input_Jump();
     }
     #endregion
 

@@ -10,9 +10,9 @@ public class ExplosivePlantBehaviour : ToolBehaviour
 
     public ExplosivePlantTool GetExpPlantTool => (ExplosivePlantTool)GetToolData;
 
-    public override void OnToolInit(DestructionTool t)
+    public override void OnToolInit(DestructionTool t, Camera playerCam)
     {
-        base.OnToolInit(t);
+        base.OnToolInit(t, playerCam);
     }
 
     public override void OnToolUpdate(float dt)
@@ -112,7 +112,7 @@ public class ExplosivePlantBehaviour : ToolBehaviour
     private ExplosivePlacementData GetExplosivePlacementData()
     {
         RaycastHit hit;
-        if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, Mathf.Infinity))
+        if (!Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, Mathf.Infinity))
             return new ExplosivePlacementData();
 
         ExplosivePlacementData data = new ExplosivePlacementData

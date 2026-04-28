@@ -17,10 +17,10 @@ MonoBehaviour:
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: b610224a013d02a4da84be1f350c9175, type: 2}
   compatibleLayers: 6
-  damage: 1.25
-  radius: -0.12
+  damage: 0.9
+  radius: 0.05
   primaryFireMode: 0
-  primaryUsesCooldown: 0
+  primaryUsesCooldown: 1
   primaryCooldown: 0.1
   primaryAudio: {fileID: 0}
   primaryAudioVolume: 0

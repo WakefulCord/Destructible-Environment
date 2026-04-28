@@ -15,5 +15,4 @@ MonoBehaviour:
   destructionAudioClip: {fileID: 8300000, guid: b47bdcc1894388a4a83532e96ab378b4, type: 3}
   destructionAudioVolume: 0.5
   destructionEffect: {fileID: 6040382841606033099, guid: ab1f03a9b780d8a4a9ac8f0ed3d49a90, type: 3}
-  destructiveForce: 10
-  fuseTime: 0
+  destructiveForce: 8

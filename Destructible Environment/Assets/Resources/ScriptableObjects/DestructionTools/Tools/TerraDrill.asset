@@ -17,8 +17,8 @@ MonoBehaviour:
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: 129d109dc8b5bb846af8209669b40649, type: 2}
   compatibleLayers: 1
-  damage: 0.25
-  radius: 4
+  damage: 0.18
+  radius: 3.5
   primaryFireMode: 1
   primaryUsesCooldown: 1
   primaryCooldown: 0.1
@@ -28,6 +28,6 @@ MonoBehaviour:
   secondaryFireMode: 1
   secondaryUsesCooldown: 1
   secondaryCooldown: 0.1
-  doAimAtCursor: 1
+  doPointAtCursor: 0
   indicatorPrefab: {fileID: 1628807798922562458, guid: 9b418604ea616af44b010c9f0b22d542, type: 3}
   terraformRange: 25

@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Private Fields
+    private Camera mainCam;
+
     [SerializeField] private DestructableBehaviour[] destructables;
     #endregion
 
@@ -23,12 +25,24 @@ public class GameManager : MonoBehaviour
             if (_instance == null)
             {
                 _instance = FindFirstObjectByType<GameManager>();
-                if (_instance != null)
+                if (_instance == null)
                 {
                     Debug.LogError("GameManager has not been assgined");
                 }
             }
             return _instance;
+        }
+    }
+
+    public Camera GetMainCam
+    {
+        get
+        {
+            if (mainCam == null)
+            {
+                mainCam = Camera.main;
+            }
+            return mainCam;
         }
     }
     #endregion
@@ -46,10 +60,10 @@ public class GameManager : MonoBehaviour
         playerUIManager = PlayerUIManager.Instance;
         cameraManager = CameraManager.Instance;
 
+        cameraManager.OnAwake();
         playerManager.OnAwake();
         //inputManager.OnAwake();
         playerUIManager.OnAwake();
-        cameraManager.OnAwake();
     }
 
     private void Start()
@@ -84,6 +98,11 @@ public class GameManager : MonoBehaviour
         cameraManager.OnUpdate();
 
         playerUIManager.OnUpdate();
+
+        foreach (DestructableBehaviour detruct in destructables)
+        {
+            detruct.UpdateDestruction();
+        }
     }
     #endregion
 }

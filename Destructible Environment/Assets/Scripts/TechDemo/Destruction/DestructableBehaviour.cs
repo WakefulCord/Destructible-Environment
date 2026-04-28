@@ -8,6 +8,11 @@ public class DestructableBehaviour : MonoBehaviour, IDestructable
     {
        
     }
+
+    public virtual void UpdateDestruction()
+    {
+
+    }
     public virtual void ApplyDamage(DestructionHitData hitData)
     {
         

@@ -17,8 +17,8 @@ MonoBehaviour:
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: 9f354a980c9792b42a4d4ede98f7fb66, type: 2}
   compatibleLayers: 6
-  damage: 3
-  radius: 3
+  damage: 8
+  radius: 2.75
   primaryFireMode: 0
   primaryUsesCooldown: 1
   primaryCooldown: 0.5

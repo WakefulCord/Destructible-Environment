@@ -17,8 +17,8 @@ MonoBehaviour:
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: 37fe87ab48a8494499a88421277b76a1, type: 2}
   compatibleLayers: 6
-  damage: 15
-  radius: 6
+  damage: 5
+  radius: 2.25
   primaryFireMode: 1
   primaryUsesCooldown: 1
   primaryCooldown: 0.5
@@ -28,6 +28,6 @@ MonoBehaviour:
   secondaryFireMode: 0
   secondaryUsesCooldown: 1
   secondaryCooldown: 0
-  doAimAtCursor: 1
+  doPointAtCursor: 0
   explosivePrefab: {fileID: 1024998905770204096, guid: 64550d139341b294286a17579835f8e6, type: 3}
   launchSpeed: 40

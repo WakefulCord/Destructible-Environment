@@ -19,19 +19,28 @@ public class ToolBehaviour : MonoBehaviour
     [SerializeField] private bool canSecondaryUse;
     [SerializeField] private bool isSecondaryInUse;
 
+    [Header("Exposed Stats")]
+    [SerializeField] protected float damage;
+    [SerializeField] protected float radius;
+
+    protected Camera mainCam;
+
     public bool CanUseTool => canUse;
     public bool CanSecondaryUseTool => canSecondaryUse;
 
     #region Set Up
-    public virtual void OnToolInit(DestructionTool t)
+    public virtual void OnToolInit(DestructionTool t, Camera playerCam)
     {
         tool = t;
 
-        SetUpToolStats();
+        SetUpToolStats(playerCam);
     }
 
-    protected virtual void SetUpToolStats()
+    protected virtual void SetUpToolStats(Camera playerCam)
     {
+        mainCam = playerCam;
+
+
         //set up
         canUse = true;
         useTimer = 0.0f;
@@ -49,6 +58,9 @@ public class ToolBehaviour : MonoBehaviour
         }
         useCooldown = GetToolData.UseCooldown;
         secondaryCooldown = GetToolData.AltUseCooldown;
+
+        damage = GetToolData.Damage;
+        radius = GetToolData.Radius;
     }
     #endregion
 
@@ -79,10 +91,9 @@ public class ToolBehaviour : MonoBehaviour
         // Aim at cursor if enabled in tool data
         if (GetToolData != null && GetToolData.DoPointAtCursor)
         {
-            Camera cam = Camera.main;
-            if (cam != null)
+            if (mainCam != null)
             {
-                Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
+                Ray ray = mainCam.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
                 RaycastHit hit;
                 Vector3 targetPoint;
                 if (Physics.Raycast(ray, out hit, 1000f))
@@ -143,7 +154,7 @@ public class ToolBehaviour : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"{GetToolData.GetName}: No Primary Use Audio assigned");
+            Debug.LogWarning($"{GetToolData.GetName}: No Primary Use Audio assigned");
 
 
         }
@@ -156,7 +167,7 @@ public class ToolBehaviour : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"{GetToolData.GetName}: No Primary Use Effect assgined");
+            Debug.LogWarning($"{GetToolData.GetName}: No Primary Use Effect assgined");
         }
     }
     #endregion

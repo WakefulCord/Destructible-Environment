@@ -4,6 +4,9 @@ public class PlayerManager : MonoBehaviour
 {
     #region Class References
     private static PlayerManager _instance;
+
+    GameManager gameManager;
+
     InputManager inputManager;
 
     PlayerMovement playerMovement;
@@ -12,7 +15,7 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Private Fields
-
+    [SerializeField] private bool isGrounded;
     #endregion
 
     #region Properties
@@ -34,8 +37,10 @@ public class PlayerManager : MonoBehaviour
 
     public bool IsSprinting => inputManager.SprintFlag;
 
-
+    public bool IsGrounded => isGrounded;
     public PlayerLoadout GetLoadout => playerLoadout;
+
+    public Camera GetMainCam => gameManager.GetMainCam;
     #endregion
 
     #region Start Up
@@ -43,6 +48,7 @@ public class PlayerManager : MonoBehaviour
 
     public void OnAwake()
     {
+        gameManager = GameManager.Instance;
         inputManager = InputManager.Instance;
 
         playerMovement = GetComponent<PlayerMovement>();
@@ -60,14 +66,11 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Class Methods
-    private void Update() // temp
-    {
-        OnUpdate();
-    }
+   
 
     public void OnUpdate()
     {
-        playerMovement.OnUpdate(inputManager.GetMovementInput.x, inputManager.GetMovementInput.y, IsSprinting);
+        isGrounded = playerMovement.OnUpdate(inputManager.GetMovementInput.x, inputManager.GetMovementInput.y, IsSprinting);
         playerToolManager.OnUpdate(inputManager.IsPrimaryToolHeld, inputManager.IsSecondaryToolHeld);
     }
     #endregion
@@ -104,6 +107,12 @@ public class PlayerManager : MonoBehaviour
     public void Input_CancelSecondaryTool()
     {
         playerToolManager.HandleCancelSecondaryTool();
+    }
+
+    public void Input_Jump()
+    {
+        if (isGrounded)
+            playerMovement.HandleJump();
     }
     #endregion
 }
