@@ -1485,6 +1485,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7231875341951295808, guid: d8a02f04f8c6c334a9546355b180469b, type: 3}
+      propertyPath: targetScene.sceneAsset
+      value: 
+      objectReference: {fileID: 102900000, guid: 66b124d10366d744a8b20996b71bdaa1, type: 3}
     - target: {fileID: 7629565871883239760, guid: d8a02f04f8c6c334a9546355b180469b, type: 3}
       propertyPath: m_Name
       value: Navigation_Overlay
