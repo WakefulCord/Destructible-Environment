@@ -28,7 +28,7 @@ MonoBehaviour:
   secondaryFireMode: 0
   secondaryUsesCooldown: 1
   secondaryCooldown: 1
-  doPointAtCursor: 0
+  doPointAtCursor: 1
   explosivePrefab: {fileID: 3451455021427857733, guid: c76a1f0887bf6324ead3684d98ae51af, type: 3}
   explosiveTriggerMode: 0
   fuseTimer: 1.5

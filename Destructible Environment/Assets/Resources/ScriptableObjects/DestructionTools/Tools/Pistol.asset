@@ -28,7 +28,7 @@ MonoBehaviour:
   secondaryFireMode: 0
   secondaryUsesCooldown: 1
   secondaryCooldown: 0
-  doPointAtCursor: 0
+  doPointAtCursor: 1
   useTracer: 0
   tracerPrefab: {fileID: 2968512427402550875, guid: 27e824c968ffcf24b97f0e709d7c381b, type: 3}
   tracerSpeed: 150

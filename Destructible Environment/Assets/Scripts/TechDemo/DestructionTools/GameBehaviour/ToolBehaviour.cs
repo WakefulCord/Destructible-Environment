@@ -93,19 +93,9 @@ public class ToolBehaviour : MonoBehaviour
         {
             if (mainCam != null)
             {
-                Ray ray = mainCam.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0f));
-                RaycastHit hit;
-                Vector3 targetPoint;
-                if (Physics.Raycast(ray, out hit, 1000f))
-                {
-                    targetPoint = hit.point;
-                }
-                else
-                {
-                    targetPoint = ray.GetPoint(1000f);
-                }
+                
                 Transform aimTransform = toolPivot != null ? toolPivot : transform;
-                aimTransform.LookAt(targetPoint);
+                aimTransform.rotation = mainCam.transform.rotation;
             }
         }
 

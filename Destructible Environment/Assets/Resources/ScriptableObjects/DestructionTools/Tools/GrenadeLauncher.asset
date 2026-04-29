@@ -28,6 +28,6 @@ MonoBehaviour:
   secondaryFireMode: 0
   secondaryUsesCooldown: 1
   secondaryCooldown: 0
-  doPointAtCursor: 0
+  doPointAtCursor: 1
   explosivePrefab: {fileID: 1024998905770204096, guid: 64550d139341b294286a17579835f8e6, type: 3}
   launchSpeed: 40

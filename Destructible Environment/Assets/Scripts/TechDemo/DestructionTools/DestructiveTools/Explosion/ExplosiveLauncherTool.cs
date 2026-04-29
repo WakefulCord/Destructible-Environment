@@ -6,7 +6,7 @@ public class ExplosiveLauncherTool : ExplosionTool // rpg/ grenade launcher/ thr
 {
     [Header("---Explosion Launcher Tool---")]
     [Header("Launcher Settings")]
-    [Tooltip("Speed at which launcher shoots projectile")][SerializeField] private float launchSpeed;
+    [Range(10,60)][Tooltip("Speed at which launcher shoots projectile")][SerializeField] private float launchSpeed;
 
 
     public float LaunchSpeed => launchSpeed;

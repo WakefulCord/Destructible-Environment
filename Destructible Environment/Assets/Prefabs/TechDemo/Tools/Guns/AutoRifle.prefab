@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effectPoint: {fileID: 8134514311426468497}
-  toolPivot: {fileID: 0}
+  toolPivot: {fileID: 4340218585523608126}
   useTimer: 0
   useCooldown: 0
   canUse: 0

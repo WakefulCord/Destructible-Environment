@@ -120,6 +120,7 @@ public class ExplosiveBehaviour : MonoBehaviour // actual explosion - runs logic
 
         foreach (Collider hit in hits)
         {
+            
             IDestructable target = hit.GetComponentInParent<IDestructable>();
             if (target != null && !damagedTargets.Contains(target) && (compatibleLayers & target.GetLayer) != 0)
             {
