@@ -23,6 +23,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PlayerTest.unity
     guid: 9cc4f420a29428544a67c2112a0e9f0b
+  - enabled: 1
+    path: Assets/Scenes/Tech demo Scenes/Stress.unity
+    guid: c71214dabfe1d6f4ca734b352ad93c65
+  - enabled: 1
+    path: Assets/Scenes/Tech demo Scenes/MixedDemo.unity
+    guid: 4831c747cf5aec24e96f705ebca19a98
+  - enabled: 1
+    path: Assets/Scenes/PrototypeScenes/Voxel World.unity
+    guid: 397a0b997aca8ce46ac19c846bc34676
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

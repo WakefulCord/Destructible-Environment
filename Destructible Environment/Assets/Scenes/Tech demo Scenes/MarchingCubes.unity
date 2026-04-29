@@ -712,7 +712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
       propertyPath: terrainYOffset
-      value: 12.5
+      value: 8.57
       objectReference: {fileID: 0}
     - target: {fileID: 2074837250111372840, guid: cd2126cb130deb24497b3badad949022, type: 3}
       propertyPath: m_Name
