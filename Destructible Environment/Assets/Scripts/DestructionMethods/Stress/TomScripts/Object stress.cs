@@ -18,7 +18,7 @@ public class Objectstress : MonoBehaviour
     public void limitCalc(float damage)
     {
         currentStress += damage; // Increase current stress by the damage amount
-        if (currentStress >= (stressLimit * 0.4f) && currentStress <(stressLimit * 0.6f)) // If the current stress exceeds 40% of the stress limit
+        if (currentStress >= (stressLimit * 0.4f) && currentStress < (stressLimit * 0.6f)) // If the current stress exceeds 40% of the stress limit
         {
             Debug.Log("Object at 60% integrity (damaged)");
         }
@@ -28,7 +28,7 @@ public class Objectstress : MonoBehaviour
         }
         else if (currentStress >= (stressLimit * 0.74f)) // If the current stress exceeds the stress limit
         {
-            parentStruct.GetComponent<Structurestress>().structLimitCalc(objStructIntegrity); 
+            parentStruct.GetComponent<Structurestress>().structLimitCalc(objStructIntegrity);
             Debug.Log("Object integrity failed (destroyed)");
             Destroy(gameObject); // Destroy the object
         }

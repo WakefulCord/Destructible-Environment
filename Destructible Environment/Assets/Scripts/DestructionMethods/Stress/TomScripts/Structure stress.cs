@@ -18,7 +18,7 @@ public class Structurestress : MonoBehaviour
             totalIntegrity += objStress.objStructIntegrity;
         }
 
-        stressLimit = totalIntegrity;
+        stressLimit = GetComponentsInChildren<BreakableWall>().Length;
         Debug.Log("Total Structure Stress Limit: " + stressLimit);
     }
 
