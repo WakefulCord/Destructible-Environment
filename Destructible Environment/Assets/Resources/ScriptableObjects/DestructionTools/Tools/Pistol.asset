@@ -16,7 +16,7 @@ MonoBehaviour:
   toolPrefab: {fileID: 2447886619259798093, guid: ee347964b25178c45b0007172764939d, type: 3}
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: b610224a013d02a4da84be1f350c9175, type: 2}
-  compatibleLayers: 6
+  compatibleLayers: 14
   damage: 0.9
   radius: 0.05
   primaryFireMode: 0

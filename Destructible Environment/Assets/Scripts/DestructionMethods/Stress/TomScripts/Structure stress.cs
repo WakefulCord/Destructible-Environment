@@ -5,21 +5,28 @@ public class Structurestress : MonoBehaviour
 {
     public float stressLimit = 0f;
     public float currentStress = 0f; 
+    public float totalIntegrity = 0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    {
-        // Get all Objectstress components in children (including inactive if needed)
+    { 
         Objectstress[] childStresses = GetComponentsInChildren<Objectstress>();
-        float totalIntegrity = 0f;
 
         foreach (var objStress in childStresses)
         {
             totalIntegrity += objStress.objStructIntegrity;
         }
 
-        stressLimit = GetComponentsInChildren<BreakableWall>().Length;
-        Debug.Log("Total Structure Stress Limit: " + stressLimit);
+        if (GetComponentsInChildren<BreakableWall>().Length >= 1)
+        {
+            stressLimit = GetComponentsInChildren<BreakableWall>().Length;
+            Debug.Log("Total Structure Stress Limit: " + stressLimit);
+        }
+        else if (GetComponentsInChildren<BreakableWall>().Length < 1)
+        {
+            stressLimit = totalIntegrity;
+            Debug.Log("Total Structure Stress Limit: " + stressLimit);
+        }
     }
 
 
@@ -35,7 +42,7 @@ public class Structurestress : MonoBehaviour
         {
             Debug.Log("Object 40% integrity (nearly broken)");
         }
-        else if (currentStress >= (stressLimit * 0.74f)) // If the current stress exceeds the stress limit
+        else if (currentStress >= (stressLimit * 0.8f)) // If the current stress exceeds the stress limit
         {
             Debug.Log("Object integrity failed (destroyed)");
             Destroy(gameObject);

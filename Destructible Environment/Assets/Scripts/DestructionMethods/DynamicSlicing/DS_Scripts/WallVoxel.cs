@@ -7,14 +7,14 @@ public class WallVoxel : MonoBehaviour
     public int y;
 
     BreakableWall breakableWall;
-    Objectstress objectStress;
+    //Objectstress objectStress;
 
     [SerializeField] float debrisChance;
 
     
     private void Start()
     {
-        objectStress = GetComponentInParent<Objectstress>();
+        //objectStress = GetComponentInParent<Objectstress>();
         breakableWall = transform.GetComponentInParent<BreakableWall>();
         breakableWall.addToArray(this);
         StartCoroutine(shouldFall());
@@ -41,8 +41,8 @@ public class WallVoxel : MonoBehaviour
 
         Destroy(gameObject);
         breakableWall.CheckWallIntegrity();
-        if (!objectStress) return;
-        objectStress.limitCalc(1f); // Simulate taking 1 damage to the object stress when a voxel is broken
+        /*if (!objectStress) return;
+        objectStress.limitCalc(1f); // Simulate taking 1 damage to the object stress when a voxel is broken*/
 
     }
 

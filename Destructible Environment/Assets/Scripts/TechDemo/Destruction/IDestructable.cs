@@ -21,5 +21,5 @@ public enum DestructionLayer
     MarchingCubes = 1 << 0,
     VoxelWall = 1 << 1,
     WallSwitch = 1 << 2,
-    
+    ObjectStress = 1 << 3,
 }

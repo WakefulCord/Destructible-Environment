@@ -246,14 +246,13 @@ public class BreakableWall : DestructableBehaviour
 
         int currentVoxelCount = CountCurrentVoxels();
         if (originalVoxelCount > 0 && (float)currentVoxelCount / originalVoxelCount < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
-            if (originalVoxelCount > 0 && ((float)currentVoxelCount / originalVoxelCount) < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
-            {
-                Debug.Log("Wall integrity failed"); // Log the wall destruction
-                if (structureStress != null)
-                    updateStructure(); // Update the structure stress
-                Destroy(gameObject); // Destroy the wall
-                isDestroyed = true;
-            }
+        {
+            Debug.Log("Wall integrity failed"); // Log the wall destruction
+            if (structureStress != null)
+                updateStructure(); // Update the structure stress
+            Destroy(gameObject); // Destroy the wall
+            isDestroyed = true;
+        }
     }
     public void updateStructure()
     {
