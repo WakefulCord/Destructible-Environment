@@ -1,0 +1,14 @@
+Controls:
+
+Movement:
+
+Movement - WASD
+Look - Mouse
+Sprint - Left Shift
+Jump - Space
+
+Actions:
+Toolbar Equip - 1-5 
+
+Primary Tool Action - Left Click/Hold
+Secondary Tool Action - Right Click/Hold

@@ -210,8 +210,8 @@ public class BreakableWall : DestructableBehaviour
 
     public override void ApplyDamage(DestructionHitData hitData)
     {
-        
-        float radiusOverDistance = hitData.radius + Vector3.Distance(hitData.hitPoint, transform.position);
+
+        float radiusOverDistance = hitData.radius;
         foreach (Collider collider in Physics.OverlapSphere(hitData.hitPoint, radiusOverDistance))    //breaks each voxel in a radius
         {
             if (collider.GetComponent<WallVoxel>() != null)

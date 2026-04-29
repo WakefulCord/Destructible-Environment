@@ -278,7 +278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4664977456381127366, guid: 81c7c33d85887c646a485141fec45235, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 1.27
       objectReference: {fileID: 0}
     - target: {fileID: 4664977456381127366, guid: 81c7c33d85887c646a485141fec45235, type: 3}
       propertyPath: m_LocalPosition.z
@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 1233859949}
   - component: {fileID: 1233859948}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -694,13 +694,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
+      propertyPath: depth
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
+      propertyPath: width
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
+      propertyPath: height
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
+      propertyPath: isoLevel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1944324655025511985, guid: cd2126cb130deb24497b3badad949022, type: 3}
+      propertyPath: terrainYOffset
+      value: 12.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2074837250111372840, guid: cd2126cb130deb24497b3badad949022, type: 3}
       propertyPath: m_Name
       value: TerrainManager
       objectReference: {fileID: 0}
     - target: {fileID: 8158508304790566570, guid: cd2126cb130deb24497b3badad949022, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -21.1
       objectReference: {fileID: 0}
     - target: {fileID: 8158508304790566570, guid: cd2126cb130deb24497b3badad949022, type: 3}
       propertyPath: m_LocalPosition.y

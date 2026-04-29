@@ -26,11 +26,12 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     private int worldChunksZ;
     private int worldChunksY;
     [SerializeField] private float isoLevel = 0f;
+    [SerializeField] private float terrainYOffset = 0f;
 
     private Vector3 gridOrigin;
 
     [Header("Visual/Noise Fields")]
-    private static float seed;
+    [SerializeField] private float seed = 1234f;
     [SerializeField] private float noiseVal = 0.05f;
     [SerializeField] private Gradient terrainGradient;
 
@@ -81,13 +82,14 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
 
         densityGrid = new float[width, height, depth]; // initialise density grid 
 
-        seed = UnityEngine.Random.Range(0f, 9999f);
+    
 
         worldChunksX = width / chunkSize;
         worldChunksZ = depth / chunkSize;
         worldChunksY = height / chunkSize;
+        
+        SetGridOrigin();
 
-        gridOrigin = new Vector3(-width / 2f, -height / 2f, -depth / 2f);
 
         //Terrain Noise vals
         InitaliseTerrainValues();
@@ -98,7 +100,11 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
         //gridManager.VisualiseNoise(densityGrid);
     }
 
+    private void SetGridOrigin()
+    {
+        gridOrigin = new Vector3(-width / 2f, -height / 2f, -depth / 2f);
 
+    }
 
     private void InitaliseTerrainValues()
     {
@@ -114,6 +120,7 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     public float TerrainDensity(int x, int y, int z) // not made by me
     {
         float heightMap = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal) * height * 0.4f;
+        heightMap += terrainYOffset;
 
 
         float distanceFromSurface = heightMap - y;
@@ -308,13 +315,19 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
         UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);
     }
 
+    #endregion
+
+    #region Debug
     private void OnDrawGizmos()
     {
+        SetGridOrigin();
+
         Gizmos.color = Color.black;
 
         Gizmos.DrawWireCube(transform.position, new Vector3(width, height, depth));
 
-        float avgWorldY = transform.position.y;
+        float avgGridY = GetAverageSurfaceHeight();
+        float avgWorldY = GridToWorld(new Vector3(0f, avgGridY, 0f)).y;
 
         Vector3 center = new Vector3(transform.position.x, avgWorldY, transform.position.z);
         Vector3 size = new Vector3(width, 0f, depth);
@@ -324,6 +337,59 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(center, size);
     }
+
+    private float GetAverageSurfaceHeight()
+    {
+        if (width <= 0 || height <= 1 || depth <= 0)
+        {
+            return 0f;
+        }
+
+        float totalHeight = 0f;
+        int samples = 0;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < depth; z++)
+            {
+                if (TryGetSurfaceHeightAt(x, z, out float surfaceY))
+                {
+                    totalHeight += surfaceY;
+                    samples++;
+                }
+            }
+        }
+
+        if (samples == 0)
+        {
+            return height * 0.5f;
+        }
+
+        return totalHeight / samples;
+    }
+
+    private bool TryGetSurfaceHeightAt(int x, int z, out float surfaceY)
+    {
+        for (int y = 0; y < height - 1; y++)
+        {
+            float a = TerrainDensity(x, y, z);
+            float b = TerrainDensity(x, y + 1, z);
+
+            bool crossesIso = (a >= isoLevel && b < isoLevel) || (a < isoLevel && b >= isoLevel);
+            if (!crossesIso)
+            {
+                continue;
+            }
+
+            float t = Mathf.InverseLerp(a, b, isoLevel);
+            surfaceY = Mathf.Lerp(y, y + 1, t);
+            return true;
+        }
+
+        surfaceY = 0f;
+        return false;
+    }
+
 
     #endregion
 }

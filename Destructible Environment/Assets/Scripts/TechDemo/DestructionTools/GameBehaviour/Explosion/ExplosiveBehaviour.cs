@@ -127,11 +127,17 @@ public class ExplosiveBehaviour : MonoBehaviour // actual explosion - runs logic
 
                 Vector3 direction = (hit.transform.position - transform.position).normalized;
 
+                Vector3 hitPoint = hit.ClosestPoint(transform.position);
+
+                float dist = Vector3.Distance(transform.position, hitPoint);
+                float t = 1f - (dist / radius);
+                float falloffDamage = damage * Mathf.Clamp01(t);
+
                 DestructionHitData data = new DestructionHitData()
                 {
-                    damage = damage,
+                    damage = falloffDamage,
                     radius = radius,
-                    hitPoint = hit.ClosestPoint(transform.position),
+                    hitPoint = hitPoint,
                     hitNormal = direction,
                 };
 
