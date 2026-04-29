@@ -237,9 +237,13 @@ public class GunBehaviour : ToolBehaviour
                 {
                     AddDebugData(hitData.hitPoint, hitData.hitNormal, hitData.radius);
                 }
-                IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
+                DestructableBehaviour target = hit.collider.GetComponentInParent<DestructableBehaviour>();
                 if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
                 {
+                    if (showDebug)
+                    {
+                        Debug.Log($"Sending {gameObject.name} to {target.gameObject.name}");
+                    }
                     target.ApplyDamage(hitData);
                 }
             }

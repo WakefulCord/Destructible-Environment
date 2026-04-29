@@ -5,8 +5,9 @@ using UnityEngine;
 public class TerrainManager : DestructableBehaviour // main script for handling marching cubes terrain
 {
     #region Class References
-    private static TerrainManager _instance;
+   
 
+    GameManager gameManager;
     GridManager gridManager;
     #endregion
 
@@ -33,38 +34,36 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     [Header("Visual/Noise Fields")]
     [SerializeField] private float seed = 1234f;
     [SerializeField] private float noiseVal = 0.05f;
+
+    [SerializeField] float surfaceHeightAmplitude = 0.1f;
+    [SerializeField] float surfaceDetailNoiseOffset = 100f;
+    [SerializeField] float surfaceDetailStrength = 0.01f;
     [SerializeField] private Gradient terrainGradient;
+
+    [Header("Dig Site Fields")]
+    [SerializeField] private GameObject exitTargetPrefab;
+
+    [SerializeField] private List<GameObject> exitTargets;
+    [SerializeField] private int maxExitTargets = 3;
+    [SerializeField] private float exitTargetSpawnOffset = 5;
+    [SerializeField] private Transform teleportTransfrom;
 
 
 
     #endregion
 
     #region Properties
-    public static TerrainManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<TerrainManager>();
-                if (_instance == null)
-                {
-                    Debug.LogError("Terrain Manager has not been assigned");
-                }
-            }
-            return _instance;
 
-        }
-    }
 
     public float GetIsoLevel => isoLevel;
     public Gradient TerrainGradient => terrainGradient;
     public Material ChunkMaterial => chunkMaterial;
     public int TerrainHeight => height;
+    public float AverageSurfaceHeight => GetAverageSurfaceHeight();
 
     public override DestructionLayer GetLayer => DestructionLayer.MarchingCubes;
 
-
+    public Transform PlayerTeleportPos => teleportTransfrom;
     #endregion
 
     #region Start Up
@@ -76,6 +75,7 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     private void OnStart()
     {
         gridManager = GetComponent<GridManager>();
+        gameManager = GameManager.Instance;
 
         //initilise fields
         chunks = new Dictionary<Vector3Int, TerrainChunk>();
@@ -91,11 +91,8 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
         SetGridOrigin();
 
 
-        //Terrain Noise vals
-        InitaliseTerrainValues();
-
-
-        GenerateChunks();
+       
+        RegenerateTerrain();
 
         //gridManager.VisualiseNoise(densityGrid);
     }
@@ -117,21 +114,24 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
                 }
     }
 
-    public float TerrainDensity(int x, int y, int z) // not made by me
+    public float TerrainDensity(int x, int y, int z)
     {
-        float heightMap = Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal) * height * 0.4f;
-        heightMap += terrainYOffset;
+       
 
+        float baseSurfaceHeight =
+            Mathf.PerlinNoise((x + seed) * noiseVal, (z + seed) * noiseVal) * height * surfaceHeightAmplitude;
 
-        float distanceFromSurface = heightMap - y;
+        baseSurfaceHeight += terrainYOffset;
 
+        float distanceFromSurface = baseSurfaceHeight - y;
 
-        float noise3D = Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) *
-                        Mathf.PerlinNoise(z * noiseVal + seed, y * noiseVal + 100f);
-        noise3D = (noise3D - 0.5f) * 2f;
+        float surfaceDetailNoise =
+            Mathf.PerlinNoise(x * noiseVal + seed, y * noiseVal) *
+            Mathf.PerlinNoise(z * noiseVal + seed, y * noiseVal + surfaceDetailNoiseOffset);
 
+        surfaceDetailNoise = (surfaceDetailNoise - 0.5f) * 2f;
 
-        float density = distanceFromSurface + noise3D * 3f;
+        float density = distanceFromSurface + surfaceDetailNoise * surfaceDetailStrength;
 
         return density;
     }
@@ -247,6 +247,7 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
 
     public void UpdateDensityAndRegenerate(Vector3 worldPos, float amount, float radius)
     {
+       
         //convert world pos to bounds of terraform0
         int minX = Mathf.FloorToInt(worldPos.x - radius);
         int maxX = Mathf.CeilToInt(worldPos.x + radius);
@@ -269,6 +270,8 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
                     float distance = Vector3.Distance(worldPos, new Vector3(x, y, z));
                     if (distance <= radius)
                     {
+                        
+                       
                         float falloff = 1f - (distance / radius); // falloff create sphereical terraforming as closer to edge makes falloff closer to 0
                         UpdateDensity(x, y, z, amount * falloff); // update density grid with falloff
 
@@ -315,6 +318,28 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
         UpdateDensityAndRegenerate(gridPos, hitData.damage, hitData.radius);
     }
 
+    public void RegenerateTerrain() 
+    {
+        Debug.Log($"Regenerating Terrain Mesh On {gameObject.name}");
+        DestroyTerrain();
+        InitaliseTerrainValues();
+        GenerateChunks();
+
+        //dig site
+
+        ClearExitTargets();
+        SpawnExitTargets();
+    }
+
+    private void DestroyTerrain()
+    {
+        foreach (TerrainChunk chunk in chunks.Values)
+        {
+            Destroy(chunk.gameObject);
+        }
+
+        chunks.Clear();
+    }
     #endregion
 
     #region Debug
@@ -391,5 +416,51 @@ public class TerrainManager : DestructableBehaviour // main script for handling 
     }
 
 
+    #endregion
+
+    #region Dig Site Fields
+    private void SpawnExitTargets()
+    {
+        for (int i = 0; i < maxExitTargets; i++)
+        {
+            Vector3 position = GetRandomPoint();
+            GameObject exitTarget = Instantiate(exitTargetPrefab, position, Quaternion.identity, this.transform);
+
+            exitTargets.Add(exitTarget);
+
+            //add destuction (interaction) to gamemanager
+            gameManager.RegisterDestructable(exitTarget.GetComponent<DestructableBehaviour>());
+        }
+    }
+        
+    private void ClearExitTargets()
+    {
+        if (exitTargets == null || exitTargets.Count == 0) return;
+        foreach (GameObject g in exitTargets)
+        {
+            if (g != null && gameManager != null)
+            {
+                DestructableBehaviour destructable = g.GetComponent<DestructableBehaviour>();
+                if (destructable != null)
+                {
+                    gameManager.UnregisterDestructable(destructable);
+                }
+            }
+            Destroy(g);
+        }
+        exitTargets.Clear();
+    }
+
+    private Vector3 GetRandomPoint()
+    {
+        float avY = GetAverageSurfaceHeight();
+
+        float x = Random.Range(exitTargetSpawnOffset, width - exitTargetSpawnOffset);
+        float y = Random.Range(exitTargetSpawnOffset, avY - exitTargetSpawnOffset);
+        float z = Random.Range(exitTargetSpawnOffset, depth - exitTargetSpawnOffset);
+
+
+        return GridToWorld(new Vector3(x, y, z));
+    }
     #endregion
 }

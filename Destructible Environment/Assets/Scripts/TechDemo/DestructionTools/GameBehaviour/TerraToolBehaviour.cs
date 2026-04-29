@@ -2,19 +2,17 @@ using UnityEngine;
 
 public class TerraToolBehaviour : ToolBehaviour
 {
-    //timer for perforamnce
-    
     [SerializeField] private GameObject indicatorGO;
     private MeshRenderer indicatorRenderer;
 
     public TerrainTool GetTerrainTool => (TerrainTool)GetToolData;
 
     private bool IsTerraforming => terraVal != 0f;
+    private bool IsRemovingTerrain => terraVal < 0f;
+    private bool CanModifyTerrain => IsRemovingTerrain ? CanUseTool : CanSecondaryUseTool;
 
 
     private float terraVal;
-
-    private bool hitTerrain;
     public override void OnToolInit(DestructionTool t, Camera playerCam)
     {
         base.OnToolInit(t, playerCam);
@@ -31,25 +29,14 @@ public class TerraToolBehaviour : ToolBehaviour
     }
     public override void OnToolUpdate(float dt)
     {
-
-       
-
         base.OnToolUpdate(dt);
 
-        if (CanUseTool && IsTerraforming)
+        if (CanModifyTerrain && IsTerraforming)
         {            
             ModifyTerrain();
-            //play use effect each frame while using
-            if (GetToolData.PrimaryEffect != null)
-            {
-                Instantiate(GetToolData.PrimaryEffect, effectPoint.position, Quaternion.identity, effectPoint);
-
-            }
-            // resest can use
         }
 
         UpdateIndicator();
-        hitTerrain = false;
     }
 
     protected override void OnHitFeedback(DestructionHitData hitData)
@@ -93,17 +80,13 @@ public class TerraToolBehaviour : ToolBehaviour
 
     private void UpdateIndicator()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, GetTerrainTool.GetTerraRange))
+        if (TryGetTerraformHit(out RaycastHit hit, out bool hasValidTarget))
         {
             ToggleIndicator(true);
             indicatorGO.transform.position = hit.point;
             indicatorGO.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            
-            Color indicatorColour = Color.white;
-
-            indicatorColour = hitTerrain ? Color.green : Color.red;
+            Color indicatorColour = hasValidTarget ? Color.green : Color.red;
             indicatorRenderer.material.color = indicatorColour;
         }
         else
@@ -113,32 +96,41 @@ public class TerraToolBehaviour : ToolBehaviour
     }
     private void ModifyTerrain()
     {
-        
-
-        Debug.Log("Terraforming");
-
-        RaycastHit hit;
-        //shoot from mainCam - for now?
-        if (!Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, GetTerrainTool.GetTerraRange))
+        if (!TryGetTerraformHit(out RaycastHit hit, out bool hasValidTarget) || !hasValidTarget)
         {
             return;
         }
+
         IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
-
-        if (target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0)
+        DestructionHitData data = new DestructionHitData()
         {
-            DestructionHitData data = new DestructionHitData()
-            {
-                damage = damage * terraVal,
-                radius = radius,
-                hitNormal = hit.normal,
-                hitPoint = hit.point,
-            };
+            damage = damage * terraVal,
+            radius = radius,
+            hitNormal = hit.normal,
+            hitPoint = hit.point,
+        };
 
-            target.ApplyDamage(data);
-            OnHitFeedback(data);
+        target.ApplyDamage(data);
+        OnHitFeedback(data);
+    }
 
-            hitTerrain = true;
+    private bool TryGetTerraformHit(out RaycastHit hit, out bool hasValidTarget)
+    {
+        hasValidTarget = false;
+
+        if (mainCam == null)
+        {
+            hit = default;
+            return false;
         }
+
+        if (!Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, GetTerrainTool.GetTerraRange))
+        {
+            return false;
+        }
+
+        IDestructable target = hit.collider.GetComponentInParent<IDestructable>();
+        hasValidTarget = target != null && (GetToolData.GetCompatibleLayers & target.GetLayer) != 0;
+        return true;
     }
 }

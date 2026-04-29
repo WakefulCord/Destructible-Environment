@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -14,7 +16,10 @@ public class GameManager : MonoBehaviour
     #region Private Fields
     private Camera mainCam;
 
-    [SerializeField] private DestructableBehaviour[] destructables;
+    [SerializeField] private List<DestructableBehaviour> destructables = new List<DestructableBehaviour>();
+    private readonly List<DestructableBehaviour> pendingAdd = new List<DestructableBehaviour>();
+    private readonly List<DestructableBehaviour> pendingRemove = new List<DestructableBehaviour>();
+    private bool isUpdatingDestructables;
     #endregion
 
     #region Properties
@@ -69,12 +74,15 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         OnStart();
+        
+        
+        destructables.Clear();
 
-        destructables = FindObjectsByType<DestructableBehaviour>(FindObjectsSortMode.None);
+        DestructableBehaviour[] initialDestruction = FindObjectsByType<DestructableBehaviour>(FindObjectsSortMode.None);
 
-        foreach (DestructableBehaviour detruct in destructables)
+        for (int i = 0; i < initialDestruction.Count(); i++)
         {
-            detruct.InitializeDestruction();
+            RegisterDestructable(initialDestruction[i]);
         }
     }
 
@@ -99,9 +107,106 @@ public class GameManager : MonoBehaviour
 
         playerUIManager.OnUpdate();
 
+        FlushDestructionQueues();
+
+        isUpdatingDestructables = true;
         foreach (DestructableBehaviour detruct in destructables)
         {
+            if (detruct == null)
+            {
+                continue;
+            }
+
             detruct.UpdateDestruction();
+        }
+        isUpdatingDestructables = false;
+
+        FlushDestructionQueues();
+    }
+
+
+    #endregion
+
+    #region Destruction Process
+    public void RegisterDestructable(DestructableBehaviour destructable)
+    {
+        if (destructable == null)
+        {
+            return;
+        }
+
+        if (pendingRemove.Contains(destructable))
+        {
+            pendingRemove.Remove(destructable);
+        }
+
+        if (destructables.Contains(destructable) || pendingAdd.Contains(destructable))
+        {
+            return;
+        }
+
+        pendingAdd.Add(destructable);
+        
+        if (!isUpdatingDestructables)
+        {
+            FlushDestructionQueues();
+        }
+    }
+
+    public void UnregisterDestructable(DestructableBehaviour destructable)
+    {
+        if (destructable == null)
+        {
+            return;
+        }
+
+        if (pendingAdd.Contains(destructable))
+        {
+            pendingAdd.Remove(destructable);
+        }
+
+        if (pendingRemove.Contains(destructable))
+        {
+            return;
+        }
+
+        pendingRemove.Add(destructable);
+
+        if (!isUpdatingDestructables)
+        {
+            FlushDestructionQueues();
+        }
+    }
+
+    private void FlushDestructionQueues()
+    {
+        //remove waiting destruction
+        if (pendingRemove.Count > 0)
+        {
+            List<DestructableBehaviour> removalsToProcess = new List<DestructableBehaviour>(pendingRemove);
+            pendingRemove.Clear();
+
+            foreach (DestructableBehaviour destructable in removalsToProcess)
+            {
+                destructables.Remove(destructable);
+            }
+        }
+
+
+        //add waiting destruction 
+        if (pendingAdd.Count > 0)
+        {
+            List<DestructableBehaviour> additionsToProcess = new List<DestructableBehaviour>(pendingAdd);
+            pendingAdd.Clear();
+
+            foreach (DestructableBehaviour destructable in additionsToProcess)
+            {
+                if (destructable != null && !destructables.Contains(destructable))
+                {
+                    destructables.Add(destructable);
+                    destructable.InitializeDestruction();
+                }
+            }
         }
     }
     #endregion

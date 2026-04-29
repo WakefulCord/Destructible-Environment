@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03dd0ac956521c440ae76ad6b4f72777, type: 3}
-  m_Name: TerraDrill
+  m_Name: TerraDrill_OneShot
   m_EditorClassIdentifier: 
   toolName: TerraDrill
   toolPrefab: {fileID: 2470863551868492046, guid: 7900b0c268761ce4da62a211b717a3e8, type: 3}
   toolIcon: {fileID: 0}
   destructionData: {fileID: 11400000, guid: 129d109dc8b5bb846af8209669b40649, type: 2}
   compatibleLayers: 1
-  damage: 0.18
-  radius: 3.5
+  damage: 2.5
+  radius: 4
   primaryFireMode: 1
   primaryUsesCooldown: 1
   primaryCooldown: 0.1
   primaryAudio: {fileID: 8300000, guid: b6d3411edfb9ddc4eb1c8d6fcf084e65, type: 3}
-  primaryAudioVolume: 0.1
+  primaryAudioVolume: 0.018
   primaryEffect: {fileID: 6807015768005804764, guid: 208197652a600a742b7fedb3123a56f3, type: 3}
   secondaryFireMode: 1
   secondaryUsesCooldown: 1

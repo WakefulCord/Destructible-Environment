@@ -80,7 +80,7 @@ public class TerrainChunk : MonoBehaviour
     private void BuildMesh()
     {
         //apply calculated mesh values 
-
+        meshCollider.sharedMesh = null;
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
@@ -92,16 +92,14 @@ public class TerrainChunk : MonoBehaviour
         {
             Color[] colours = new Color[meshVerts.Count]; // colour each vert
 
-            float globalMinHeight = 0f;
-            float globalMaxHeight = terrainManager.TerrainHeight;
+            float averageSurfaceHeight = terrainManager.AverageSurfaceHeight;
+            float maxDepthBelowSurface = Mathf.Max(averageSurfaceHeight, 0.001f);
 
             for (int i = 0; i < meshVerts.Count; i++)
             {
                 float gridY = meshVerts[i].y + chunkPos.y * chunkSize;
-                float t = Mathf.InverseLerp(globalMinHeight, globalMaxHeight, gridY);
-
-                t *= 2f;
-                t = Mathf.Clamp01(t);
+                float depthBelowSurface = Mathf.Max(0f, averageSurfaceHeight - gridY);
+                float t = Mathf.InverseLerp(0f, maxDepthBelowSurface, depthBelowSurface);
 
                 colours[i] = terrainManager.TerrainGradient.Evaluate(t);
             }

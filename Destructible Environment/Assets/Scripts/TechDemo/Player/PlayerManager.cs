@@ -66,7 +66,11 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Class Methods
-   
+    public void TeleportPlayer(Transform t)
+    {
+        transform.position = t.position;
+        transform.rotation = t.rotation;
+    }
 
     public void OnUpdate()
     {
