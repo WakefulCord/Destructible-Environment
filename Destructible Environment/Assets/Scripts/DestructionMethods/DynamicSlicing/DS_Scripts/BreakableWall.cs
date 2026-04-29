@@ -28,13 +28,16 @@ public class BreakableWall : DestructableBehaviour
     { 223, 41 }, { 248, 42 }, { 250, 43 }, { 251, 44 }, { 254, 45 }, { 255, 46 }, { 0, 47 }};
 
     public override DestructionLayer GetLayer => DestructionLayer.VoxelWall;
-
+    Structurestress structure;
     
     private void Awake()
     {
         voxels = new WallVoxel[width, height];
         //StartCoroutine(CheckFloatingCoroutine());
         originalVoxelCount = width * height;
+
+        structureStress = GetComponentInParent<Structurestress>(); // Get the Structurestress component from the parent object
+
     }
     public void addToArray(WallVoxel voxel)
     {
@@ -246,14 +249,14 @@ public class BreakableWall : DestructableBehaviour
             if (originalVoxelCount > 0 && ((float)currentVoxelCount / originalVoxelCount) < integrityThreshold) //if the current voxel count is less than the threshold percentage of the original voxel count
             {
                 Debug.Log("Wall integrity failed"); // Log the wall destruction
-                updateStructure(); // Update the structure stress
+                if (structureStress != null)
+                    updateStructure(); // Update the structure stress
                 Destroy(gameObject); // Destroy the wall
                 isDestroyed = true;
             }
     }
     public void updateStructure()
     {
-        structureStress = GetComponentInParent<Structurestress>(); // Get the Structurestress component from the parent object
         structureStress.structLimitCalc(structureWeight); //apply damage to the structure stress script
     }
 }
