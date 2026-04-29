@@ -49,9 +49,19 @@ MonoBehaviour:
   useTimer: 0
   useCooldown: 0
   canUse: 0
+<<<<<<< Updated upstream
   altUseTimer: 0
   altUseCooldown: 0
   canAltUse: 0
+=======
+  isPrimaryInUse: 0
+  secondaryTimer: 0
+  secondaryCooldown: 0
+  canSecondaryUse: 0
+  isSecondaryInUse: 0
+  damage: 0
+  radius: 0.1
+>>>>>>> Stashed changes
   activeTracers: []
 --- !u!1 &2676271577526268028
 GameObject:

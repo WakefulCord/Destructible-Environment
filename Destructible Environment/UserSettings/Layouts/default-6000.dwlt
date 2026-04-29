@@ -1166,9 +1166,15 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
+<<<<<<< Updated upstream
     m_Target: {x: 8.076669, y: -0.44878483, z: 13.47958}
     speed: 2
     m_Value: {x: 423.91748, y: 86.877335, z: 512.0107}
+=======
+    m_Target: {x: -0.016203593, y: -0.06238573, z: 5.0153823}
+    speed: 2
+    m_Value: {x: 535.1936, y: 433.03363, z: -2.6891065}
+>>>>>>> Stashed changes
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1214,6 +1220,7 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
+<<<<<<< Updated upstream
     m_Target: {x: -0.1259267, y: -0.15351638, z: 0.019730795, w: -0.9798993}
     speed: 2
     m_Value: {x: -0.0032565023, y: -0.15033846, z: 0.00059951737, w: -0.9886747}
@@ -1221,6 +1228,15 @@ MonoBehaviour:
     m_Target: 6.861921
     speed: 2
     m_Value: 663.4648
+=======
+    m_Target: {x: -0.105140775, y: 0.6208129, z: -0.08451666, w: -0.77227837}
+    speed: 2
+    m_Value: {x: 0, y: 0, z: 0, w: 1}
+  m_Size:
+    m_Target: 6.861921
+    speed: 2
+    m_Value: 324.99698
+>>>>>>> Stashed changes
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1238,7 +1254,11 @@ MonoBehaviour:
     m_FarClip: 10000
     m_DynamicClip: 1
     m_OcclusionCulling: 0
+<<<<<<< Updated upstream
   m_LastSceneViewRotation: {x: -0.034676135, y: -0.19895078, z: -0.007040035, w: 0.97938704}
+=======
+  m_LastSceneViewRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
+>>>>>>> Stashed changes
   m_LastSceneViewOrtho: 0
   m_Viewpoint:
     m_SceneView: {fileID: 17}
@@ -1318,10 +1338,17 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
+<<<<<<< Updated upstream
     scrollPos: {x: 0, y: 112.39996}
     m_SelectedIDs: 32c12100
     m_LastClickedID: 2212146
     m_ExpandedIDs: 0000000088830a008a830a008c830a008e830a0090830a0092830a0094830a0096830a0098830a009a830a009c830a00
+=======
+    scrollPos: {x: 0, y: 125}
+    m_SelectedIDs: 7aa10600
+    m_LastClickedID: 434554
+    m_ExpandedIDs: 000000005a0503005c0503005e05030060050300620503006405030066050300680503006a0503006c0503006e050300
+>>>>>>> Stashed changes
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1350,7 +1377,11 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
+<<<<<<< Updated upstream
     m_ExpandedIDs: 0000000088830a008a830a008c830a008e830a0090830a0092830a0094830a0096830a0098830a009a830a009c830a00
+=======
+    m_ExpandedIDs: 000000005a0503005c0503005e05030060050300620503006405030066050300680503006a0503006c0503006e050300
+>>>>>>> Stashed changes
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
