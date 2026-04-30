@@ -156,7 +156,7 @@ namespace UI
         // ============= Draw Methods =============
         private void Draw_FPSOverlay()
         {
-            // 1. Calculate scale based on screen height so the overlay looks consistent across resolutions
+            // 1. Calculate scale based on screen voxelCountY so the overlay looks consistent across resolutions
             float scale = Mathf.Max(1f, Screen.height / 1080f);
             Initialise_FontSize(scale);
 
@@ -189,7 +189,7 @@ namespace UI
 
         private void Draw_Labels(float scale, int avg, int min, int max, int currentFps)
         {
-            // 1. Define the two text rows inside the background rect using the padding and line height settings
+            // 1. Define the two text rows inside the background rect using the padding and line voxelCountY settings
             Rect bgRect = Get_BackgroundRect(scale);
             Rect topRect = new Rect(bgRect.x + paddingX * scale, bgRect.y + paddingY * scale, bgRect.width - paddingX * scale * 2, lineHeight * scale);
             Rect botRect = new Rect(bgRect.x + paddingX * scale, bgRect.y + paddingY * scale + lineHeight * scale, bgRect.width - paddingX * scale * 2, lineHeight * scale);

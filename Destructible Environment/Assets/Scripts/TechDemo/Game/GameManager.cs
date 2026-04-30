@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     PlayerManager playerManager;
     InputManager inputManager;
     PlayerUIManager playerUIManager;
+
+    
     #endregion
 
     #region Private Fields
@@ -84,6 +86,13 @@ public class GameManager : MonoBehaviour
         {
             RegisterDestructable(initialDestruction[i]);
         }
+
+
+        //temp till better fix
+
+        HVoxelHouse house = FindFirstObjectByType<HVoxelHouse>();
+        house.OnStart();
+        
     }
 
     private void OnStart()
