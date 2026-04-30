@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Structurestress : MonoBehaviour
 {
     public float stressLimit = 0f;
     public float currentStress = 0f; 
     public float totalIntegrity = 0f;
+
+    private List<BaseLayerMarker> baseLayerObjects = new ();
+    private bool gravityEnabled = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,6 +31,8 @@ public class Structurestress : MonoBehaviour
             stressLimit = totalIntegrity;
             Debug.Log("Total Structure Stress Limit: " + stressLimit);
         }
+
+        baseLayerObjects.AddRange(GetComponentsInChildren<BaseLayerMarker>());
     }
 
 
@@ -48,5 +54,30 @@ public class Structurestress : MonoBehaviour
             Destroy(gameObject);
         }
 
+    }
+    public void OnBaseLayerDestroyed(BaseLayerMarker marker)
+    {
+        baseLayerObjects.Remove(marker);
+        if (baseLayerObjects.Count == 0 && !gravityEnabled)
+        {
+            EnableGravityOnStructure();
+        }
+    }
+    private void EnableGravityOnStructure()
+    {
+        gravityEnabled = true;
+        foreach (var rb in GetComponentsInChildren<Rigidbody>())
+        {
+            rb.useGravity = true;
+            rb.isKinematic = false;
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (gravityEnabled && collision.gameObject.CompareTag("Ground"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
