@@ -148,6 +148,7 @@ public class Container : MonoBehaviour
 
                 Initialized = true;
                 mesh = new Mesh();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             }
             else
             {
